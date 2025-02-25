@@ -1,36 +1,177 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Andrii Furmanets - Personal Website
 
-## Getting Started
+A modern, responsive personal portfolio website built with Next.js, TypeScript, and Tailwind CSS. This website showcases my skills, experience, and projects as a Senior Full-Stack Developer specializing in React, TypeScript, Next.js, and Ruby on Rails.
 
-First, run the development server:
+![Website Preview](public/og-image.svg)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## 🚀 Live Demo
+
+Visit the live website at [andriifurmanets.com](https://andriifurmanets.com)
+
+## ✨ Features
+
+- **Responsive Design**: Optimized for all device sizes from mobile to desktop
+- **Dark/Light Mode**: Theme toggle with system preference detection
+- **Modern UI**: Clean, professional design with smooth animations
+- **SEO Optimized**: Comprehensive metadata, structured data, and OpenGraph images
+- **Mobile-First Navigation**: Hamburger menu for mobile with smooth transitions
+- **Interactive Sections**: About, Experience, Skills, Education, and Contact
+- **Contact Form**: Email integration for direct communication
+- **Optimized Performance**: Fast loading times and efficient rendering
+
+## 🛠️ Tech Stack
+
+- **Framework**: [Next.js 15](https://nextjs.org/) with App Router
+- **Language**: [TypeScript](https://www.typescriptlang.org/)
+- **Styling**: [Tailwind CSS](https://tailwindcss.com/)
+- **Animations**: [Framer Motion](https://www.framer.com/motion/)
+- **Icons**: [Lucide React](https://lucide.dev/) and [React Icons](https://react-icons.github.io/react-icons/)
+- **Form Handling**: [React Hook Form](https://react-hook-form.com/) with [Zod](https://github.com/colinhacks/zod)
+- **Email Integration**: [EmailJS](https://www.emailjs.com/)
+- **Theming**: [next-themes](https://github.com/pacocoursey/next-themes)
+- **SEO**: Next.js Metadata API, next-sitemap
+
+## 📂 Project Structure
+
+```
+personal-website/
+├── public/               # Static assets
+│   ├── icons/            # Technology icons
+│   │   └── og-image.svg  # OpenGraph image
+│   ├── logos/            # Logo files
+│   └── og-image.svg      # OpenGraph image
+├── src/
+│   ├── app/              # Next.js App Router
+│   │   ├── layout.tsx    # Root layout with metadata
+│   │   ├── page.tsx      # Home page
+│   │   └── globals.css   # Global styles
+│   ├── components/       # React components
+│   │   ├── sections/     # Page sections (Hero, About, etc.)
+│   │   └── ui/           # Reusable UI components
+│   └── lib/              # Utility functions and hooks
+├── tailwind.config.js    # Tailwind configuration
+├── next.config.js        # Next.js configuration
+└── package.json          # Dependencies and scripts
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🚀 Getting Started
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Prerequisites
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- Node.js 18.17.0 or later
+- npm or yarn
 
-## Learn More
+### Installation
 
-To learn more about Next.js, take a look at the following resources:
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/afurm/personal-website.git
+   cd personal-website
+   ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+2. Install dependencies:
+   ```bash
+   npm install
+   # or
+   yarn install
+   ```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+3. Run the development server:
+   ```bash
+   npm run dev
+   # or
+   yarn dev
+   ```
 
-## Deploy on Vercel
+4. Open [http://localhost:3000](http://localhost:3000) in your browser to see the result.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 🔧 Configuration
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Environment Variables
+
+Create a `.env.local` file in the root directory with the following variables:
+
+```
+# EmailJS Configuration
+NEXT_PUBLIC_EMAILJS_SERVICE_ID=your_service_id
+NEXT_PUBLIC_EMAILJS_TEMPLATE_ID=your_template_id
+NEXT_PUBLIC_EMAILJS_USER_ID=your_user_id
+```
+
+### Contact Form
+
+The contact form uses EmailJS for sending emails. You'll need to:
+
+1. Create an account at [EmailJS](https://www.emailjs.com/)
+2. Create a service and email template
+3. Update the environment variables with your credentials
+
+## 📱 Mobile Optimization
+
+The website is fully responsive with special considerations for mobile users:
+
+- Hamburger menu for navigation
+- Vertically stacked buttons in the hero section
+- Optimized tech stack display
+- Custom theme toggle in mobile menu
+
+## 🔍 SEO Optimization
+
+This website implements several SEO best practices:
+
+- Comprehensive metadata in `layout.tsx`
+- OpenGraph and Twitter card images
+- Structured data with Schema.org markup
+- Automatically generated sitemap and robots.txt
+- Proper heading hierarchy
+- Semantic HTML structure
+
+## 🚢 Deployment
+
+### Build for Production
+
+```bash
+npm run build
+# or
+yarn build
+```
+
+This will create an optimized production build and generate the sitemap.
+
+### Deployment Platforms
+
+The site can be easily deployed to:
+
+- [Vercel](https://vercel.com/) (recommended for Next.js)
+- [Netlify](https://www.netlify.com/)
+- [AWS Amplify](https://aws.amazon.com/amplify/)
+
+## 🧩 Customization
+
+### Changing Content
+
+Most content is stored in the component files under `src/components/sections/`. Update these files to change the information displayed on the website.
+
+### Styling
+
+The website uses Tailwind CSS for styling. Customize the design by modifying:
+
+- `tailwind.config.js` for theme colors and extensions
+- Component-level classes for specific styling
+
+## 📄 License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## 👨‍💻 Author
+
+**Andrii Furmanets** - Senior Full-Stack Developer
+
+- [GitHub](https://github.com/afurm)
+- [LinkedIn](https://linkedin.com/in/andrii-furmanets-1a5b6452/)
+- [Website](https://andriifurmanets.com)
+
+---
+
+Built with ❤️ using Next.js and React
+# personal-website
