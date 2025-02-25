@@ -1,0 +1,14 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="512" height="512" rx="96" fill="white"/>
+  
+  <!-- Decorative element -->
+  <circle cx="256" cy="256" r="180" fill="white" stroke="black" stroke-width="16" stroke-opacity="0.2"/>
+  
+  <!-- Letter "F" -->
+  <path d="M160 352V160H352M160 256H320" 
+        stroke="black" 
+        stroke-width="32" 
+        stroke-linecap="round" 
+        stroke-linejoin="round"/>
+</svg> 

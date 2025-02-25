@@ -37,7 +37,6 @@ Visit the live website at [andriifurmanets.com](https://andriifurmanets.com)
 personal-website/
 ├── public/               # Static assets
 │   ├── icons/            # Technology icons
-│   │   └── og-image.svg  # OpenGraph image
 │   ├── logos/            # Logo files
 │   └── og-image.svg      # OpenGraph image
 ├── src/
@@ -105,6 +104,24 @@ The contact form uses EmailJS for sending emails. You'll need to:
 1. Create an account at [EmailJS](https://www.emailjs.com/)
 2. Create a service and email template
 3. Update the environment variables with your credentials
+
+### Favicon Setup
+
+The website includes comprehensive favicon support for various devices and browsers. To properly set up the favicon:
+
+1. Generate favicon files using the SVG templates in the `public` directory:
+   - `favicon.svg` - Vector version of the favicon
+   - `favicon-large.svg` - Larger vector version for generating different sizes
+
+2. You'll need to create the following files (you can use an online favicon generator like [RealFaviconGenerator](https://realfavicongenerator.net/)):
+   - `favicon.ico` - Multi-size ICO file (16x16, 32x32, 48x48)
+   - `favicon-16x16.png` - 16x16 PNG favicon
+   - `favicon-32x32.png` - 32x32 PNG favicon
+   - `apple-touch-icon.png` - 180x180 PNG for iOS devices
+   - `android-chrome-192x192.png` - 192x192 PNG for Android devices
+   - `android-chrome-512x512.png` - 512x512 PNG for Android devices
+
+3. The `site.webmanifest` file is already configured to reference these icons for PWA support.
 
 ## 📱 Mobile Optimization
 
@@ -174,4 +191,3 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 ---
 
 Built with ❤️ using Next.js and React
-# personal-website

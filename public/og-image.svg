@@ -1,0 +1,21 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="1200" height="630" fill="#0f172a"/>
+  
+  <!-- Decorative elements -->
+  <circle cx="150" cy="150" r="80" fill="#3b82f6" opacity="0.1"/>
+  <circle cx="1050" cy="480" r="100" fill="#3b82f6" opacity="0.1"/>
+  
+  <!-- Main content -->
+  <text x="120" y="250" font-family="Arial, sans-serif" font-weight="bold" font-size="64" fill="white">Andrii Furmanets</text>
+  <text x="120" y="330" font-family="Arial, sans-serif" font-size="36" fill="#94a3b8">Senior Full-Stack Developer</text>
+  
+  <!-- Tech stack -->
+  <text x="120" y="400" font-family="Arial, sans-serif" font-size="28" fill="#64748b">React • TypeScript • Next.js • Ruby on Rails</text>
+  
+  <!-- Specializations -->
+  <text x="120" y="450" font-family="Arial, sans-serif" font-size="28" fill="#64748b">Fintech • Web3 • Healthcare</text>
+  
+  <!-- Website URL -->
+  <text x="120" y="550" font-family="Arial, sans-serif" font-size="24" fill="#94a3b8">andriifurmanets.com</text>
+</svg> 
