@@ -11,17 +11,12 @@ export const size = {
 export const contentType = 'image/png';
 
 export default async function Image() {
-    // Font
-    const interSemiBold = fetch(
-        new URL('https://fonts.googleapis.com/css2?family=Inter:wght@600&display=swap', import.meta.url)
-    ).then((res) => res.arrayBuffer());
-
     return new ImageResponse(
         (
             <div
                 style={{
                     fontSize: 32,
-                    background: '#0f172a',
+                    background: '#ffffff',
                     width: '100%',
                     height: '100%',
                     display: 'flex',
@@ -29,6 +24,7 @@ export default async function Image() {
                     alignItems: 'flex-start',
                     justifyContent: 'center',
                     padding: 80,
+                    fontFamily: 'sans-serif',
                 }}
             >
                 {/* Decorative elements */}
@@ -39,7 +35,7 @@ export default async function Image() {
                     width: 160,
                     height: 160,
                     borderRadius: '50%',
-                    background: '#3b82f6',
+                    background: '#000000',
                     opacity: 0.1
                 }} />
 
@@ -50,7 +46,7 @@ export default async function Image() {
                     width: 200,
                     height: 200,
                     borderRadius: '50%',
-                    background: '#3b82f6',
+                    background: '#000000',
                     opacity: 0.1
                 }} />
 
@@ -64,7 +60,7 @@ export default async function Image() {
                     <h1 style={{
                         fontSize: 64,
                         fontWeight: 'bold',
-                        color: 'white',
+                        color: '#000000',
                         margin: 0
                     }}>
                         Andrii Furmanets
@@ -72,7 +68,7 @@ export default async function Image() {
 
                     <h2 style={{
                         fontSize: 36,
-                        color: '#94a3b8',
+                        color: '#475569',
                         margin: 0,
                         marginBottom: 16
                     }}>
@@ -98,7 +94,7 @@ export default async function Image() {
 
                     <p style={{
                         fontSize: 24,
-                        color: '#94a3b8',
+                        color: '#475569',
                         margin: 0
                     }}>
                         andriifurmanets.com
@@ -108,14 +104,6 @@ export default async function Image() {
         ),
         {
             ...size,
-            fonts: [
-                {
-                    name: 'Inter',
-                    data: await interSemiBold,
-                    style: 'normal',
-                    weight: 600,
-                },
-            ],
         },
     );
 } 
