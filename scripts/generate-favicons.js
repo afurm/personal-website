@@ -4,52 +4,72 @@ const { execSync } = require('child_process');
 
 console.log('Generating favicons...');
 
-// Install required packages if not already installed
-try {
-    execSync('npm list -g sharp || npm install -g sharp');
-    execSync('npm list -g svgexport || npm install -g svgexport');
-} catch (error) {
-    console.error('Error installing dependencies:', error);
-    process.exit(1);
-}
-
 // Paths
 const publicDir = path.join(__dirname, '../public');
 const faviconSvgPath = path.join(publicDir, 'favicon.svg');
+const faviconDarkSvgPath = path.join(publicDir, 'favicon-dark.svg');
 const faviconLargeSvgPath = path.join(publicDir, 'favicon-large.svg');
-const appleTouchIconSvgPath = path.join(publicDir, 'apple-touch-icon.svg');
 
-// Generate favicon.ico (multiple sizes in one file)
+// Generate PNG favicons
 try {
-    // Convert SVG to PNG at different sizes
-    execSync(`svgexport ${faviconLargeSvgPath} ${publicDir}/favicon-16.png 16:16`);
-    execSync(`svgexport ${faviconLargeSvgPath} ${publicDir}/favicon-32.png 32:32`);
-    execSync(`svgexport ${faviconLargeSvgPath} ${publicDir}/favicon-48.png 48:48`);
+    // Generate favicon PNGs
+    execSync(`svgexport ${faviconSvgPath} ${publicDir}/favicon-16x16.png 16:16`);
+    execSync(`svgexport ${faviconSvgPath} ${publicDir}/favicon-32x32.png 32:32`);
 
-    // Combine PNGs into ICO file
-    // Note: This requires ImageMagick to be installed
-    execSync(`convert ${publicDir}/favicon-16.png ${publicDir}/favicon-32.png ${publicDir}/favicon-48.png ${publicDir}/favicon.ico`);
+    // Generate Android Chrome icons
+    execSync(`svgexport ${faviconLargeSvgPath} ${publicDir}/android-chrome-192x192.png 192:192`);
+    execSync(`svgexport ${faviconLargeSvgPath} ${publicDir}/android-chrome-512x512.png 512:512`);
 
-    // Clean up temporary files
-    fs.unlinkSync(`${publicDir}/favicon-16.png`);
-    fs.unlinkSync(`${publicDir}/favicon-32.png`);
-    fs.unlinkSync(`${publicDir}/favicon-48.png`);
+    // Generate Apple Touch Icon
+    execSync(`svgexport ${faviconLargeSvgPath} ${publicDir}/apple-touch-icon.png 180:180`);
 
-    console.log('favicon.ico generated successfully');
+    console.log('PNG favicons generated successfully');
 } catch (error) {
-    console.error('Error generating favicon.ico:', error);
-    console.log('Please install ImageMagick and try again, or manually convert the SVG to ICO using an online converter.');
+    console.error('Error generating PNG favicons:', error);
 }
 
-// Generate apple-touch-icon.png
+// Generate favicon.ico using ImageMagick if available
 try {
-    execSync(`svgexport ${appleTouchIconSvgPath} ${publicDir}/apple-touch-icon.png 180:180`);
-    console.log('apple-touch-icon.png generated successfully');
+    // Check if ImageMagick is installed
+    execSync('which convert');
+
+    // Generate temporary PNGs for ICO conversion
+    execSync(`svgexport ${faviconSvgPath} ${publicDir}/temp-16.png 16:16`);
+    execSync(`svgexport ${faviconSvgPath} ${publicDir}/temp-32.png 32:32`);
+    execSync(`svgexport ${faviconSvgPath} ${publicDir}/temp-48.png 48:48`);
+
+    // Combine PNGs into ICO file
+    execSync(`convert ${publicDir}/temp-16.png ${publicDir}/temp-32.png ${publicDir}/temp-48.png ${publicDir}/favicon.ico`);
+
+    // Clean up temporary files
+    fs.unlinkSync(`${publicDir}/temp-16.png`);
+    fs.unlinkSync(`${publicDir}/temp-32.png`);
+    fs.unlinkSync(`${publicDir}/temp-48.png`);
+
+    console.log('favicon.ico generated successfully using ImageMagick');
 } catch (error) {
-    console.error('Error generating apple-touch-icon.png:', error);
+    console.log('ImageMagick not available or error occurred. Generating favicon.ico using alternative method...');
+
+    try {
+        // Alternative: Use png2ico if available
+        execSync('npm install -g png2ico');
+        execSync(`svgexport ${faviconSvgPath} ${publicDir}/temp-16.png 16:16`);
+        execSync(`svgexport ${faviconSvgPath} ${publicDir}/temp-32.png 32:32`);
+        execSync(`png2ico ${publicDir}/favicon.ico ${publicDir}/temp-16.png ${publicDir}/temp-32.png`);
+
+        // Clean up temporary files
+        fs.unlinkSync(`${publicDir}/temp-16.png`);
+        fs.unlinkSync(`${publicDir}/temp-32.png`);
+
+        console.log('favicon.ico generated successfully using png2ico');
+    } catch (secondError) {
+        console.error('Error generating favicon.ico:', secondError);
+        console.log('Please manually convert the SVG to ICO using an online converter like https://convertio.co/svg-ico/');
+    }
 }
 
 console.log('Favicon generation complete!');
+console.log('Remember to check that all files were generated correctly before deploying.');
 
 /**
  * Favicon Generation Guide
