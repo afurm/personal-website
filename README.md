@@ -191,3 +191,62 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 ---
 
 Built with ❤️ using Next.js and React
+
+## Telegram Bot Setup for Contact Form
+
+The contact form on this website sends submissions to a Telegram bot. Follow these steps to set it up correctly:
+
+1. **Create a Telegram bot**:
+   - Message [@BotFather](https://t.me/botfather) on Telegram
+   - Use the `/newbot` command and follow the instructions
+   - BotFather will give you a bot token - copy this for the next step
+
+2. **Get your chat ID**:
+   - Message [@userinfobot](https://t.me/userinfobot) on Telegram
+   - It will reply with your user information, including your ID
+   - Copy your ID (a number like 434334343)
+
+3. **Configure environment variables**:
+   - Create a `.env.local` file in the root directory with the following:
+   ```
+   TELEGRAM_BOT_TOKEN=your_bot_token_here
+   TELEGRAM_CHAT_ID=your_chat_id_here
+   ```
+   - Replace the placeholder values with your actual bot token and chat ID
+
+4. **Important: Start a conversation with your bot**:
+   - Find your bot on Telegram (by the username you gave it)
+   - Send it a message (like "/start")
+   - This step is crucial - your bot can only send messages to users who have initiated a conversation with it
+
+5. **Test the connection**:
+   - After starting your development server, visit `/api/telegram-test` in your browser
+   - This will send a test message to your Telegram account
+   - If successful, you'll receive a message on Telegram and see a success response in the browser
+   - If it fails, check the error message and make sure you've completed step 4
+
+6. **Restart the development server**:
+   ```bash
+   npm run dev
+   # or
+   yarn dev
+   ```
+
+Now when someone submits the contact form, you'll receive a notification in Telegram with their name, email, and message.
+
+### Troubleshooting Telegram Bot
+
+If you're experiencing issues with the Telegram integration:
+
+1. **"Chat not found" error**:
+   - Make sure you've started a conversation with your bot
+   - Verify that the chat ID in `.env.local` matches your Telegram user ID
+
+2. **No messages being received**:
+   - Check that your bot token is correct
+   - Ensure your development server is running
+   - Try the test endpoint at `/api/telegram-test`
+
+3. **Bot stopped working**:
+   - Telegram bot tokens can expire if you regenerate them
+   - If you created a new token, update it in `.env.local`

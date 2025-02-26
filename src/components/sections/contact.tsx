@@ -5,7 +5,6 @@ import { motion } from "framer-motion";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import emailjs from "@emailjs/browser";
 
 const contactFormSchema = z.object({
     name: z.string().min(2, { message: "Name must be at least 2 characters." }),
@@ -34,17 +33,19 @@ export function Contact() {
         setError(null);
 
         try {
-            // Replace these with your actual EmailJS service, template, and user IDs
-            await emailjs.send(
-                "YOUR_SERVICE_ID",
-                "YOUR_TEMPLATE_ID",
-                {
-                    from_name: data.name,
-                    from_email: data.email,
-                    message: data.message,
+            const response = await fetch('/api/contact', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
                 },
-                "YOUR_USER_ID"
-            );
+                body: JSON.stringify(data),
+            });
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                throw new Error(result.error || 'Failed to send message');
+            }
 
             setIsSubmitted(true);
             reset();
