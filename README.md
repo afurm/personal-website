@@ -63,12 +63,14 @@ personal-website/
 ### Installation
 
 1. Clone the repository:
+
    ```bash
    git clone https://github.com/afurm/personal-website.git
    cd personal-website
    ```
 
 2. Install dependencies:
+
    ```bash
    npm install
    # or
@@ -76,6 +78,7 @@ personal-website/
    ```
 
 3. Run the development server:
+
    ```bash
    npm run dev
    # or
@@ -110,10 +113,12 @@ The contact form uses EmailJS for sending emails. You'll need to:
 The website includes comprehensive favicon support for various devices and browsers. To properly set up the favicon:
 
 1. Generate favicon files using the SVG templates in the `public` directory:
+
    - `favicon.svg` - Vector version of the favicon
    - `favicon-large.svg` - Larger vector version for generating different sizes
 
 2. You'll need to create the following files (you can use an online favicon generator like [RealFaviconGenerator](https://realfavicongenerator.net/)):
+
    - `favicon.ico` - Multi-size ICO file (16x16, 32x32, 48x48)
    - `favicon-16x16.png` - 16x16 PNG favicon
    - `favicon-32x32.png` - 32x32 PNG favicon
@@ -197,29 +202,36 @@ Built with ❤️ using Next.js and React
 The contact form on this website sends submissions to a Telegram bot. Follow these steps to set it up correctly:
 
 1. **Create a Telegram bot**:
+
    - Message [@BotFather](https://t.me/botfather) on Telegram
    - Use the `/newbot` command and follow the instructions
    - BotFather will give you a bot token - copy this for the next step
 
 2. **Get your chat ID**:
+
    - Message [@userinfobot](https://t.me/userinfobot) on Telegram
    - It will reply with your user information, including your ID
    - Copy your ID (a number like 434334343)
 
 3. **Configure environment variables**:
+
    - Create a `.env.local` file in the root directory with the following:
+
    ```
    TELEGRAM_BOT_TOKEN=your_bot_token_here
    TELEGRAM_CHAT_ID=your_chat_id_here
    ```
+
    - Replace the placeholder values with your actual bot token and chat ID
 
 4. **Important: Start a conversation with your bot**:
+
    - Find your bot on Telegram (by the username you gave it)
    - Send it a message (like "/start")
    - This step is crucial - your bot can only send messages to users who have initiated a conversation with it
 
 5. **Test the connection**:
+
    - After starting your development server, visit `/api/telegram-test` in your browser
    - This will send a test message to your Telegram account
    - If successful, you'll receive a message on Telegram and see a success response in the browser
@@ -239,10 +251,12 @@ Now when someone submits the contact form, you'll receive a notification in Tele
 If you're experiencing issues with the Telegram integration:
 
 1. **"Chat not found" error**:
+
    - Make sure you've started a conversation with your bot
    - Verify that the chat ID in `.env.local` matches your Telegram user ID
 
 2. **No messages being received**:
+
    - Check that your bot token is correct
    - Ensure your development server is running
    - Try the test endpoint at `/api/telegram-test`

@@ -1,11 +1,11 @@
-import { Header } from "@/components/ui/header";
-import { Footer } from "@/components/ui/footer";
-import { Hero } from "@/components/sections/hero";
-import { Experience } from "@/components/sections/experience";
-import { Skills } from "@/components/sections/skills";
-import { Education } from "@/components/sections/education";
-import { Contact } from "@/components/sections/contact";
-import { About } from "@/components/sections/about";
+import { Header } from '@/components/ui/header';
+import { Footer } from '@/components/ui/footer';
+import { Hero } from '@/components/sections/hero';
+import { Experience } from '@/components/sections/experience';
+import { Skills } from '@/components/sections/skills';
+import { Education } from '@/components/sections/education';
+import { Contact } from '@/components/sections/contact';
+import { About } from '@/components/sections/about';
 
 export default function Home() {
   return (
