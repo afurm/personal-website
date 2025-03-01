@@ -2,6 +2,7 @@
 
 import * as React from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { ThemeToggle } from './theme-toggle';
 import { Menu, X, Sun, Moon } from 'lucide-react';
 import { useTheme } from 'next-themes';
@@ -10,6 +11,15 @@ export function Header() {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const { setTheme, theme } = useTheme();
   const [mounted, setMounted] = React.useState(false);
+  const pathname = usePathname();
+
+  // Check if we're on the homepage
+  const isHomePage = pathname === '/';
+
+  // Function to get the correct link path
+  const getNavLink = (section: string) => {
+    return isHomePage ? `#${section}` : `/#${section}`;
+  };
 
   // useEffect for mounting
   React.useEffect(() => {
@@ -43,31 +53,37 @@ export function Header() {
             </Link>
             <nav className="hidden md:flex gap-6">
               <Link
-                href="#about"
+                href={getNavLink('about')}
                 className="text-sm font-medium transition-colors hover:text-primary"
               >
                 About
               </Link>
               <Link
-                href="#experience"
+                href={getNavLink('experience')}
                 className="text-sm font-medium transition-colors hover:text-primary"
               >
                 Experience
               </Link>
               <Link
-                href="#skills"
+                href={getNavLink('skills')}
                 className="text-sm font-medium transition-colors hover:text-primary"
               >
                 Skills
               </Link>
               <Link
-                href="#education"
+                href={getNavLink('education')}
                 className="text-sm font-medium transition-colors hover:text-primary"
               >
                 Education
               </Link>
               <Link
-                href="#contact"
+                href="/blogs"
+                className="text-sm font-medium transition-colors hover:text-primary"
+              >
+                Blog
+              </Link>
+              <Link
+                href={getNavLink('contact')}
                 className="text-sm font-medium transition-colors hover:text-primary"
               >
                 Contact
@@ -80,7 +96,7 @@ export function Header() {
               <ThemeToggle />
             </div>
             <Link
-              href="#contact"
+              href={getNavLink('contact')}
               className="hidden md:inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
             >
               Contact Me
@@ -123,35 +139,42 @@ export function Header() {
           </div>
           <nav className="flex flex-col p-4 flex-grow">
             <Link
-              href="#about"
+              href={getNavLink('about')}
               className="py-4 text-lg font-medium transition-colors hover:text-primary border-b border-gray-200 dark:border-gray-800 text-center"
               onClick={toggleMenu}
             >
               About
             </Link>
             <Link
-              href="#experience"
+              href={getNavLink('experience')}
               className="py-4 text-lg font-medium transition-colors hover:text-primary border-b border-gray-200 dark:border-gray-800 text-center"
               onClick={toggleMenu}
             >
               Experience
             </Link>
             <Link
-              href="#skills"
+              href={getNavLink('skills')}
               className="py-4 text-lg font-medium transition-colors hover:text-primary border-b border-gray-200 dark:border-gray-800 text-center"
               onClick={toggleMenu}
             >
               Skills
             </Link>
             <Link
-              href="#education"
+              href={getNavLink('education')}
               className="py-4 text-lg font-medium transition-colors hover:text-primary border-b border-gray-200 dark:border-gray-800 text-center"
               onClick={toggleMenu}
             >
               Education
             </Link>
             <Link
-              href="#contact"
+              href="/blogs"
+              className="py-4 text-lg font-medium transition-colors hover:text-primary border-b border-gray-200 dark:border-gray-800 text-center"
+              onClick={toggleMenu}
+            >
+              Blog
+            </Link>
+            <Link
+              href={getNavLink('contact')}
               className="py-4 text-lg font-medium transition-colors hover:text-primary border-b border-gray-200 dark:border-gray-800 text-center"
               onClick={toggleMenu}
             >
@@ -166,11 +189,10 @@ export function Header() {
                   <div className="flex items-center bg-gray-100 dark:bg-gray-800 p-1 rounded-full">
                     <button
                       onClick={() => setTheme('light')}
-                      className={`flex items-center gap-2 px-3 py-2 rounded-full transition-colors ${
-                        theme === 'light'
+                      className={`flex items-center gap-2 px-3 py-2 rounded-full transition-colors ${theme === 'light'
                           ? 'bg-white text-black shadow-sm'
                           : 'text-gray-500 dark:text-gray-400'
-                      }`}
+                        }`}
                       aria-label="Light mode"
                     >
                       <Sun className="h-4 w-4" />
@@ -178,11 +200,10 @@ export function Header() {
                     </button>
                     <button
                       onClick={() => setTheme('dark')}
-                      className={`flex items-center gap-2 px-3 py-2 rounded-full transition-colors ${
-                        theme === 'dark'
+                      className={`flex items-center gap-2 px-3 py-2 rounded-full transition-colors ${theme === 'dark'
                           ? 'bg-gray-700 text-white shadow-sm'
                           : 'text-gray-500 dark:text-gray-400'
-                      }`}
+                        }`}
                       aria-label="Dark mode"
                     >
                       <Moon className="h-4 w-4" />
@@ -195,7 +216,7 @@ export function Header() {
 
             <div className="mt-auto pb-8">
               <Link
-                href="#contact"
+                href={getNavLink('contact')}
                 className="w-full flex items-center justify-center rounded-md bg-primary px-4 py-3 text-base font-medium text-primary-foreground shadow transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
                 onClick={toggleMenu}
               >
