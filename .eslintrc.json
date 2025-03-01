@@ -1,5 +1,6 @@
 {
   "extends": ["next/core-web-vitals", "prettier"],
+  "plugins": ["@typescript-eslint"],
   "rules": {
     "react/no-unescaped-entities": "off",
     "@typescript-eslint/no-unused-vars": [
@@ -8,6 +9,18 @@
         "argsIgnorePattern": "^_",
         "varsIgnorePattern": "^_"
       }
-    ]
+    ],
+    "no-console": [
+      "warn",
+      {
+        "allow": ["warn", "error"]
+      }
+    ],
+    "prefer-const": "warn",
+    "eqeqeq": ["warn", "always"],
+    "no-duplicate-imports": "error",
+    "no-var": "error",
+    "arrow-body-style": ["warn", "as-needed"],
+    "object-shorthand": "warn"
   }
 }
