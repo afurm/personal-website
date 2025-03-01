@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:news="http://www.google.com/schemas/sitemap-news/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:mobile="http://www.google.com/schemas/sitemap-mobile/1.0" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">
-<url><loc>https://andriifurmanets.com/robots.txt</loc><lastmod>2025-03-01T09:12:57.747Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-<url><loc>https://andriifurmanets.com/sitemap.xml</loc><lastmod>2025-03-01T09:12:57.748Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-<url><loc>https://andriifurmanets.com</loc><lastmod>2025-03-01T09:12:57.748Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://andriifurmanets.com/sitemap.xml</loc><lastmod>2025-03-01T12:58:19.809Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://andriifurmanets.com/robots.txt</loc><lastmod>2025-03-01T12:58:19.810Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://andriifurmanets.com/blogs</loc><lastmod>2025-03-01T12:58:19.810Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://andriifurmanets.com</loc><lastmod>2025-03-01T12:58:19.810Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://andriifurmanets.com/blogs/ultimate-ai-integration-guide</loc><lastmod>2025-03-01T12:58:19.810Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://andriifurmanets.com/blogs/tag/AI Integration</loc><lastmod>2025-03-01T12:58:19.810Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://andriifurmanets.com/blogs/tag/Artificial Intelligence</loc><lastmod>2025-03-01T12:58:19.810Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://andriifurmanets.com/blogs/tag/business innovation</loc><lastmod>2025-03-01T12:58:19.810Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://andriifurmanets.com/blogs/tag/future trends</loc><lastmod>2025-03-01T12:58:19.810Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://andriifurmanets.com/blogs/tag/technology</loc><lastmod>2025-03-01T12:58:19.810Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
 </urlset>

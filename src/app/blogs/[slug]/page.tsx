@@ -5,10 +5,17 @@ import { getAllBlogPosts, getBlogPostBySlug, getReadingTime, getRelatedPosts } f
 import { formatDate } from '../../../lib/utils';
 import Script from 'next/script';
 
+// Define the params type to match Next.js expectations
+type PageProps = {
+    params: Promise<{
+        slug: string;
+    }>;
+};
+
 // Generate metadata for the page
-export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
     // Await the params object before accessing its properties
-    const resolvedParams = await Promise.resolve(params);
+    const resolvedParams = await params;
     const slug = resolvedParams.slug;
 
     if (!slug) {
@@ -50,9 +57,9 @@ export async function generateStaticParams() {
     }));
 }
 
-export default async function BlogPostPage({ params }: { params: { slug: string } }) {
+export default async function BlogPostPage({ params }: PageProps) {
     // Await the params object before accessing its properties
-    const resolvedParams = await Promise.resolve(params);
+    const resolvedParams = await params;
     const slug = resolvedParams.slug;
 
     if (!slug) {

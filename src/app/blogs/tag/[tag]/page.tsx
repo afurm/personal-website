@@ -5,10 +5,17 @@ import { formatDate } from '../../../../lib/utils';
 import { notFound } from 'next/navigation';
 import Script from 'next/script';
 
+// Define the params type to match Next.js expectations
+type PageProps = {
+    params: Promise<{
+        tag: string;
+    }>;
+};
+
 // Generate metadata for the page
-export async function generateMetadata({ params }: { params: { tag: string } }): Promise<Metadata> {
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
     // Await the params object before accessing its properties
-    const resolvedParams = await Promise.resolve(params);
+    const resolvedParams = await params;
     const tag = resolvedParams.tag;
 
     if (!tag) {
@@ -42,9 +49,9 @@ export async function generateStaticParams() {
     }));
 }
 
-export default async function TagPage({ params }: { params: { tag: string } }) {
+export default async function TagPage({ params }: PageProps) {
     // Await the params object before accessing its properties
-    const resolvedParams = await Promise.resolve(params);
+    const resolvedParams = await params;
     const tag = resolvedParams.tag;
 
     if (!tag) {
