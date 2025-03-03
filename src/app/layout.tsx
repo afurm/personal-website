@@ -3,6 +3,7 @@ import { Geist } from 'next/font/google';
 import './globals.css';
 import { ThemeProvider } from '@/components/ui/theme-provider';
 import { StructuredData } from '@/components/ui/structured-data';
+import Script from 'next/script';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -110,6 +111,50 @@ export default function RootLayout({
         <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
         <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)" />
         <meta name="msapplication-TileColor" content="#ffffff" />
+
+        {/* URL Normalization Script - Helps with redirect issues */}
+        <Script
+          id="url-normalization"
+          strategy="beforeInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+              // Handle trailing slashes consistently
+              (function() {
+                var path = window.location.pathname;
+                var href = window.location.href;
+                
+                // If URL has unnecessary index.html, remove it
+                if (path.endsWith('index.html')) {
+                  window.history.replaceState({}, '', path.slice(0, -10) + (path.slice(0, -11).endsWith('/') ? '' : '/'));
+                }
+                
+                // For consistency, we'll add a trailing slash if needed
+                // If the path is not the root and doesn't end with a slash and doesn't have a file extension
+                if (path !== '/' && !path.endsWith('/') && path.lastIndexOf('.') < path.lastIndexOf('/')) {
+                  window.history.replaceState({}, '', href + '/');
+                }
+              })();
+            `,
+          }}
+        />
+
+        {/* Google Analytics Measurement Code */}
+        <Script
+          strategy="afterInteractive"
+          src="https://www.googletagmanager.com/gtag/js?id=G-KW5Y7L8XYV"
+        />
+        <Script
+          id="google-analytics"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'G-KW5Y7L8XYV');
+            `,
+          }}
+        />
       </head>
       <body className={`${geistSans.variable} antialiased`}>
         <ThemeProvider
