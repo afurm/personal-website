@@ -2,5 +2,8 @@
 User-agent: *
 Allow: /
 
+# Host
+Host: https://andriifurmanets.com
+
 # Sitemaps
 Sitemap: https://andriifurmanets.com/sitemap.xml
