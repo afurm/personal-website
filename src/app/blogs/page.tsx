@@ -3,6 +3,7 @@ import { Metadata } from 'next';
 import { getAllBlogPosts, getAllTags } from '../../lib/blog';
 import { formatDate } from '../../lib/utils';
 import Script from 'next/script';
+import TagsFilter from '../../components/ui/TagsFilter';
 
 export const metadata: Metadata = {
     title: 'Blog | My Personal Website',
@@ -55,20 +56,9 @@ export default async function BlogsPage() {
 
             <h1 className="text-4xl font-bold mb-8">Blog</h1>
 
-            {/* Tags filter */}
-            <div className="mb-8">
-                <h2 className="text-xl font-semibold mb-4">Filter by tags</h2>
-                <div className="flex flex-wrap gap-2">
-                    {allTags.map(tag => (
-                        <Link
-                            key={tag}
-                            href={`/blogs/tag/${tag}`}
-                            className="px-3 py-1 bg-gray-100 dark:bg-gray-800 rounded-full text-sm hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
-                        >
-                            {tag}
-                        </Link>
-                    ))}
-                </div>
+            {/* Tags filter - Replace the old implementation with our new component */}
+            <div className="relative">
+                <TagsFilter tags={allTags} baseUrl="/blogs/tag" />
             </div>
 
             {/* Blog posts grid */}
