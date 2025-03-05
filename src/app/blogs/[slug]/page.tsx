@@ -138,8 +138,17 @@ export default async function BlogPostPage({ params }: PageProps) {
                             {readingTime} min read
                         </span>
                     </div>
+                </header>
 
-                    <div className="flex flex-wrap gap-2 mb-8">
+                <div
+                    className="prose prose-lg dark:prose-invert max-w-none"
+                    dangerouslySetInnerHTML={{ __html: post.content }}
+                />
+
+                {/* Tags section moved below the article content */}
+                <div className="mt-8 mb-8">
+                    <h3 className="text-lg font-semibold mb-3">Tags</h3>
+                    <div className="flex flex-wrap gap-2">
                         {post.tags.map(tag => (
                             <Link
                                 key={tag}
@@ -150,12 +159,7 @@ export default async function BlogPostPage({ params }: PageProps) {
                             </Link>
                         ))}
                     </div>
-                </header>
-
-                <div
-                    className="prose prose-lg dark:prose-invert max-w-none"
-                    dangerouslySetInnerHTML={{ __html: post.content }}
-                />
+                </div>
 
                 {relatedPosts.length > 0 && (
                     <div className="mt-16 pt-8 border-t border-gray-200 dark:border-gray-800">

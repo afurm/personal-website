@@ -6,8 +6,6 @@ tags: ["Rails", "Authentication", "Ruby", "Web Development", "Security", "Backen
 slug: "built-in-authentication-in-rails"
 ---
 
-# Built-in Authentication in Rails 8.0 – A Technical Deep Dive and Comparison
-
 Rails 8.0 introduces a **native authentication system** built right into the framework. This new system—added via a generator—provides the fundamental pieces for user login, session management, and password recovery without relying on external gems. In this article, we'll explore Rails 8.0's authentication in depth, compare it with popular gems like Devise and Authlogic, examine its security features and best practices, discuss potential drawbacks, and walk through an implementation guide with code examples.
 
 ## Technical Deep Dive into Rails 8.0's Authentication System

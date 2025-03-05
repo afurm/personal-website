@@ -4,6 +4,7 @@ import { getAllTags, getBlogPostsByTag } from '../../../../lib/blog';
 import { formatDate } from '../../../../lib/utils';
 import { notFound } from 'next/navigation';
 import Script from 'next/script';
+import TagsFilter from '../../../../components/ui/TagsFilter';
 
 // Define the params type to match Next.js expectations
 type PageProps = {
@@ -60,6 +61,7 @@ export default async function TagPage({ params }: PageProps) {
 
     const decodedTag = decodeURIComponent(tag);
     const posts = await getBlogPostsByTag(decodedTag);
+    const allTags = await getAllTags();
 
     if (posts.length === 0) {
         notFound();
@@ -99,7 +101,7 @@ export default async function TagPage({ params }: PageProps) {
 
             <Link
                 href="/blogs"
-                className="inline-flex items-center mb-8 text-sm font-medium text-blue-600 dark:text-blue-400 hover:underline"
+                className="inline-flex items-center mb-6 text-sm font-medium text-blue-600 dark:text-blue-400 hover:underline"
             >
                 <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
@@ -110,6 +112,11 @@ export default async function TagPage({ params }: PageProps) {
             <h1 className="text-4xl font-bold mb-8">
                 Posts tagged with <span className="text-blue-600 dark:text-blue-400">{decodedTag}</span>
             </h1>
+
+            {/* Add TagsFilter component */}
+            <div className="relative mb-8">
+                <TagsFilter tags={allTags} baseUrl="/blogs/tag" />
+            </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {posts.map(post => (
@@ -158,4 +165,4 @@ export default async function TagPage({ params }: PageProps) {
             </div>
         </div>
     );
-} 
+}
