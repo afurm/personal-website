@@ -85,7 +85,7 @@ export default async function BlogsPage() {
                                 </h2>
 
                                 <p className="text-gray-600 dark:text-gray-300 mb-4">
-                                    {post.excerpt}
+                                    {post.description}
                                 </p>
 
                                 <div className="flex flex-wrap gap-2 mt-auto">
