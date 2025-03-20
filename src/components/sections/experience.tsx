@@ -12,33 +12,99 @@ import {
   FaBaby,
 } from 'react-icons/fa';
 
-const experiences = [
+type Experience = {
+  company: string;
+  role: string;
+  period: string;
+  description: string | React.ReactNode;
+  icon: React.ReactNode;
+  side: 'left' | 'right';
+  highlight?: boolean;
+};
+
+const experiences: Experience[] = [
   {
-    company: 'NEAR Protocol',
-    role: 'Senior Software Engineer',
-    period: '2021 - Present',
-    description:
-      'Working on blockchain and Web3 technologies, contributing to the development of decentralized applications and infrastructure.',
+    company: 'FolioFlux',
+    role: 'Founder',
+    period: 'Sep 2024 - Present',
+    description: (
+      <>
+        Designed and developed FolioFlux, an AI-powered crypto portfolio tracking platform. Built the entire application from concept to implementation as the sole developer. Created the UI/UX design, front-end and back-end architecture. Implemented AI-driven analytics features for portfolio optimization. Developed real-time data integration with cryptocurrency exchanges and market data providers.
+        <div className="mt-3 flex flex-wrap gap-2">
+          <a
+            href="https://www.folioflux.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center px-3 py-1 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
+          >
+            🌐 Website: folioflux.com
+          </a>
+          <a
+            href="https://github.com/afurm/porfolio-traker"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center px-3 py-1 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
+          >
+            💻 GitHub: Portfolio Tracker
+          </a>
+          <a
+            href="https://www.linkedin.com/company/folioflux"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center px-3 py-1 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
+          >
+            🔗 LinkedIn: FolioFlux
+          </a>
+        </div>
+      </>
+    ),
     icon: <FaCode className="text-[#00C1DE] text-3xl" />,
     side: 'left',
   },
   {
-    company: 'Chime',
-    role: 'Senior Software Engineer',
-    period: '2019 - 2021',
+    company: 'Intellias: Cloud Data Warehouse Implementation',
+    role: 'Frontend Developer',
+    period: 'Aug 2024 - Present',
     description:
-      'Built and launched a career management advisory UI for a fintech startup, enabling executives to manage career paths more proactively—received 90%+ positive user feedback.',
+      'Architecture & Setup: Established the project from scratch using an Nx monorepo, ensuring a modular and maintainable codebase. Technologies: Built with React and TypeScript for a robust, high-performance front end and leveraged GraphQL for efficient data querying. Key Contributions: Designed reusable components, optimized build processes, and integrated modern development practices to streamline collaboration and accelerate development.',
     icon: <FaChartLine className="text-green-500 text-3xl" />,
     side: 'right',
   },
   {
-    company: 'Intellias',
+    company: 'Near Blockchain',
     role: 'Frontend Developer',
-    period: '2017 - 2019',
+    period: 'Jan 2024 - Aug 2024',
     description:
-      'Led technical decision-making in multiple projects, ensuring scalable, maintainable, and high-performance architecture for banking and finance applications.',
+      'Built slick React components on NEAR\'s Blockchain OS, powering decentralized apps with top-tier security and UX. Led Grassroot DAO pages (near.org/ndcdev.near/widget/daos.App), delivering report/proposal features for real-time governance.',
     icon: <FaLaptopCode className="text-blue-500 text-3xl" />,
     side: 'left',
+  },
+  {
+    company: 'Intellias: Fintech Project',
+    role: 'Frontend Developer',
+    period: 'Nov 2021 - Dec 2023',
+    description:
+      'Owned end-to-end development of a Next.js-powered fintech site, driving seamless equity and bond trading for users. Partnered with designers to craft intuitive UI, cutting user onboarding time by 25%. Managed production rollouts, ensuring zero-downtime updates under tight deadlines.',
+    icon: <FaServer className="text-purple-500 text-3xl" />,
+    side: 'right',
+  },
+  {
+    company: 'Intellias: Fintech Project (Banking Platform)',
+    role: 'Frontend Developer',
+    period: 'Mar 2021 - Nov 2021',
+    description:
+      'Revamped trading views for an online banking giant, enhancing real-time financial tools with React and Redux.',
+    icon: <FaChartBar className="text-red-500 text-3xl" />,
+    side: 'left',
+  },
+  {
+    company: 'CyberCraft: Career Management Startup',
+    role: 'Frontend Developer',
+    period: 'Aug 2020 - Mar 2021',
+    description:
+      'Launched UI for a startup shaking up executive career paths, using React and Ant Design—solo Ukrainian on the team!',
+    icon: <FaChild className="text-yellow-500 text-3xl" />,
+    side: 'right',
   },
   {
     company: 'Became a Father',
@@ -47,26 +113,26 @@ const experiences = [
     description:
       'Welcomed my child into the world and began the most rewarding journey of my life.',
     icon: <FaBaby className="text-pink-500 text-3xl" />,
-    side: 'right',
+    side: 'left',
     highlight: true,
   },
   {
-    company: 'CyberCraft',
+    company: 'CyberCraft: Continuous Integration Tool',
     role: 'Full-Stack Developer',
-    period: '2015 - 2017',
+    period: 'Jan 2015 - Aug 2020',
     description:
-      'Developed full-stack solutions for startups and career management platforms, focusing on responsive design and user experience.',
-    icon: <FaServer className="text-purple-500 text-3xl" />,
-    side: 'left',
+      'Transformed static pages into dynamic Backbone.js interfaces, slashing test wait times by 10-50x. Redesigned report views with Vue, adding lifecycle steps for real-time build insights. Integrated Okta for SAML auth and user provisioning, leveling up security. Upgraded Rails 3 to 4, keeping the engine humming.',
+    icon: <FaCode className="text-indigo-500 text-3xl" />,
+    side: 'right',
   },
   {
-    company: 'SoftServe',
+    company: 'SoftServe: Reports Render Engine',
     role: 'Backend Developer',
     period: 'Dec 2012 - Jan 2015',
     description:
-      'Crafted a Ruby DSL for healthcare report rendering, turning raw data into actionable charts and tables. Tech: Ruby, Rails, RSpec, Cucumber',
-    icon: <FaChartBar className="text-red-500 text-3xl" />,
-    side: 'right',
+      'Crafted a Ruby DSL for healthcare report rendering, turning raw data into actionable charts and tables.',
+    icon: <FaChartBar className="text-orange-500 text-3xl" />,
+    side: 'left',
   },
 ];
 
