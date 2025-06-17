@@ -23,12 +23,6 @@ const nextConfig: NextConfig = {
         destination: '/blogs/:slug*',
         permanent: true,
       },
-      // Handle trailing slashes - remove them for consistency
-      {
-        source: '/:path*/',
-        destination: '/:path*',
-        permanent: true,
-      },
     ];
   },
 
