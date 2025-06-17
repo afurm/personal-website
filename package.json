@@ -7,10 +7,7 @@
     "build": "next build",
     "postbuild": "next-sitemap",
     "start": "next start",
-    "lint": "next lint",
-    "analyze": "ANALYZE=true next build",
-    "build:analyze": "cross-env ANALYZE=true next build",
-    "preview": "next build && next start"
+    "lint": "next lint"
   },
   "dependencies": {
     "@emailjs/browser": "^4.4.1",
@@ -31,14 +28,11 @@
     "zod": "^3.24.2"
   },
   "devDependencies": {
-    "@next/bundle-analyzer": "^15.3.3",
     "@shadcn/ui": "^0.0.4",
-    "@svgr/webpack": "^8.1.0",
     "@tailwindcss/typography": "^0.5.16",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "cross-env": "^7.0.3",
     "eslint-config-next": "15.1.7",
     "next-sitemap": "^4.2.3",
     "postcss": "^8",
