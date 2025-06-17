@@ -8,6 +8,8 @@ import Script from 'next/script';
 const geistSans = Geist({
   variable: '--font-geist-sans',
   subsets: ['latin'],
+  display: 'swap',
+  preload: true,
 });
 
 export const metadata: Metadata = {
@@ -84,6 +86,17 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
+        {/* Critical Resource Hints */}
+        <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        
+        {/* Preload critical images */}
+        <link rel="preload" href="/icons/react.svg" as="image" type="image/svg+xml" />
+        <link rel="preload" href="/icons/nextjs.svg" as="image" type="image/svg+xml" />
+        <link rel="preload" href="/icons/typescript.svg" as="image" type="image/svg+xml" />
+        <link rel="preload" href="/icons/tailwind.svg" as="image" type="image/svg+xml" />
+
         {/* Favicon - Light Mode */}
         <link rel="icon" href="/favicon.ico" sizes="any" />
         <link
@@ -111,11 +124,23 @@ export default function RootLayout({
         <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
         <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)" />
         <meta name="msapplication-TileColor" content="#ffffff" />
+      </head>
+      <body className={`${geistSans.variable} antialiased`}>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <StructuredData />
+          {children}
+        </ThemeProvider>
 
-        {/* URL Normalization Script - Helps with redirect issues */}
+        {/* Move scripts to after content for better performance */}
+        {/* URL Normalization Script - Non-critical, load after interactive */}
         <Script
           id="url-normalization"
-          strategy="beforeInteractive"
+          strategy="afterInteractive"
           dangerouslySetInnerHTML={{
             __html: `
               // Handle trailing slashes consistently
@@ -138,7 +163,7 @@ export default function RootLayout({
           }}
         />
 
-        {/* Google Analytics Measurement Code */}
+        {/* Google Analytics - Load after interactive to not block rendering */}
         <Script
           strategy="afterInteractive"
           src="https://www.googletagmanager.com/gtag/js?id=G-KW5Y7L8XYV"
@@ -155,17 +180,6 @@ export default function RootLayout({
             `,
           }}
         />
-      </head>
-      <body className={`${geistSans.variable} antialiased`}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <StructuredData />
-          {children}
-        </ThemeProvider>
       </body>
     </html>
   );
