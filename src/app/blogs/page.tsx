@@ -73,7 +73,7 @@ export default async function BlogsPage() {
 
     return (
         <>
-            {/* Add canonical link */}
+            {/* Explicit canonical link for safety */}
             <link rel="canonical" href="https://andriifurmanets.com/blogs" />
             
             <div className="container mx-auto px-4 py-12">

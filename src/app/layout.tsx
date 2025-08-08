@@ -59,7 +59,7 @@ export const metadata: Metadata = {
     siteName: 'Andrii Furmanets Portfolio',
     images: [
       {
-        url: '/og-image.jpg', // You'll need to create this image
+        url: 'https://andriifurmanets.com/opengraph-image',
         width: 1200,
         height: 630,
         alt: 'Andrii Furmanets - Senior Full-Stack Developer',
@@ -71,7 +71,7 @@ export const metadata: Metadata = {
     title: 'Andrii Furmanets - Senior Full-Stack Developer',
     description:
       'Expert in React, TypeScript, Next.js & Ruby on Rails. Specializing in fintech and Web3 solutions.',
-    images: ['/og-image.jpg'], // Same image as OpenGraph
+    images: ['https://andriifurmanets.com/twitter-image'],
     creator: '@andriifurmanets', // Replace with your Twitter handle if you have one
   },
 };
@@ -112,31 +112,7 @@ export default function RootLayout({
         <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)" />
         <meta name="msapplication-TileColor" content="#ffffff" />
 
-        {/* URL Normalization Script - Helps with redirect issues */}
-        <Script
-          id="url-normalization"
-          strategy="beforeInteractive"
-          dangerouslySetInnerHTML={{
-            __html: `
-              // Handle trailing slashes consistently
-              (function() {
-                var path = window.location.pathname;
-                var href = window.location.href;
-                
-                // If URL has unnecessary index.html, remove it
-                if (path.endsWith('index.html')) {
-                  window.history.replaceState({}, '', path.slice(0, -10) + (path.slice(0, -11).endsWith('/') ? '' : '/'));
-                }
-                
-                // For consistency, we'll add a trailing slash if needed
-                // If the path is not the root and doesn't end with a slash and doesn't have a file extension
-                if (path !== '/' && !path.endsWith('/') && path.lastIndexOf('.') < path.lastIndexOf('/')) {
-                  window.history.replaceState({}, '', href + '/');
-                }
-              })();
-            `,
-          }}
-        />
+        {/* Removed client-side URL normalization to avoid soft redirects. Canonical host and URL are enforced via middleware and server redirects. */}
 
         {/* Google Analytics Measurement Code */}
         <Script

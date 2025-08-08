@@ -27,16 +27,27 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
     const decodedTag = decodeURIComponent(tag);
 
+    const encodedTag = encodeURIComponent(decodedTag.toLowerCase());
+
     return {
-        title: `${decodedTag} Blog Posts | My Personal Website`,
+        title: `${decodedTag} Articles | Andrii Furmanets`,
         description: `Browse all blog posts related to ${decodedTag}.`,
         openGraph: {
-            title: `${decodedTag} Blog Posts | My Personal Website`,
+            title: `${decodedTag} Articles | Andrii Furmanets`,
             description: `Browse all blog posts related to ${decodedTag}.`,
             type: 'website',
+            url: `https://andriifurmanets.com/blogs/tag/${encodedTag}`,
         },
         alternates: {
-            canonical: `https://andriifurmanets.com/blogs/tag/${tag}`,
+            canonical: `https://andriifurmanets.com/blogs/tag/${encodedTag}`,
+        },
+        robots: {
+            index: false,
+            follow: true,
+            googleBot: {
+                index: false,
+                follow: true,
+            },
         },
     };
 }
@@ -60,6 +71,7 @@ export default async function TagPage({ params }: PageProps) {
     }
 
     const decodedTag = decodeURIComponent(tag);
+    const encodedCanonical = encodeURIComponent(decodedTag.toLowerCase());
     const posts = await getBlogPostsByTag(decodedTag);
     const allTags = await getAllTags();
 
@@ -73,7 +85,7 @@ export default async function TagPage({ params }: PageProps) {
         '@type': 'CollectionPage',
         headline: `${decodedTag} Blog Posts | My Personal Website`,
         description: `Browse all blog posts related to ${decodedTag}.`,
-        url: `https://andriifurmanets.com/blogs/tag/${tag}`,
+        url: `https://andriifurmanets.com/blogs/tag/${encodedCanonical}`,
         author: {
             '@type': 'Person',
             name: 'Andrii Furmanets',
