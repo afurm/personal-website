@@ -49,12 +49,21 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
             url: canonicalUrl,
             siteName: 'Andrii Furmanets',
             authors: ['Andrii Furmanets'],
+            images: [
+                {
+                    url: 'https://andriifurmanets.com/opengraph-image',
+                    width: 1200,
+                    height: 630,
+                    alt: post.title,
+                },
+            ],
         },
         twitter: {
             card: 'summary_large_image',
             title: post.title,
             description: post.description,
             creator: '@andriifurmanets',
+            images: ['https://andriifurmanets.com/twitter-image'],
         },
         alternates: {
             canonical: canonicalUrl,
