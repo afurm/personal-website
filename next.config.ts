@@ -2,7 +2,6 @@ import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
-  trailingSlash: false,
   eslint: {
     // Warning: This allows production builds to successfully complete even if
     // your project has ESLint errors.
@@ -22,18 +21,6 @@ const nextConfig: NextConfig = {
       {
         source: '/blog/:slug*',
         destination: '/blogs/:slug*',
-        permanent: true,
-      },
-      // Force non-www to www or vice versa. We will normalize to non-www here
-      {
-        source: '/:path*',
-        has: [
-          {
-            type: 'host',
-            value: 'www.andriifurmanets.com',
-          },
-        ],
-        destination: 'https://andriifurmanets.com/:path*',
         permanent: true,
       },
     ];
