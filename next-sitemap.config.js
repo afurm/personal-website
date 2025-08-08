@@ -1,7 +1,7 @@
 /** @type {import('next-sitemap').IConfig} */
 module.exports = {
   siteUrl: 'https://andriifurmanets.com',
-  generateRobotsTxt: false,
+  generateRobotsTxt: true,
   robotsTxtOptions: {
     policies: [
       {
@@ -11,7 +11,7 @@ module.exports = {
       },
     ],
   },
-  exclude: ['/404', '/500', '/api/*', '/blogs/tag/*'],
+  exclude: ['/404', '/500', '/api/*'],
   generateIndexSitemap: false,
   outDir: 'public',
   changefreq: 'monthly',
@@ -20,8 +20,7 @@ module.exports = {
   transform: async (config, path) => {
     // Custom transform function to ensure proper URL formatting
     return {
-      // Ensure absolute URL in <loc>
-      loc: `${config.siteUrl}${path}`,
+      loc: path,
       changefreq: config.changefreq,
       priority: config.priority,
       lastmod: config.autoLastmod ? new Date().toISOString() : undefined,
