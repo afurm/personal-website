@@ -7,7 +7,7 @@ export default function BlogsLayout({
     children: React.ReactNode;
 }) {
     return (
-        <div className="flex min-h-screen flex-col">
+        <div className="glass flex min-h-screen flex-col">
             <Header />
             <main className="flex-1">
                 {children}
@@ -15,4 +15,4 @@ export default function BlogsLayout({
             <Footer />
         </div>
     );
-} 
+}
