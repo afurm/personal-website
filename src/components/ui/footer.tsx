@@ -7,7 +7,7 @@ export function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="border-t border-gray-200 dark:border-gray-800 bg-background">
+    <footer className="border-t border-border bg-background">
       <div className="container py-8 md:py-12">
         <div className="flex flex-col md:flex-row justify-between items-center">
           <div className="mb-4 md:mb-0">
@@ -20,7 +20,7 @@ export function Footer() {
               href="https://linkedin.com/in/andrii-furmanets-1a5b6452/"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-muted-foreground hover:text-primary"
+              className="text-muted-foreground hover:text-accent-blue transition-colors duration-200"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -44,7 +44,7 @@ export function Footer() {
               href="https://github.com/afurm"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-muted-foreground hover:text-primary"
+              className="text-muted-foreground hover:text-accent-blue transition-colors duration-200"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -65,7 +65,7 @@ export function Footer() {
             </Link>
             <Link
               href="mailto:furmanets.andriy@gmail.com"
-              className="text-muted-foreground hover:text-primary"
+              className="text-muted-foreground hover:text-accent-blue transition-colors duration-200"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"

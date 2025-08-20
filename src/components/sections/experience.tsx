@@ -164,7 +164,7 @@ export function Experience() {
           transition={{ duration: 0.5 }}
           className="spacing-heading"
         >
-          <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl text-center text-gradient-hover">
+          <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl text-center text-gradient-glass">
             Career Timeline
           </h2>
         </motion.div>
@@ -173,7 +173,7 @@ export function Experience() {
           {/* Animated timeline line for desktop */}
           <div className="hidden md:block absolute left-1/2 transform -translate-x-1/2 h-full w-0.5 bg-border/30"></div>
           <motion.div 
-            className="hidden md:block absolute left-1/2 transform -translate-x-1/2 w-0.5 bg-gradient-to-b from-primary to-accent-blue origin-top"
+            className="hidden md:block absolute left-1/2 transform -translate-x-1/2 w-0.5 bg-accent-blue origin-top"
             style={{ 
               scaleY: timelineProgress,
               height: '100%'
@@ -183,7 +183,7 @@ export function Experience() {
           {/* Animated timeline line for mobile */}
           <div className="md:hidden absolute left-6 top-0 h-full w-0.5 bg-border/30"></div>
           <motion.div 
-            className="md:hidden absolute left-6 top-0 w-0.5 bg-gradient-to-b from-primary to-accent-blue origin-top"
+            className="md:hidden absolute left-6 top-0 w-0.5 bg-accent-blue origin-top"
             style={{ 
               scaleY: timelineProgress,
               height: '100%'
@@ -213,7 +213,7 @@ export function Experience() {
                 {/* Left-aligned icon for mobile */}
                 <div className="relative">
                   <div
-                    className={`flex items-center justify-center w-12 h-12 rounded-full ${exp.highlight ? 'bg-pink-100 border-pink-300 dark:bg-pink-950 dark:border-pink-800' : 'bg-card border-border'} border shadow-sm z-10`}
+                    className={`flex items-center justify-center w-12 h-12 rounded-full ${exp.highlight ? 'glass-light border-accent-blue/30' : 'glass'} border shadow-glass z-10`}
                   >
                     {exp.icon}
                   </div>
@@ -222,19 +222,19 @@ export function Experience() {
                 {/* Content for mobile */}
                 <div className="flex-1 ml-6">
                   <motion.div
-                    className={`rounded-xl border cursor-pointer transition-all duration-300 ${
+                    className={`glass-card rounded-2xl cursor-pointer transition-all duration-300 ${
                       exp.highlight 
-                        ? 'border-primary/30 bg-gradient-to-br from-primary/5 to-accent-blue/5' 
-                        : 'border-border bg-card hover:border-primary/20'
-                    } p-6 shadow-sm hover:shadow-lg ${
-                      isExpanded ? 'ring-2 ring-primary/30' : ''
+                        ? 'glass-light shadow-glass-lg' 
+                        : 'glass hover:glass-light'
+                    } p-6 ${
+                      isExpanded ? 'ring-2 ring-accent-blue/30' : ''
                     }`}
                     onClick={() => setExpandedCard(isExpanded ? null : index)}
                     whileHover={{ y: -2 }}
                     layout
                   >
                     <div className="flex justify-between items-start mb-2">
-                      <h3 className={`text-xl font-bold ${exp.highlight ? 'text-primary' : ''}`}>
+                      <h3 className={`text-xl font-bold ${exp.highlight ? 'text-accent-blue' : ''}`}>
                         {exp.company}
                       </h3>
                       <div className="flex items-center gap-2">
@@ -255,7 +255,7 @@ export function Experience() {
                       {exp.achievements && (
                         <div className="mb-4">
                           <h4 className="font-semibold text-sm mb-2 flex items-center gap-2">
-                            <FaAward className="text-primary" /> Key Achievements
+                            <FaAward className="text-accent-blue" /> Key Achievements
                           </h4>
                           <ul className="space-y-1">
                             {exp.achievements.map((achievement, i) => (
@@ -273,7 +273,7 @@ export function Experience() {
                           <h4 className="font-semibold text-sm mb-2">Technologies Used</h4>
                           <div className="flex flex-wrap gap-1">
                             {exp.technologies.map((tech, i) => (
-                              <span key={i} className="text-xs bg-primary/10 text-primary px-2 py-1 rounded-full">
+                              <span key={i} className="text-xs glass text-accent-blue px-2 py-1 rounded-full">
                                 {tech}
                               </span>
                             ))}
@@ -289,7 +289,7 @@ export function Experience() {
                               href={link.href}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="inline-flex items-center px-3 py-1 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors text-xs"
+                              className="glass-button inline-flex items-center px-3 py-1 rounded-full text-accent-blue hover:glass-light transition-all duration-200 text-xs"
                             >
                               {link.label}
                             </a>
@@ -306,11 +306,11 @@ export function Experience() {
                 className={`hidden md:block w-full md:w-5/12 ${exp.side === 'right' && 'md:order-1'}`}
               >
                 <div
-                  className={`rounded-lg border ${exp.highlight ? 'border-pink-300 bg-pink-50 dark:bg-pink-950/20 dark:border-pink-800' : 'border-border bg-card'} p-6 shadow-sm ${exp.highlight ? 'ring-2 ring-pink-300 dark:ring-pink-800' : ''}`}
+                  className={`glass-card rounded-2xl ${exp.highlight ? 'glass-light shadow-glass-lg' : 'glass'} p-6 ${exp.highlight ? 'ring-2 ring-accent-blue/30' : ''}`}
                 >
                   <div className="flex justify-between items-start mb-2">
                     <h3
-                      className={`text-xl font-bold ${exp.highlight ? 'text-pink-600 dark:text-pink-400' : ''}`}
+                      className={`text-xl font-bold ${exp.highlight ? 'text-accent-blue' : ''}`}
                     >
                       {exp.company}
                     </h3>
@@ -323,7 +323,7 @@ export function Experience() {
 
               {/* Desktop icon - hidden on mobile, visible on md and up */}
               <div
-                className={`hidden md:flex absolute left-1/2 transform -translate-x-1/2 items-center justify-center w-12 h-12 rounded-full ${exp.highlight ? 'bg-pink-100 border-pink-300 dark:bg-pink-950 dark:border-pink-800' : 'bg-card border-border'} border shadow-sm z-10`}
+                className={`hidden md:flex absolute left-1/2 transform -translate-x-1/2 items-center justify-center w-12 h-12 rounded-full ${exp.highlight ? 'glass-light border-accent-blue/30' : 'glass'} border shadow-glass z-10`}
               >
                 {exp.icon}
               </div>

@@ -38,7 +38,7 @@ export function Education() {
           className="flex flex-col items-center justify-center spacing-gap text-center spacing-heading"
         >
           <div className="space-y-2">
-            <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl text-gradient-hover">
+            <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl text-gradient-glass">
               Education & Certifications
             </h2>
             <p className="mx-auto max-w-[700px] text-muted-foreground md:text-xl">
@@ -64,7 +64,7 @@ export function Education() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.3, delay: index * 0.1 }}
-                  className="card-hover-effect card-gradient-border spotlight-effect rounded-lg p-6 shadow-sm"
+                  className="glass-card glass-shimmer rounded-2xl p-6 shadow-glass hover:shadow-glass-lg"
                 >
                   <div className="flex flex-col space-y-2">
                     <h4 className="font-bold">{item.degree}</h4>
@@ -95,14 +95,14 @@ export function Education() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.3, delay: index * 0.1 }}
-                  className="card-hover-effect card-3d-tilt rounded-lg border border-border bg-card p-4 shadow-sm"
+                  className="glass-card rounded-2xl p-4 shadow-glass hover:shadow-glass-lg"
                 >
                   <div className="flex items-center justify-between">
                     <div>
                       <h4 className="font-medium">{cert.title}</h4>
                       <p className="text-sm text-muted-foreground">{cert.issuer}</p>
                     </div>
-                    <div className="rounded-full bg-secondary px-3 py-1 text-xs font-medium">
+                    <div className="rounded-full glass px-3 py-1 text-xs font-medium">
                       {cert.year}
                     </div>
                   </div>

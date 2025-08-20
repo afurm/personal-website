@@ -28,39 +28,39 @@ export function Hero() {
   const y3 = useTransform(scrollY, [0, 1000], [0, -300]);
 
   return (
-    <section className="spacing-section relative overflow-hidden bg-gradient-to-br from-slate-50 via-blue-50 to-purple-50 dark:from-slate-950 dark:via-blue-950 dark:to-purple-950">
-      {/* Animated gradient mesh background with parallax */}
+    <section className="spacing-section relative overflow-hidden bg-gradient-to-br from-white via-gray-50 to-gray-100 dark:from-gray-950 dark:via-black dark:to-gray-900">
+      {/* Subtle glass orbs background with parallax */}
       <motion.div className="absolute inset-0 overflow-hidden" style={{ y: y3 }}>
-        <div className="absolute top-0 -left-4 w-72 h-72 bg-gradient-to-br from-purple-400/30 to-pink-600/30 rounded-full mix-blend-multiply filter blur-xl animate-blob"></div>
-        <div className="absolute top-0 -right-4 w-72 h-72 bg-gradient-to-bl from-cyan-400/30 to-blue-600/30 rounded-full mix-blend-multiply filter blur-xl animate-blob animation-delay-2000"></div>
-        <div className="absolute -bottom-8 left-20 w-72 h-72 bg-gradient-to-tr from-purple-500/30 to-indigo-600/30 rounded-full mix-blend-multiply filter blur-xl animate-blob animation-delay-4000"></div>
+        <div className="absolute top-0 -left-4 w-72 h-72 bg-gradient-to-br from-gray-200/20 to-gray-400/10 rounded-full filter blur-2xl animate-blob floating-glass"></div>
+        <div className="absolute top-0 -right-4 w-72 h-72 bg-gradient-to-bl from-gray-300/15 to-gray-500/10 rounded-full filter blur-2xl animate-blob animation-delay-2000 floating-glass"></div>
+        <div className="absolute -bottom-8 left-20 w-72 h-72 bg-gradient-to-tr from-gray-400/10 to-gray-600/15 rounded-full filter blur-2xl animate-blob animation-delay-4000 floating-glass"></div>
       </motion.div>
       
-      {/* Floating geometric elements with parallax */}
+      {/* Minimal floating glass elements with parallax */}
       <motion.div className="absolute inset-0 overflow-hidden pointer-events-none" style={{ y: y1 }}>
         <motion.div
           initial={{ x: -100, y: 100, rotate: 0 }}
           animate={{ x: 100, y: -100, rotate: 360 }}
           transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-          className="absolute top-1/4 left-1/4 w-6 h-6 bg-gradient-to-r from-purple-400 to-blue-400 rounded-full opacity-20"
+          className="absolute top-1/4 left-1/4 w-6 h-6 glass-medium rounded-full opacity-30"
         />
         <motion.div
           initial={{ x: 100, y: -50, rotate: 0 }}
           animate={{ x: -50, y: 100, rotate: -360 }}
           transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
-          className="absolute top-3/4 right-1/3 w-4 h-4 bg-gradient-to-r from-cyan-400 to-purple-400 transform rotate-45 opacity-20"
+          className="absolute top-3/4 right-1/3 w-4 h-4 glass-light transform rotate-45 opacity-25"
         />
         <motion.div
           initial={{ x: 0, y: 0, rotate: 0 }}
           animate={{ x: 80, y: -60, rotate: 180 }}
           transition={{ duration: 18, repeat: Infinity, ease: "linear" }}
-          className="absolute top-1/2 right-1/4 w-3 h-3 bg-gradient-to-r from-pink-400 to-indigo-400 rounded-full opacity-25"
+          className="absolute top-1/2 right-1/4 w-3 h-3 glass rounded-full opacity-35"
         />
         <motion.div
           initial={{ x: 50, y: -80, rotate: 0 }}
           animate={{ x: -100, y: 50, rotate: 270 }}
           transition={{ duration: 22, repeat: Infinity, ease: "linear" }}
-          className="absolute top-1/3 left-1/2 w-5 h-5 bg-gradient-to-r from-blue-400 to-purple-400 transform rotate-12 opacity-15"
+          className="absolute top-1/3 left-1/2 w-5 h-5 glass-dark transform rotate-12 opacity-20"
         />
       </motion.div>
       <motion.div className="container spacing-container relative z-10" style={{ y: y2 }}>
@@ -72,10 +72,10 @@ export function Hero() {
             className="flex flex-col justify-center spacing-gap"
           >
             <div className="spacing-gap-sm flex flex-col">
-              <h1 className="text-4xl font-bold tracking-tight sm:text-6xl lg:text-7xl xl:text-8xl text-gradient-animated">
+              <h1 className="text-4xl font-bold tracking-tight sm:text-6xl lg:text-7xl xl:text-8xl text-gradient-glass">
                 Andrii Furmanets
               </h1>
-              <div className="text-xl sm:text-2xl lg:text-3xl font-medium text-muted-foreground/90">
+              <div className="text-xl sm:text-2xl lg:text-3xl font-medium text-muted-foreground">
                 <TypewriterText
                   texts={[
                     'Full-Stack Developer',
@@ -91,7 +91,7 @@ export function Hero() {
                 />
               </div>
             </div>
-            <p className="max-w-[600px] text-base sm:text-lg lg:text-xl text-muted-foreground/80 leading-relaxed">
+            <p className="max-w-[600px] text-base sm:text-lg lg:text-xl text-muted-foreground leading-relaxed">
               A highly skilled Senior Full-Stack Developer with expertise in React, TypeScript, and
               Next.js for frontend and Ruby on Rails for backend solutions. Adept at crafting
               high-performance applications for fintech, Web3, and healthcare industries, delivering
@@ -105,10 +105,9 @@ export function Hero() {
               >
                 <Link
                   href="#contact"
-                  className="group relative inline-flex h-12 items-center justify-center rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 px-8 text-sm font-semibold text-white shadow-lg transition-all duration-200 hover:shadow-xl hover:shadow-purple-500/25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 w-full sm:w-auto overflow-hidden"
+                  className="glass-button group relative inline-flex h-12 items-center justify-center rounded-2xl bg-black dark:bg-white px-8 text-sm font-semibold text-white dark:text-black shadow-glass transition-all duration-300 hover:shadow-glass-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 w-full sm:w-auto overflow-hidden"
                 >
                   <span className="relative z-10">Start a Project</span>
-                  <div className="absolute inset-0 bg-gradient-to-r from-purple-700 to-blue-700 opacity-0 transition-opacity duration-200 group-hover:opacity-100" />
                 </Link>
               </motion.div>
               <motion.div
@@ -120,7 +119,7 @@ export function Hero() {
                   href="/Andrii Furmanets Full-Stack React_Ruby on Rails.pdf"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group inline-flex h-12 items-center justify-center rounded-xl border-2 border-border bg-background/50 backdrop-blur-sm px-8 text-sm font-semibold transition-all duration-200 hover:bg-background hover:shadow-lg hover:border-purple-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 w-full sm:w-auto"
+                  className="glass group inline-flex h-12 items-center justify-center rounded-2xl px-8 text-sm font-semibold transition-all duration-300 hover:shadow-glass focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 w-full sm:w-auto"
                 >
                   <span className="mr-2">Download Resume</span>
                   <svg className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -182,22 +181,17 @@ export function Hero() {
                     transformStyle: "preserve-3d",
                     perspective: "1000px"
                   }}
-                  className="group relative flex flex-col items-center justify-center space-y-2 rounded-lg border border-border bg-card p-3 shadow-sm hover:shadow-lg hover:border-primary/30 transition-all duration-300 cursor-pointer overflow-hidden"
+                  className="glass-card glass-shimmer group relative flex flex-col items-center justify-center space-y-2 rounded-2xl p-3 shadow-glass transition-all duration-300 cursor-pointer overflow-hidden"
                 >
-                  {/* Glow effect on hover */}
-                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-accent-blue/10 rounded-lg blur-xl" />
-                  </div>
-                  
                   <div className="relative h-10 w-10 group-hover:scale-110 transition-transform duration-300">
                     <TechIcon name={tech.name} icon={tech.icon} />
                   </div>
                   <div className="text-center text-xs font-medium relative z-10">{tech.name}</div>
                   
                   {/* Proficiency bar */}
-                  <div className="w-full bg-secondary/50 rounded-full h-1 relative z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <div className="w-full bg-muted/30 rounded-full h-1 relative z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                     <motion.div
-                      className="h-1 bg-gradient-to-r from-primary to-accent-blue rounded-full"
+                      className="h-1 bg-gradient-to-r from-foreground to-accent-blue rounded-full"
                       initial={{ width: 0 }}
                       whileInView={{ width: `${tech.proficiency}%` }}
                       transition={{ duration: 1, delay: index * 0.1 }}

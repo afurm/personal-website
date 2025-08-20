@@ -68,7 +68,7 @@ export function Contact() {
           className="flex flex-col items-center justify-center spacing-gap text-center spacing-heading"
         >
           <div className="space-y-2">
-            <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl text-gradient-hover">
+            <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl text-gradient-glass">
               Get In Touch
             </h2>
             <p className="mx-auto max-w-[700px] text-muted-foreground md:text-xl">
@@ -177,7 +177,7 @@ export function Contact() {
                 </div>
               </div>
             </div>
-            <div className="rounded-lg border border-border p-4">
+            <div className="glass rounded-2xl p-4">
               <h4 className="font-medium">Location</h4>
               <p className="mt-1 text-sm text-muted-foreground">Lviv, Ukraine</p>
             </div>
@@ -195,7 +195,7 @@ export function Contact() {
                 initial={{ opacity: 0, scale: 0.8, y: 20 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                className="relative rounded-2xl border border-primary/20 bg-gradient-to-br from-primary/5 to-accent-blue/5 p-8 text-center shadow-lg backdrop-blur-sm overflow-hidden"
+                className="glass-card relative rounded-2xl p-8 text-center shadow-glass-lg overflow-hidden"
               >
                 {/* Background Effect */}
                 <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-accent-blue/10 animate-pulse" />
@@ -205,7 +205,7 @@ export function Contact() {
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
                   transition={{ delay: 0.2, type: "spring", stiffness: 400, damping: 10 }}
-                  className="relative z-10 mx-auto w-16 h-16 bg-gradient-to-br from-primary to-accent-blue rounded-full flex items-center justify-center mb-4"
+                  className="relative z-10 mx-auto w-16 h-16 bg-black dark:bg-white rounded-full flex items-center justify-center mb-4"
                 >
                   <motion.svg
                     initial={{ pathLength: 0 }}
@@ -215,11 +215,11 @@ export function Contact() {
                     height="24"
                     viewBox="0 0 24 24"
                     fill="none"
-                    stroke="white"
+                    stroke="currentColor"
                     strokeWidth="3"
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    className="w-8 h-8"
+                    className="w-8 h-8 text-white dark:text-black"
                   >
                     <polyline points="20 6 9 17 4 12" />
                   </motion.svg>
@@ -253,7 +253,7 @@ export function Contact() {
                     setIsSubmitted(false);
                     reset();
                   }}
-                  className="relative z-10 inline-flex h-12 items-center justify-center rounded-xl bg-gradient-to-r from-primary to-accent-blue px-8 text-sm font-semibold text-white shadow-lg transition-all duration-200 hover:shadow-xl hover:shadow-primary/25"
+                  className="glass-button relative z-10 inline-flex h-12 items-center justify-center rounded-2xl bg-black dark:bg-white px-8 text-sm font-semibold text-white dark:text-black shadow-glass transition-all duration-300 hover:shadow-glass-lg"
                 >
                   Send Another Message
                 </motion.button>
@@ -265,7 +265,7 @@ export function Contact() {
                   <input
                     id="name"
                     {...register('name')}
-                    className="peer w-full h-14 px-4 pt-6 pb-2 text-sm bg-card/50 backdrop-blur-sm border-2 border-border rounded-xl focus:border-primary focus:outline-none transition-all duration-200 placeholder-transparent hover:border-border/80"
+                    className="peer w-full h-14 px-4 pt-6 pb-2 text-sm glass border-2 border-transparent focus:border-primary focus:outline-none transition-all duration-200 placeholder-transparent hover:border-white/20 dark:hover:border-white/10 rounded-2xl"
                     placeholder="Your name"
                   />
                   <label
@@ -295,7 +295,7 @@ export function Contact() {
                     id="email"
                     type="email"
                     {...register('email')}
-                    className="peer w-full h-14 px-4 pt-6 pb-2 text-sm bg-card/50 backdrop-blur-sm border-2 border-border rounded-xl focus:border-primary focus:outline-none transition-all duration-200 placeholder-transparent hover:border-border/80"
+                    className="peer w-full h-14 px-4 pt-6 pb-2 text-sm glass border-2 border-transparent focus:border-primary focus:outline-none transition-all duration-200 placeholder-transparent hover:border-white/20 dark:hover:border-white/10 rounded-2xl"
                     placeholder="Your email address"
                   />
                   <label
@@ -324,7 +324,7 @@ export function Contact() {
                   <textarea
                     id="message"
                     {...register('message')}
-                    className="peer w-full min-h-[140px] px-4 pt-8 pb-4 text-sm bg-card/50 backdrop-blur-sm border-2 border-border rounded-xl focus:border-primary focus:outline-none transition-all duration-200 placeholder-transparent hover:border-border/80 resize-none"
+                    className="peer w-full min-h-[140px] px-4 pt-8 pb-4 text-sm glass border-2 border-transparent focus:border-primary focus:outline-none transition-all duration-200 placeholder-transparent hover:border-white/20 dark:hover:border-white/10 resize-none rounded-2xl"
                     placeholder="Your message"
                   />
                   <label
@@ -370,7 +370,7 @@ export function Contact() {
                   disabled={isSubmitting}
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  className="group relative inline-flex h-14 w-full items-center justify-center rounded-xl bg-gradient-to-r from-primary to-accent-blue px-8 text-sm font-semibold text-white shadow-lg transition-all duration-300 hover:shadow-xl hover:shadow-primary/25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 overflow-hidden"
+                  className="glass-button group relative inline-flex h-14 w-full items-center justify-center rounded-2xl bg-black dark:bg-white px-8 text-sm font-semibold text-white dark:text-black shadow-glass transition-all duration-300 hover:shadow-glass-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 overflow-hidden"
                 >
                   {/* Background Glow Effect */}
                   <div className="absolute inset-0 bg-gradient-to-r from-primary to-accent-blue opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-lg" />

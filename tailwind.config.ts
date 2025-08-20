@@ -42,13 +42,15 @@ export default {
         'accent-blue': {
           DEFAULT: 'hsl(var(--accent-blue))',
           50: 'hsl(var(--accent-blue-50))',
+          100: 'hsl(var(--accent-blue-100))',
           500: 'hsl(var(--accent-blue-500))',
           600: 'hsl(var(--accent-blue-600))',
         },
-        'accent-pink': {
-          DEFAULT: 'hsl(var(--accent-pink))',
-          50: 'hsl(var(--accent-pink-50))',
-          500: 'hsl(var(--accent-pink-500))',
+        glass: {
+          white: 'hsl(var(--glass-white))',
+          light: 'hsl(var(--glass-light))',
+          medium: 'hsl(var(--glass-medium))',
+          dark: 'hsl(var(--glass-dark))',
         },
         secondary: {
           DEFAULT: 'hsl(var(--secondary))',

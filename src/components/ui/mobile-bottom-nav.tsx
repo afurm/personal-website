@@ -104,7 +104,7 @@ export function MobileBottomNav() {
     >
       <motion.nav
         layout
-        className="bg-card/95 backdrop-blur-xl border border-border rounded-2xl shadow-xl px-2 py-3 mx-auto max-w-sm"
+        className="glass-light rounded-2xl shadow-glass-lg px-2 py-3 mx-auto max-w-sm"
       >
         <div className="flex items-center justify-between">
           {/* Navigation Items */}
@@ -125,8 +125,8 @@ export function MobileBottomNav() {
                     onClick={() => handleNavClick(item.href, item.section)}
                     className={`relative flex flex-col items-center justify-center p-3 rounded-xl transition-all duration-200 min-h-[48px] min-w-[48px] ${
                       isActive 
-                        ? 'bg-primary text-primary-foreground shadow-lg' 
-                        : 'text-muted-foreground hover:text-foreground hover:bg-secondary/50'
+                        ? 'bg-black dark:bg-white text-white dark:text-black shadow-glass' 
+                        : 'text-muted-foreground hover:text-foreground hover:glass-medium'
                     }`}
                     aria-label={item.label}
                   >
@@ -139,7 +139,7 @@ export function MobileBottomNav() {
                     {isActive && (
                       <motion.div
                         layoutId="activeIndicator"
-                        className="absolute -top-1 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-primary-foreground rounded-full"
+                        className="absolute -top-1 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-white dark:bg-black rounded-full"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ duration: 0.2 }}
@@ -156,7 +156,7 @@ export function MobileBottomNav() {
             <motion.button
               whileTap={{ scale: 0.9 }}
               onClick={() => setIsExpanded(!isExpanded)}
-              className="flex flex-col items-center justify-center p-3 rounded-xl text-muted-foreground hover:text-foreground hover:bg-secondary/50 transition-colors min-h-[48px] min-w-[48px] ml-1"
+              className="flex flex-col items-center justify-center p-3 rounded-xl text-muted-foreground hover:text-foreground hover:glass-medium transition-all duration-200 min-h-[48px] min-w-[48px] ml-1"
               aria-label={isExpanded ? "Show less" : "Show more"}
             >
               {isExpanded ? (
@@ -182,7 +182,7 @@ export function MobileBottomNav() {
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.3 }}
-              className="flex items-center justify-center gap-1 pt-3 mt-3 border-t border-border"
+              className="flex items-center justify-center gap-1 pt-3 mt-3 border-t border-white/20 dark:border-white/10"
             >
               {navigationItems.slice(4).map((item) => {
                 const isActive = activeSection === item.section;
@@ -198,8 +198,8 @@ export function MobileBottomNav() {
                     onClick={() => handleNavClick(item.href, item.section)}
                     className={`relative flex flex-col items-center justify-center p-3 rounded-xl transition-all duration-200 min-h-[48px] min-w-[48px] ${
                       isActive 
-                        ? 'bg-primary text-primary-foreground shadow-lg' 
-                        : 'text-muted-foreground hover:text-foreground hover:bg-secondary/50'
+                        ? 'bg-black dark:bg-white text-white dark:text-black shadow-glass' 
+                        : 'text-muted-foreground hover:text-foreground hover:glass-medium'
                     }`}
                     aria-label={item.label}
                   >
@@ -211,7 +211,7 @@ export function MobileBottomNav() {
                     {isActive && (
                       <motion.div
                         layoutId="activeIndicatorExpanded"
-                        className="absolute -top-1 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-primary-foreground rounded-full"
+                        className="absolute -top-1 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-white dark:bg-black rounded-full"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ duration: 0.2 }}

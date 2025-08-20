@@ -72,7 +72,7 @@ export function Header() {
       >
         <div className={`container mx-auto transition-all duration-300 ${
           isScrolled 
-            ? 'rounded-2xl border border-white/20 bg-white/80 shadow-xl shadow-black/5 backdrop-blur-xl dark:border-white/10 dark:bg-black/80 dark:shadow-white/5' 
+            ? 'rounded-2xl glass-light shadow-glass-lg' 
             : 'rounded-none border-transparent bg-transparent backdrop-blur-none'
         }`}>
           <div className="flex h-16 items-center justify-between px-6">
@@ -83,7 +83,7 @@ export function Header() {
             >
               <Link 
                 href="/" 
-                className="font-bold text-xl bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent hover:from-purple-600 hover:to-blue-600 transition-all duration-300"
+                className="font-bold text-xl text-foreground hover:text-accent-blue transition-all duration-300"
               >
                 Andrii Furmanets
               </Link>
@@ -106,7 +106,7 @@ export function Header() {
                 >
                   {item.label}
                   <motion.div
-                    className="absolute -bottom-1 left-0 h-0.5 bg-gradient-to-r from-purple-500 to-blue-500 opacity-0 group-hover:opacity-100"
+                    className="absolute -bottom-1 left-0 h-0.5 bg-accent-blue opacity-0 group-hover:opacity-100"
                     initial={{ width: 0 }}
                     whileHover={{ width: '100%' }}
                     transition={{ duration: 0.2 }}
@@ -124,7 +124,7 @@ export function Header() {
               >
                 <Link
                   href={getNavLink('contact')}
-                  className="inline-flex h-10 items-center justify-center rounded-full bg-gradient-to-r from-purple-600 to-blue-600 px-6 text-sm font-semibold text-white shadow-lg transition-all duration-200 hover:shadow-xl hover:shadow-purple-500/25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-2"
+                  className="glass-button inline-flex h-10 items-center justify-center rounded-full bg-black dark:bg-white px-6 text-sm font-semibold text-white dark:text-black shadow-glass transition-all duration-300 hover:shadow-glass-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
                 >
                   Contact Me
                 </Link>
@@ -135,7 +135,7 @@ export function Header() {
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="md:hidden flex items-center justify-center p-2 rounded-xl bg-background/50 backdrop-blur-sm border border-border hover:bg-background transition-colors duration-200"
+              className="md:hidden flex items-center justify-center p-2 rounded-xl glass hover:glass-light transition-all duration-200"
               onClick={toggleMenu}
               aria-label="Toggle menu"
             >
@@ -170,13 +170,13 @@ export function Header() {
         <div className="absolute bottom-0 inset-x-0">
           <div className="container mx-auto px-4">
             <motion.div
-              className="h-0.5 bg-gradient-to-r from-purple-500/20 to-blue-500/20 rounded-full overflow-hidden"
+              className="h-0.5 bg-muted/30 rounded-full overflow-hidden"
               initial={{ opacity: 0 }}
               animate={{ opacity: isScrolled ? 1 : 0 }}
               transition={{ duration: 0.3 }}
             >
               <motion.div
-                className="h-full bg-gradient-to-r from-purple-500 to-blue-500 rounded-full"
+                className="h-full bg-accent-blue rounded-full"
                 style={{
                   scaleX: mounted ? scrollY / (document.documentElement.scrollHeight - window.innerHeight) : 0,
                   transformOrigin: '0%',
@@ -207,7 +207,7 @@ export function Header() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: '-100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-              className="fixed top-4 left-4 right-4 bg-white/95 dark:bg-black/95 backdrop-blur-xl border border-white/20 dark:border-white/10 rounded-2xl shadow-2xl z-[9999] md:hidden"
+              className="fixed top-4 left-4 right-4 glass-light rounded-2xl shadow-glass-lg z-[9999] md:hidden"
             >
               {/* Header */}
               <div className="flex items-center justify-between p-6">
@@ -215,7 +215,7 @@ export function Header() {
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className="p-2 rounded-xl bg-background/50 hover:bg-background transition-colors"
+                  className="p-2 rounded-xl glass hover:glass-medium transition-all duration-200"
                   onClick={toggleMenu}
                   aria-label="Close menu"
                 >
@@ -241,7 +241,7 @@ export function Header() {
                   >
                     <Link
                       href={item.href}
-                      className="block py-3 px-4 rounded-xl text-lg font-medium text-foreground/80 hover:text-foreground hover:bg-background/50 transition-all duration-200"
+                      className="block py-3 px-4 rounded-xl text-lg font-medium text-foreground/80 hover:text-foreground hover:glass-medium transition-all duration-200"
                       onClick={toggleMenu}
                     >
                       {item.label}
@@ -268,7 +268,7 @@ export function Header() {
                 >
                   <Link
                     href={getNavLink('contact')}
-                    className="w-full flex items-center justify-center rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 px-6 py-3 text-base font-semibold text-white shadow-lg transition-all duration-200 hover:shadow-xl hover:shadow-purple-500/25"
+                    className="glass-button w-full flex items-center justify-center rounded-xl bg-black dark:bg-white px-6 py-3 text-base font-semibold text-white dark:text-black shadow-glass transition-all duration-300 hover:shadow-glass-lg"
                     onClick={toggleMenu}
                   >
                     Get In Touch
