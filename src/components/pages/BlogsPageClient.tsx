@@ -41,7 +41,7 @@ export function BlogsPageClient({ initialPosts, allTags }: BlogsPageClientProps)
 
     return (
         <PullToRefresh onRefresh={handleRefresh}>
-            <div className="container mx-auto px-4 pt-4 md:pt-24 pb-12">
+            <div className="container mx-auto px-4 pt-20 md:pt-24 pb-12">
                 <h1 className="text-4xl font-bold mb-8">Blog</h1>
 
                 {/* Tags filter */}

@@ -4,7 +4,7 @@ import './globals.css';
 import { ThemeProvider } from '@/components/ui/theme-provider';
 import { StructuredData } from '@/components/ui/structured-data';
 import { ScrollProgress } from '@/components/ui/scroll-progress';
-import { MobileBottomNav } from '@/components/ui/mobile-bottom-nav';
+
 import { AnalyticsProvider } from '@/components/providers/analytics-provider';
 import Script from 'next/script';
 
@@ -170,7 +170,6 @@ export default function RootLayout({
             <StructuredData />
             <ScrollProgress variant="circular" />
             {children}
-            <MobileBottomNav />
           </AnalyticsProvider>
         </ThemeProvider>
       </body>

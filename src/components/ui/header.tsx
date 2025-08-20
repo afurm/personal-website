@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { ThemeToggle } from './theme-toggle';
 import { ShareButton } from './share-button';
-import { Menu, X, Sun, Moon } from 'lucide-react';
+import { Menu, X, Sun, Moon, Share2 } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -69,14 +69,14 @@ export function Header() {
           duration: 0.3,
           ease: [0.25, 0.46, 0.45, 0.94]
         }}
-        className="fixed top-0 inset-x-0 z-50 w-full hidden md:block"
+        className="fixed top-0 inset-x-0 z-50 w-full"
       >
         <div className={`container mx-auto transition-all duration-300 ${
           isScrolled 
             ? 'rounded-2xl glass-light shadow-glass-lg' 
             : 'rounded-none border-transparent bg-transparent backdrop-blur-none'
         }`}>
-          <div className="flex h-16 items-center justify-between px-6">
+          <div className="flex h-16 items-center justify-between px-4 md:px-6">
             {/* Logo */}
             <motion.div
               animate={{ scale: isScrolled ? 0.9 : 1 }}
@@ -84,9 +84,10 @@ export function Header() {
             >
               <Link 
                 href="/" 
-                className="font-bold text-xl text-foreground hover:text-accent-blue transition-all duration-300"
+                className="font-bold text-lg md:text-xl text-foreground hover:text-accent-blue transition-all duration-300"
               >
-                Andrii Furmanets
+                <span className="hidden sm:inline">Andrii Furmanets</span>
+                <span className="sm:hidden">AF</span>
               </Link>
             </motion.div>
 
@@ -141,7 +142,7 @@ export function Header() {
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="md:hidden flex items-center justify-center p-2 rounded-xl glass hover:glass-light transition-all duration-200"
+              className="md:hidden flex items-center justify-center p-3 rounded-xl glass hover:glass-light transition-all duration-200 min-h-[44px] min-w-[44px]"
               onClick={toggleMenu}
               aria-label="Toggle menu"
             >
@@ -262,11 +263,8 @@ export function Header() {
                   transition={{ delay: 0.6 }}
                   className="pt-4 flex justify-center gap-4"
                 >
-                  <ShareButton 
-                    title="Andrii Furmanets - Senior Full-Stack Developer"
-                    text="Check out my portfolio and latest projects!"
-                    variant="icon"
-                  />
+                  {/* Custom Share Button for Mobile Menu */}
+                  <MobileMenuShareButton />
                   <ThemeToggle />
                 </motion.div>
 
@@ -291,5 +289,57 @@ export function Header() {
         )}
       </AnimatePresence>
     </>
+  );
+}
+
+// Custom Share Button for Mobile Menu to match theme toggle style
+function MobileMenuShareButton() {
+  const [isSharing, setIsSharing] = React.useState(false);
+
+  const handleShare = async () => {
+    setIsSharing(true);
+    
+    // Haptic feedback
+    if ('vibrate' in navigator) {
+      navigator.vibrate(10);
+    }
+    
+    const shareData = {
+      title: "Andrii Furmanets - Senior Full-Stack Developer",
+      text: "Check out my portfolio and latest projects!",
+      url: typeof window !== 'undefined' ? window.location.href : '',
+    };
+
+    try {
+      if (navigator.share && typeof navigator.share === 'function') {
+        await navigator.share(shareData);
+      } else {
+        // Fallback to clipboard
+        await navigator.clipboard.writeText(shareData.url);
+        // Could show a toast notification here
+      }
+    } catch (err) {
+      console.log('Error sharing:', err);
+    } finally {
+      setIsSharing(false);
+    }
+  };
+
+  return (
+    <motion.button
+      onClick={handleShare}
+      disabled={isSharing}
+      whileHover={{ scale: 1.02 }}
+      whileTap={{ scale: 0.98 }}
+      className="glass-button group relative inline-flex h-10 w-10 items-center justify-center rounded-full glass transition-shadow duration-100 hover:shadow-glass focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+      aria-label="Share"
+    >
+      <motion.div
+        animate={{ rotate: isSharing ? 360 : 0 }}
+        transition={{ duration: 0.5 }}
+      >
+        <Share2 className="h-5 w-5 text-foreground/80" />
+      </motion.div>
+    </motion.button>
   );
 }
