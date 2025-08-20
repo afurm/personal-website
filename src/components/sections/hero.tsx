@@ -1,37 +1,42 @@
 'use client';
 
 import React from 'react';
-import { motion } from 'framer-motion';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import Link from 'next/link';
 import { TechIcon } from '../ui/tech-icon';
 
 const techStack = [
-  { name: 'React', icon: '/icons/react.svg' },
-  { name: 'Next.js', icon: '/icons/nextjs.svg' },
-  { name: 'TypeScript', icon: '/icons/typescript.svg' },
-  { name: 'Tailwind CSS', icon: '/icons/tailwind.svg' },
-  { name: 'Node.js', icon: '/icons/nodejs.svg' },
-  { name: 'Ruby on Rails', icon: '/icons/rails.svg' },
-  { name: 'GraphQL', icon: '/icons/graphql.svg' },
-  { name: 'MongoDB', icon: '/icons/mongodb.svg' },
-  { name: 'PostgreSQL', icon: '/icons/postgresql.svg' },
-  { name: 'Redux', icon: '/icons/redux.svg' },
-  { name: 'Docker', icon: '/icons/docker.svg' },
-  { name: 'AWS', icon: '/icons/aws.svg' },
+  { name: 'React', icon: '/icons/react.svg', proficiency: 95 },
+  { name: 'Next.js', icon: '/icons/nextjs.svg', proficiency: 90 },
+  { name: 'TypeScript', icon: '/icons/typescript.svg', proficiency: 88 },
+  { name: 'Tailwind CSS', icon: '/icons/tailwind.svg', proficiency: 92 },
+  { name: 'Node.js', icon: '/icons/nodejs.svg', proficiency: 85 },
+  { name: 'Ruby on Rails', icon: '/icons/rails.svg', proficiency: 95 },
+  { name: 'GraphQL', icon: '/icons/graphql.svg', proficiency: 80 },
+  { name: 'MongoDB', icon: '/icons/mongodb.svg', proficiency: 85 },
+  { name: 'PostgreSQL', icon: '/icons/postgresql.svg', proficiency: 88 },
+  { name: 'Redux', icon: '/icons/redux.svg', proficiency: 90 },
+  { name: 'Docker', icon: '/icons/docker.svg', proficiency: 78 },
+  { name: 'AWS', icon: '/icons/aws.svg', proficiency: 82 },
 ];
 
 export function Hero() {
+  const { scrollY } = useScroll();
+  const y1 = useTransform(scrollY, [0, 1000], [0, -200]);
+  const y2 = useTransform(scrollY, [0, 1000], [0, -100]);
+  const y3 = useTransform(scrollY, [0, 1000], [0, -300]);
+
   return (
     <section className="spacing-section relative overflow-hidden bg-gradient-to-br from-slate-50 via-blue-50 to-purple-50 dark:from-slate-950 dark:via-blue-950 dark:to-purple-950">
-      {/* Animated gradient mesh background */}
-      <div className="absolute inset-0 overflow-hidden">
+      {/* Animated gradient mesh background with parallax */}
+      <motion.div className="absolute inset-0 overflow-hidden" style={{ y: y3 }}>
         <div className="absolute top-0 -left-4 w-72 h-72 bg-gradient-to-br from-purple-400/30 to-pink-600/30 rounded-full mix-blend-multiply filter blur-xl animate-blob"></div>
         <div className="absolute top-0 -right-4 w-72 h-72 bg-gradient-to-bl from-cyan-400/30 to-blue-600/30 rounded-full mix-blend-multiply filter blur-xl animate-blob animation-delay-2000"></div>
         <div className="absolute -bottom-8 left-20 w-72 h-72 bg-gradient-to-tr from-purple-500/30 to-indigo-600/30 rounded-full mix-blend-multiply filter blur-xl animate-blob animation-delay-4000"></div>
-      </div>
+      </motion.div>
       
-      {/* Floating geometric elements */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+      {/* Floating geometric elements with parallax */}
+      <motion.div className="absolute inset-0 overflow-hidden pointer-events-none" style={{ y: y1 }}>
         <motion.div
           initial={{ x: -100, y: 100, rotate: 0 }}
           animate={{ x: 100, y: -100, rotate: 360 }}
@@ -56,8 +61,8 @@ export function Hero() {
           transition={{ duration: 22, repeat: Infinity, ease: "linear" }}
           className="absolute top-1/3 left-1/2 w-5 h-5 bg-gradient-to-r from-blue-400 to-purple-400 transform rotate-12 opacity-15"
         />
-      </div>
-      <div className="container spacing-container relative z-10">
+      </motion.div>
+      <motion.div className="container spacing-container relative z-10" style={{ y: y2 }}>
         <div className="grid spacing-gap-lg lg:grid-cols-[1fr_400px] xl:grid-cols-[1fr_600px]">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -118,25 +123,79 @@ export function Hero() {
             transition={{ duration: 0.5, delay: 0.2 }}
             className="flex items-center justify-center"
           >
-            <div className="grid grid-cols-3 gap-3 sm:grid-cols-4 md:gap-4 lg:grid-cols-6">
+            <motion.div 
+              className="grid grid-cols-3 gap-3 sm:grid-cols-4 md:gap-4 lg:grid-cols-6"
+              initial="hidden"
+              animate="visible"
+              variants={{
+                hidden: { opacity: 0 },
+                visible: {
+                  opacity: 1,
+                  transition: {
+                    staggerChildren: 0.1,
+                    delayChildren: 0.2
+                  }
+                }
+              }}
+            >
               {techStack.map((tech, index) => (
                 <motion.div
                   key={tech.name}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.3, delay: 0.1 * index }}
-                  className="flex flex-col items-center justify-center space-y-2 rounded-lg border border-border bg-card p-3 shadow-sm"
+                  variants={{
+                    hidden: { opacity: 0, y: 20, scale: 0.8 },
+                    visible: { 
+                      opacity: 1, 
+                      y: 0, 
+                      scale: 1,
+                      transition: {
+                        type: "spring",
+                        stiffness: 100,
+                        damping: 12
+                      }
+                    }
+                  }}
+                  whileHover={{ 
+                    scale: 1.1, 
+                    rotateY: 15,
+                    rotateX: 5,
+                    transition: { 
+                      type: "spring",
+                      stiffness: 300,
+                      damping: 20
+                    }
+                  }}
+                  whileTap={{ scale: 0.95 }}
+                  style={{ 
+                    transformStyle: "preserve-3d",
+                    perspective: "1000px"
+                  }}
+                  className="group relative flex flex-col items-center justify-center space-y-2 rounded-lg border border-border bg-card p-3 shadow-sm hover:shadow-lg hover:border-primary/30 transition-all duration-300 cursor-pointer overflow-hidden"
                 >
-                  <div className="relative h-10 w-10">
+                  {/* Glow effect on hover */}
+                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-accent-blue/10 rounded-lg blur-xl" />
+                  </div>
+                  
+                  <div className="relative h-10 w-10 group-hover:scale-110 transition-transform duration-300">
                     <TechIcon name={tech.name} icon={tech.icon} />
                   </div>
-                  <div className="text-center text-xs font-medium">{tech.name}</div>
+                  <div className="text-center text-xs font-medium relative z-10">{tech.name}</div>
+                  
+                  {/* Proficiency bar */}
+                  <div className="w-full bg-secondary/50 rounded-full h-1 relative z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <motion.div
+                      className="h-1 bg-gradient-to-r from-primary to-accent-blue rounded-full"
+                      initial={{ width: 0 }}
+                      whileInView={{ width: `${tech.proficiency}%` }}
+                      transition={{ duration: 1, delay: index * 0.1 }}
+                    />
+                  </div>
                 </motion.div>
               ))}
-            </div>
+            </motion.div>
           </motion.div>
         </div>
-      </div>
+      </motion.div>
     </section>
   );
 }

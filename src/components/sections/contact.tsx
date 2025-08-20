@@ -192,94 +192,208 @@ export function Contact() {
           >
             {isSubmitted ? (
               <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="rounded-lg border border-border bg-card p-8 text-center shadow-sm"
+                initial={{ opacity: 0, scale: 0.8, y: 20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                className="relative rounded-2xl border border-primary/20 bg-gradient-to-br from-primary/5 to-accent-blue/5 p-8 text-center shadow-lg backdrop-blur-sm overflow-hidden"
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="mx-auto h-10 w-10 text-primary"
+                {/* Background Effect */}
+                <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-accent-blue/10 animate-pulse" />
+                
+                {/* Success Icon with Animation */}
+                <motion.div
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ delay: 0.2, type: "spring", stiffness: 400, damping: 10 }}
+                  className="relative z-10 mx-auto w-16 h-16 bg-gradient-to-br from-primary to-accent-blue rounded-full flex items-center justify-center mb-4"
                 >
-                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
-                  <polyline points="22 4 12 14.01 9 11.01" />
-                </svg>
-                <h3 className="mt-4 text-xl font-bold">Message Sent!</h3>
-                <p className="mt-2 text-muted-foreground">
-                  Thank you for reaching out. I'll get back to you as soon as possible.
-                </p>
-                <button
-                  onClick={() => setIsSubmitted(false)}
-                  className="mt-6 inline-flex h-10 items-center justify-center rounded-md bg-primary px-8 text-sm font-medium text-primary-foreground shadow transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                  <motion.svg
+                    initial={{ pathLength: 0 }}
+                    animate={{ pathLength: 1 }}
+                    transition={{ delay: 0.5, duration: 0.5 }}
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="white"
+                    strokeWidth="3"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="w-8 h-8"
+                  >
+                    <polyline points="20 6 9 17 4 12" />
+                  </motion.svg>
+                </motion.div>
+
+                <motion.h3 
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3 }}
+                  className="relative z-10 text-2xl font-bold text-primary mb-2"
+                >
+                  Message Sent Successfully!
+                </motion.h3>
+                
+                <motion.p 
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.4 }}
+                  className="relative z-10 text-muted-foreground mb-6"
+                >
+                  Thank you for reaching out! I'll get back to you within 24 hours.
+                </motion.p>
+                
+                <motion.button
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.5 }}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => {
+                    setIsSubmitted(false);
+                    reset();
+                  }}
+                  className="relative z-10 inline-flex h-12 items-center justify-center rounded-xl bg-gradient-to-r from-primary to-accent-blue px-8 text-sm font-semibold text-white shadow-lg transition-all duration-200 hover:shadow-xl hover:shadow-primary/25"
                 >
                   Send Another Message
-                </button>
+                </motion.button>
               </motion.div>
             ) : (
-              <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-                <div className="space-y-2">
-                  <label
-                    htmlFor="name"
-                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                  >
-                    Name
-                  </label>
+              <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+                {/* Name Field with Floating Label */}
+                <div className="relative group">
                   <input
                     id="name"
-                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                    placeholder="Your name"
                     {...register('name')}
+                    className="peer w-full h-14 px-4 pt-6 pb-2 text-sm bg-card/50 backdrop-blur-sm border-2 border-border rounded-xl focus:border-primary focus:outline-none transition-all duration-200 placeholder-transparent hover:border-border/80"
+                    placeholder="Your name"
                   />
-                  {errors.name && <p className="text-sm text-red-500">{errors.name.message}</p>}
-                </div>
-                <div className="space-y-2">
                   <label
-                    htmlFor="email"
-                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                    htmlFor="name"
+                    className="absolute left-4 top-4 text-sm text-muted-foreground transition-all duration-200 pointer-events-none peer-focus:top-2 peer-focus:text-xs peer-focus:text-primary peer-[&:not(:placeholder-shown)]:top-2 peer-[&:not(:placeholder-shown)]:text-xs peer-[&:not(:placeholder-shown)]:text-primary"
                   >
-                    Email
+                    Full Name
                   </label>
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: errors.name ? 1 : 0, y: errors.name ? 0 : -10 }}
+                    className="mt-2 flex items-center gap-1 text-xs text-destructive"
+                  >
+                    {errors.name && (
+                      <>
+                        <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                        </svg>
+                        {errors.name.message}
+                      </>
+                    )}
+                  </motion.div>
+                </div>
+                {/* Email Field with Floating Label */}
+                <div className="relative group">
                   <input
                     id="email"
                     type="email"
-                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                    placeholder="Your email address"
                     {...register('email')}
+                    className="peer w-full h-14 px-4 pt-6 pb-2 text-sm bg-card/50 backdrop-blur-sm border-2 border-border rounded-xl focus:border-primary focus:outline-none transition-all duration-200 placeholder-transparent hover:border-border/80"
+                    placeholder="Your email address"
                   />
-                  {errors.email && <p className="text-sm text-red-500">{errors.email.message}</p>}
-                </div>
-                <div className="space-y-2">
                   <label
-                    htmlFor="message"
-                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                    htmlFor="email"
+                    className="absolute left-4 top-4 text-sm text-muted-foreground transition-all duration-200 pointer-events-none peer-focus:top-2 peer-focus:text-xs peer-focus:text-primary peer-[&:not(:placeholder-shown)]:top-2 peer-[&:not(:placeholder-shown)]:text-xs peer-[&:not(:placeholder-shown)]:text-primary"
                   >
-                    Message
+                    Email Address
                   </label>
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: errors.email ? 1 : 0, y: errors.email ? 0 : -10 }}
+                    className="mt-2 flex items-center gap-1 text-xs text-destructive"
+                  >
+                    {errors.email && (
+                      <>
+                        <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                        </svg>
+                        {errors.email.message}
+                      </>
+                    )}
+                  </motion.div>
+                </div>
+                {/* Message Field with Floating Label */}
+                <div className="relative group">
                   <textarea
                     id="message"
-                    className="flex min-h-[120px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                    placeholder="Your message"
                     {...register('message')}
+                    className="peer w-full min-h-[140px] px-4 pt-8 pb-4 text-sm bg-card/50 backdrop-blur-sm border-2 border-border rounded-xl focus:border-primary focus:outline-none transition-all duration-200 placeholder-transparent hover:border-border/80 resize-none"
+                    placeholder="Your message"
                   />
-                  {errors.message && (
-                    <p className="text-sm text-red-500">{errors.message.message}</p>
-                  )}
+                  <label
+                    htmlFor="message"
+                    className="absolute left-4 top-4 text-sm text-muted-foreground transition-all duration-200 pointer-events-none peer-focus:top-2 peer-focus:text-xs peer-focus:text-primary peer-[&:not(:placeholder-shown)]:top-2 peer-[&:not(:placeholder-shown)]:text-xs peer-[&:not(:placeholder-shown)]:text-primary"
+                  >
+                    Your Message
+                  </label>
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: errors.message ? 1 : 0, y: errors.message ? 0 : -10 }}
+                    className="mt-2 flex items-center gap-1 text-xs text-destructive"
+                  >
+                    {errors.message && (
+                      <>
+                        <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                        </svg>
+                        {errors.message.message}
+                      </>
+                    )}
+                  </motion.div>
                 </div>
-                {error && <p className="text-sm text-red-500">{error}</p>}
-                <button
+                {/* Error Message */}
+                <motion.div
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: error ? 1 : 0, y: error ? 0 : -10 }}
+                  className="flex items-center gap-2 text-sm text-destructive"
+                >
+                  {error && (
+                    <>
+                      <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                      </svg>
+                      {error}
+                    </>
+                  )}
+                </motion.div>
+
+                {/* Enhanced Submit Button */}
+                <motion.button
                   type="submit"
                   disabled={isSubmitting}
-                  className="inline-flex h-10 w-full items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50"
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="group relative inline-flex h-14 w-full items-center justify-center rounded-xl bg-gradient-to-r from-primary to-accent-blue px-8 text-sm font-semibold text-white shadow-lg transition-all duration-300 hover:shadow-xl hover:shadow-primary/25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 overflow-hidden"
                 >
-                  {isSubmitting ? 'Sending...' : 'Send Message'}
-                </button>
+                  {/* Background Glow Effect */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-primary to-accent-blue opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-lg" />
+                  
+                  {/* Button Content */}
+                  <span className="relative z-10 flex items-center gap-2">
+                    {isSubmitting ? (
+                      <>
+                        <svg className="w-4 h-4 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                        </svg>
+                        Sending Message...
+                      </>
+                    ) : (
+                      <>
+                        Send Message
+                        <svg className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                        </svg>
+                      </>
+                    )}
+                  </span>
+                </motion.button>
               </form>
             )}
           </motion.div>

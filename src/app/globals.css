@@ -152,6 +152,27 @@ html {
   scroll-behavior: smooth;
 }
 
+/* Enhanced text selection */
+::selection {
+  background: hsl(var(--primary) / 0.2);
+  color: hsl(var(--primary-foreground));
+  text-shadow: none;
+}
+
+::-moz-selection {
+  background: hsl(var(--primary) / 0.2);
+  color: hsl(var(--primary-foreground));
+  text-shadow: none;
+}
+
+
+/* Better focus states */
+:focus-visible {
+  outline: 2px solid hsl(var(--primary));
+  outline-offset: 2px;
+  border-radius: 0.375rem;
+}
+
 /* Modern spacing utilities using clamp() */
 @layer utilities {
   .spacing-section {
