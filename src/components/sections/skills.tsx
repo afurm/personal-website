@@ -63,7 +63,7 @@ export function Skills() {
           className="flex flex-col items-center justify-center spacing-gap text-center spacing-heading"
         >
           <div className="space-y-2">
-            <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
+            <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl text-gradient-hover">
               Skills & Expertise
             </h2>
             <p className="mx-auto max-w-[700px] text-muted-foreground md:text-xl">
@@ -80,7 +80,7 @@ export function Skills() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.3, delay: categoryIndex * 0.1 }}
-              className="rounded-lg border border-border bg-card p-6 shadow-sm"
+              className="card-hover-effect card-gradient-border card-3d-tilt rounded-lg p-6 shadow-sm"
             >
               <h3 className="text-xl font-bold mb-4">{skillCategory.category}</h3>
               <div className="flex flex-wrap gap-2">

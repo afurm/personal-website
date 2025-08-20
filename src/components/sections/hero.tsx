@@ -4,6 +4,7 @@ import React from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import Link from 'next/link';
 import { TechIcon } from '../ui/tech-icon';
+import { TypewriterText } from '../ui/typewriter-text';
 
 const techStack = [
   { name: 'React', icon: '/icons/react.svg', proficiency: 95 },
@@ -71,12 +72,24 @@ export function Hero() {
             className="flex flex-col justify-center spacing-gap"
           >
             <div className="spacing-gap-sm flex flex-col">
-              <h1 className="text-4xl font-bold tracking-tight sm:text-6xl lg:text-7xl xl:text-8xl bg-gradient-to-r from-foreground via-foreground to-foreground/80 bg-clip-text text-transparent">
+              <h1 className="text-4xl font-bold tracking-tight sm:text-6xl lg:text-7xl xl:text-8xl text-gradient-animated">
                 Andrii Furmanets
               </h1>
-              <p className="text-xl sm:text-2xl lg:text-3xl font-medium text-muted-foreground/90">
-                Full-Stack Developer | React, TypeScript, Next.js | Ruby on Rails
-              </p>
+              <div className="text-xl sm:text-2xl lg:text-3xl font-medium text-muted-foreground/90">
+                <TypewriterText
+                  texts={[
+                    'Full-Stack Developer',
+                    'React & TypeScript Expert',
+                    'Next.js Specialist',
+                    'Ruby on Rails Developer',
+                    'Fintech Solutions Builder',
+                    'Web3 Developer'
+                  ]}
+                  speed={100}
+                  deleteSpeed={50}
+                  pauseTime={2000}
+                />
+              </div>
             </div>
             <p className="max-w-[600px] text-base sm:text-lg lg:text-xl text-muted-foreground/80 leading-relaxed">
               A highly skilled Senior Full-Stack Developer with expertise in React, TypeScript, and

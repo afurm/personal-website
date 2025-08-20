@@ -38,7 +38,7 @@ export function Education() {
           className="flex flex-col items-center justify-center spacing-gap text-center spacing-heading"
         >
           <div className="space-y-2">
-            <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
+            <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl text-gradient-hover">
               Education & Certifications
             </h2>
             <p className="mx-auto max-w-[700px] text-muted-foreground md:text-xl">
@@ -64,7 +64,7 @@ export function Education() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.3, delay: index * 0.1 }}
-                  className="rounded-lg border border-border bg-card p-6 shadow-sm"
+                  className="card-hover-effect card-gradient-border spotlight-effect rounded-lg p-6 shadow-sm"
                 >
                   <div className="flex flex-col space-y-2">
                     <h4 className="font-bold">{item.degree}</h4>
@@ -95,7 +95,7 @@ export function Education() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.3, delay: index * 0.1 }}
-                  className="rounded-lg border border-border bg-card p-4 shadow-sm"
+                  className="card-hover-effect card-3d-tilt rounded-lg border border-border bg-card p-4 shadow-sm"
                 >
                   <div className="flex items-center justify-between">
                     <div>

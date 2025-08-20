@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google';
 import './globals.css';
 import { ThemeProvider } from '@/components/ui/theme-provider';
 import { StructuredData } from '@/components/ui/structured-data';
+import { ScrollProgress } from '@/components/ui/scroll-progress';
 import Script from 'next/script';
 
 const inter = Inter({
@@ -164,6 +165,7 @@ export default function RootLayout({
           enableSystem
         >
           <StructuredData />
+          <ScrollProgress variant="circular" />
           {children}
         </ThemeProvider>
       </body>

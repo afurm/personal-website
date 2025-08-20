@@ -164,7 +164,7 @@ export function Experience() {
           transition={{ duration: 0.5 }}
           className="spacing-heading"
         >
-          <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl text-center">
+          <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl text-center text-gradient-hover">
             Career Timeline
           </h2>
         </motion.div>
