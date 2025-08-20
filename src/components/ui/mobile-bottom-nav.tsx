@@ -49,8 +49,8 @@ export function MobileBottomNav() {
     return 'hero';
   });
   const [isExpanded, setIsExpanded] = useState(false);
-  const [lastScrollY, setLastScrollY] = useState(0);
   const [isVisible, setIsVisible] = useState(true);
+  const [hideTimer, setHideTimer] = useState<NodeJS.Timeout | null>(null);
   const shouldReduceMotion = useReducedMotion();
   const { isLowPowerMode } = useDevicePerformance();
 
@@ -117,6 +117,24 @@ export function MobileBottomNav() {
     return closestSection;
   };
 
+  // Auto-hide navigation after 2 seconds of inactivity
+  const resetHideTimer = () => {
+    // Clear existing timer
+    if (hideTimer) {
+      clearTimeout(hideTimer);
+    }
+    
+    // Show navigation
+    setIsVisible(true);
+    
+    // Set new timer to hide after 2 seconds
+    const newTimer = setTimeout(() => {
+      setIsVisible(false);
+    }, 2000);
+    
+    setHideTimer(newTimer);
+  };
+
   // Track active section based on scroll position
   useEffect(() => {
     // Ensure we're on the client side
@@ -127,26 +145,12 @@ export function MobileBottomNav() {
     const handleScroll = () => {
       if (!ticking) {
         requestAnimationFrame(() => {
-          const currentScrollY = window.scrollY;
-          
-          // Show/hide based on scroll direction with improved logic
-          const scrollDifference = currentScrollY - lastScrollY;
-          const scrollThreshold = 10; // Minimum scroll distance to trigger hide/show
-          
-          if (Math.abs(scrollDifference) > scrollThreshold) {
-            if (scrollDifference > 0 && currentScrollY > 200) {
-              // Scrolling DOWN and past initial threshold - hide navigation
-              setIsVisible(false);
-            } else if (scrollDifference < 0 || currentScrollY <= 100) {
-              // Scrolling UP or near top - show navigation
-              setIsVisible(true);
-            }
-            setLastScrollY(currentScrollY);
-          }
-
           // Update active section
           const newActiveSection = detectActiveSection();
           setActiveSection(newActiveSection);
+          
+          // Reset hide timer on scroll (user activity)
+          resetHideTimer();
           
           ticking = false;
         });
@@ -159,7 +163,44 @@ export function MobileBottomNav() {
 
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [lastScrollY]);
+  }, [hideTimer]);
+
+  // Handle touch/interaction events to show navigation
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const handleUserInteraction = () => {
+      resetHideTimer();
+    };
+
+    // Listen for various user interaction events
+    const events = ['touchstart', 'touchmove', 'mousedown', 'mousemove', 'keydown'];
+    
+    events.forEach(event => {
+      window.addEventListener(event, handleUserInteraction, { passive: true });
+    });
+
+    // Initialize timer on mount
+    resetHideTimer();
+
+    return () => {
+      events.forEach(event => {
+        window.removeEventListener(event, handleUserInteraction);
+      });
+      if (hideTimer) {
+        clearTimeout(hideTimer);
+      }
+    };
+  }, []);
+
+  // Cleanup timer on unmount
+  useEffect(() => {
+    return () => {
+      if (hideTimer) {
+        clearTimeout(hideTimer);
+      }
+    };
+  }, [hideTimer]);
 
   // Initial section detection on mount with delay
   useEffect(() => {
@@ -177,6 +218,9 @@ export function MobileBottomNav() {
   const handleNavClick = (href: string, section: string) => {
     setActiveSection(section);
     setIsExpanded(false);
+    
+    // Reset hide timer on navigation (user activity)
+    resetHideTimer();
     
     // Track mobile navigation
     trackMobile.mobileNavigation('navigate');
@@ -231,11 +275,11 @@ export function MobileBottomNav() {
       >
       <motion.nav
         layout
-        className="glass-light rounded-2xl shadow-glass-lg px-2 py-3 mx-auto max-w-sm"
+        className="glass-light rounded-2xl shadow-glass-lg px-3 py-4 mx-auto max-w-sm"
       >
         <div className="flex items-center justify-between">
           {/* Navigation Items */}
-          <div className="flex items-center justify-around flex-1 gap-1">
+          <div className="flex items-center justify-around flex-1 gap-2">
             <AnimatePresence>
               {visibleItems.map((item, index) => {
                 const isActive = activeSection === item.section;
@@ -253,7 +297,7 @@ export function MobileBottomNav() {
                       animate={shouldReduceMotion ? {} : { opacity: 1, scale: 1 }}
                       exit={shouldReduceMotion ? {} : { opacity: 0, scale: 0.8 }}
                       whileTap={shouldReduceMotion ? {} : { scale: 0.9 }}
-                      className={`relative flex flex-col items-center justify-center p-3 rounded-xl transition-all duration-200 min-h-[48px] min-w-[48px] ${
+                      className={`relative flex flex-col items-center justify-center p-4 rounded-xl transition-all duration-200 min-h-[56px] min-w-[56px] touch-manipulation ${
                         isActive 
                           ? 'bg-black dark:bg-white text-white dark:text-black shadow-glass' 
                           : 'text-muted-foreground hover:text-foreground hover:glass-medium'
@@ -288,12 +332,14 @@ export function MobileBottomNav() {
               whileTap={{ scale: 0.9 }}
               onClick={() => {
                 setIsExpanded(!isExpanded);
+                // Reset hide timer on interaction
+                resetHideTimer();
                 // Haptic feedback (client-side only)
                 if (typeof navigator !== 'undefined' && 'vibrate' in navigator) {
                   navigator.vibrate(5);
                 }
               }}
-              className="flex flex-col items-center justify-center p-3 rounded-xl text-muted-foreground hover:text-foreground hover:glass-medium transition-all duration-200 min-h-[48px] min-w-[48px] ml-1"
+              className="flex flex-col items-center justify-center p-4 rounded-xl text-muted-foreground hover:text-foreground hover:glass-medium transition-all duration-200 min-h-[56px] min-w-[56px] ml-2 touch-manipulation"
               aria-label={isExpanded ? "Show less" : "Show more"}
             >
               {isExpanded ? (
@@ -319,7 +365,7 @@ export function MobileBottomNav() {
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.3 }}
-              className="flex items-center justify-center gap-1 pt-3 mt-3 border-t border-white/20 dark:border-white/10"
+              className="flex items-center justify-center gap-2 pt-3 mt-3 border-t border-white/20 dark:border-white/10"
             >
               {hiddenItems.map((item) => {
                 const isActive = activeSection === item.section;
@@ -339,7 +385,7 @@ export function MobileBottomNav() {
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -20 }}
                       whileTap={{ scale: 0.9 }}
-                      className={`relative flex flex-col items-center justify-center p-3 rounded-xl transition-all duration-200 min-h-[48px] min-w-[48px] ${
+                      className={`relative flex flex-col items-center justify-center p-4 rounded-xl transition-all duration-200 min-h-[56px] min-w-[56px] touch-manipulation ${
                         isActive 
                           ? 'bg-black dark:bg-white text-white dark:text-black shadow-glass' 
                           : 'text-muted-foreground hover:text-foreground hover:glass-medium'
@@ -376,7 +422,7 @@ export function MobileBottomNav() {
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.3, delay: 0.1 }}
-              className="flex items-center justify-center gap-1 pt-3 mt-3 border-t border-white/20 dark:border-white/10"
+              className="flex items-center justify-center gap-2 pt-3 mt-3 border-t border-white/20 dark:border-white/10"
             >
               {/* Theme Toggle */}
               <ThemeToggleButton />
@@ -387,7 +433,7 @@ export function MobileBottomNav() {
               {/* Contact CTA */}
               <Link
                 href={pathname === '/' ? '#contact' : '/#contact'}
-                className="relative flex flex-col items-center justify-center p-3 rounded-xl text-muted-foreground hover:text-foreground hover:glass-medium transition-all duration-200 min-h-[48px] min-w-[48px]"
+                className="relative flex flex-col items-center justify-center p-4 rounded-xl text-muted-foreground hover:text-foreground hover:glass-medium transition-all duration-200 min-h-[56px] min-w-[56px] touch-manipulation"
               >
                 <FaEnvelope className="w-4 h-4 mb-1" />
                 <span className="text-xs font-medium leading-none">
@@ -414,7 +460,7 @@ function ThemeToggleButton() {
 
   if (!mounted) {
     return (
-      <div className="relative flex flex-col items-center justify-center p-3 rounded-xl min-h-[48px] min-w-[48px] text-muted-foreground">
+      <div className="relative flex flex-col items-center justify-center p-4 rounded-xl min-h-[56px] min-w-[56px] text-muted-foreground">
         <FaSun className="w-4 h-4 mb-1" />
         <span className="text-xs font-medium leading-none">Theme</span>
       </div>
@@ -426,7 +472,7 @@ function ThemeToggleButton() {
       whileHover={{ scale: 1.05 }}
       whileTap={{ scale: 0.95 }}
       onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
-      className="relative flex flex-col items-center justify-center p-3 rounded-xl text-muted-foreground hover:text-foreground hover:glass-medium transition-all duration-200 min-h-[48px] min-w-[48px]"
+      className="relative flex flex-col items-center justify-center p-4 rounded-xl text-muted-foreground hover:text-foreground hover:glass-medium transition-all duration-200 min-h-[56px] min-w-[56px] touch-manipulation"
       aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} theme`}
     >
       {theme === 'light' ? (
@@ -475,7 +521,7 @@ function ShareButtonMobile() {
       whileTap={{ scale: 0.95 }}
       onClick={handleShare}
       disabled={isSharing}
-      className="relative flex flex-col items-center justify-center p-3 rounded-xl text-muted-foreground hover:text-foreground hover:glass-medium transition-all duration-200 min-h-[48px] min-w-[48px]"
+      className="relative flex flex-col items-center justify-center p-4 rounded-xl text-muted-foreground hover:text-foreground hover:glass-medium transition-all duration-200 min-h-[56px] min-w-[56px] touch-manipulation"
       aria-label="Share this page"
     >
       <FaShare className="w-4 h-4 mb-1" />
