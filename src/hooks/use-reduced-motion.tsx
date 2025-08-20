@@ -6,6 +6,9 @@ export function useReducedMotion() {
   const [shouldReduceMotion, setShouldReduceMotion] = useState(false);
 
   useEffect(() => {
+    // Ensure we're on the client side
+    if (typeof window === 'undefined') return;
+
     // Check user's motion preference
     const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
     setShouldReduceMotion(motionQuery.matches);
@@ -26,6 +29,9 @@ export function useDevicePerformance() {
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
+    // Ensure we're on the client side
+    if (typeof window === 'undefined' || typeof navigator === 'undefined') return;
+
     // Check if device is mobile
     const checkMobile = () => {
       const isMobileDevice = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(

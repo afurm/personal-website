@@ -27,19 +27,25 @@ const navigationItems = [
 ];
 
 export function MobileBottomNav() {
+  const pathname = usePathname();
+  
+  // Hide on non-homepage - must be before any other hooks
+  if (pathname !== '/') return null;
+
   const [activeSection, setActiveSection] = useState('hero');
   const [isExpanded, setIsExpanded] = useState(false);
   const [lastScrollY, setLastScrollY] = useState(0);
   const [isVisible, setIsVisible] = useState(true);
-  const pathname = usePathname();
   const shouldReduceMotion = useReducedMotion();
   const { isLowPowerMode } = useDevicePerformance();
 
-  // Hide on non-homepage
-  if (pathname !== '/') return null;
-
   // Robust section detection function
   const detectActiveSection = () => {
+    // Ensure we're on the client side
+    if (typeof window === 'undefined' || typeof document === 'undefined') {
+      return 'hero';
+    }
+
     const sections = navigationItems.map(item => item.section);
     let currentSection = 'hero';
 
@@ -92,6 +98,9 @@ export function MobileBottomNav() {
 
   // Track active section based on scroll position
   useEffect(() => {
+    // Ensure we're on the client side
+    if (typeof window === 'undefined') return;
+
     let ticking = false;
 
     const handleScroll = () => {
@@ -133,6 +142,9 @@ export function MobileBottomNav() {
 
   // Initial section detection on mount with delay
   useEffect(() => {
+    // Ensure we're on the client side
+    if (typeof window === 'undefined') return;
+
     const timer = setTimeout(() => {
       const newActiveSection = detectActiveSection();
       setActiveSection(newActiveSection);
@@ -148,16 +160,18 @@ export function MobileBottomNav() {
     // Track mobile navigation
     trackMobile.mobileNavigation('navigate');
     
-    // Haptic feedback for touch devices
-    if ('vibrate' in navigator) {
+    // Haptic feedback for touch devices (client-side only)
+    if (typeof navigator !== 'undefined' && 'vibrate' in navigator) {
       navigator.vibrate(10); // Light haptic feedback
       trackMobile.hapticFeedback('navigation');
     }
     
-    // Smooth scroll to section
-    const element = document.getElementById(section);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    // Smooth scroll to section (client-side only)
+    if (typeof document !== 'undefined') {
+      const element = document.getElementById(section);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
     }
   };
 
@@ -245,8 +259,8 @@ export function MobileBottomNav() {
               whileTap={{ scale: 0.9 }}
               onClick={() => {
                 setIsExpanded(!isExpanded);
-                // Haptic feedback
-                if ('vibrate' in navigator) {
+                // Haptic feedback (client-side only)
+                if (typeof navigator !== 'undefined' && 'vibrate' in navigator) {
                   navigator.vibrate(5);
                 }
               }}
