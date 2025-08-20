@@ -48,12 +48,25 @@ export function GlassCard({
   );
 }
 
+interface GlassButtonProps {
+  children: React.ReactNode;
+  className?: string;
+  onClick?: React.MouseEventHandler<HTMLButtonElement>;
+  disabled?: boolean;
+  type?: 'button' | 'submit' | 'reset';
+  form?: string;
+  'aria-label'?: string;
+}
+
 export function GlassButton({ 
   children, 
   className,
   onClick,
-  ...props 
-}: React.ButtonHTMLAttributes<HTMLButtonElement> & { className?: string }) {
+  disabled,
+  type = 'button',
+  form,
+  'aria-label': ariaLabel,
+}: GlassButtonProps) {
   return (
     <motion.button
       whileHover={{ scale: 1.02 }}
@@ -63,7 +76,10 @@ export function GlassButton({
         className
       )}
       onClick={onClick}
-      {...props}
+      disabled={disabled}
+      type={type}
+      form={form}
+      aria-label={ariaLabel}
     >
       {children}
     </motion.button>
