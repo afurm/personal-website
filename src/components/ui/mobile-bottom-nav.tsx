@@ -12,27 +12,42 @@ import {
   FaEnvelope, 
   FaHome,
   FaChevronUp,
-  FaChevronDown
+  FaChevronDown,
+  FaBlog,
+  FaShare,
+  FaMoon,
+  FaSun
 } from 'react-icons/fa';
 import { useReducedMotion, useDevicePerformance } from '@/hooks/use-reduced-motion';
 import { trackMobile } from '@/lib/analytics';
+import { useTheme } from 'next-themes';
+import { ShareButton } from './share-button';
 
-const navigationItems = [
-  { href: '#hero', label: 'Home', icon: FaHome, section: 'hero' },
-  { href: '#about', label: 'About', icon: FaUser, section: 'about' },
-  { href: '#experience', label: 'Work', icon: FaBriefcase, section: 'experience' },
-  { href: '#skills', label: 'Skills', icon: FaCog, section: 'skills' },
-  { href: '#education', label: 'Education', icon: FaGraduationCap, section: 'education' },
-  { href: '#contact', label: 'Contact', icon: FaEnvelope, section: 'contact' },
-];
+const getNavigationItems = (pathname: string) => {
+  const isHomePage = pathname === '/';
+  const getNavLink = (section: string) => {
+    return isHomePage ? `#${section}` : `/#${section}`;
+  };
+
+  return [
+    { href: isHomePage ? '#hero' : '/', label: 'Home', icon: FaHome, section: 'hero' },
+    { href: getNavLink('about'), label: 'About', icon: FaUser, section: 'about' },
+    { href: getNavLink('experience'), label: 'Work', icon: FaBriefcase, section: 'experience' },
+    { href: getNavLink('skills'), label: 'Skills', icon: FaCog, section: 'skills' },
+    { href: '/blogs', label: 'Blog', icon: FaBlog, section: 'blog' },
+    { href: getNavLink('education'), label: 'Education', icon: FaGraduationCap, section: 'education' },
+    { href: getNavLink('contact'), label: 'Contact', icon: FaEnvelope, section: 'contact' },
+  ];
+};
 
 export function MobileBottomNav() {
   const pathname = usePathname();
-  
-  // Hide on non-homepage - must be before any other hooks
-  if (pathname !== '/') return null;
+  const navigationItems = getNavigationItems(pathname);
 
-  const [activeSection, setActiveSection] = useState('hero');
+  const [activeSection, setActiveSection] = useState(() => {
+    if (pathname.startsWith('/blogs')) return 'blog';
+    return 'hero';
+  });
   const [isExpanded, setIsExpanded] = useState(false);
   const [lastScrollY, setLastScrollY] = useState(0);
   const [isVisible, setIsVisible] = useState(true);
@@ -43,7 +58,13 @@ export function MobileBottomNav() {
   const detectActiveSection = () => {
     // Ensure we're on the client side
     if (typeof window === 'undefined' || typeof document === 'undefined') {
+      if (pathname.startsWith('/blogs')) return 'blog';
       return 'hero';
+    }
+
+    // Handle blog pages
+    if (pathname.startsWith('/blogs')) {
+      return 'blog';
     }
 
     const sections = navigationItems.map(item => item.section);
@@ -166,12 +187,16 @@ export function MobileBottomNav() {
       trackMobile.hapticFeedback('navigation');
     }
     
-    // Smooth scroll to section (client-side only)
-    if (typeof document !== 'undefined') {
+    // Handle different navigation types
+    if (href.startsWith('#') && typeof document !== 'undefined') {
+      // Same page section navigation
       const element = document.getElementById(section);
       if (element) {
         element.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
+    } else if (href.startsWith('/')) {
+      // Different page navigation - let Next.js handle it
+      // The Link component will handle the navigation
     }
   };
 
@@ -217,37 +242,41 @@ export function MobileBottomNav() {
                 const Icon = item.icon;
 
                 return (
-                  <motion.button
+                  <Link
                     key={item.section}
-                    layout={!shouldReduceMotion}
-                    initial={shouldReduceMotion ? {} : { opacity: 0, scale: 0.8 }}
-                    animate={shouldReduceMotion ? {} : { opacity: 1, scale: 1 }}
-                    exit={shouldReduceMotion ? {} : { opacity: 0, scale: 0.8 }}
-                    whileTap={shouldReduceMotion ? {} : { scale: 0.9 }}
+                    href={item.href}
                     onClick={() => handleNavClick(item.href, item.section)}
-                    className={`relative flex flex-col items-center justify-center p-3 rounded-xl transition-all duration-200 min-h-[48px] min-w-[48px] ${
-                      isActive 
-                        ? 'bg-black dark:bg-white text-white dark:text-black shadow-glass' 
-                        : 'text-muted-foreground hover:text-foreground hover:glass-medium'
-                    }`}
-                    aria-label={item.label}
                   >
-                    <Icon className="w-4 h-4 mb-1" />
-                    <span className="text-xs font-medium leading-none">
-                      {item.label}
-                    </span>
+                    <motion.div
+                      layout={!shouldReduceMotion}
+                      initial={shouldReduceMotion ? {} : { opacity: 0, scale: 0.8 }}
+                      animate={shouldReduceMotion ? {} : { opacity: 1, scale: 1 }}
+                      exit={shouldReduceMotion ? {} : { opacity: 0, scale: 0.8 }}
+                      whileTap={shouldReduceMotion ? {} : { scale: 0.9 }}
+                      className={`relative flex flex-col items-center justify-center p-3 rounded-xl transition-all duration-200 min-h-[48px] min-w-[48px] ${
+                        isActive 
+                          ? 'bg-black dark:bg-white text-white dark:text-black shadow-glass' 
+                          : 'text-muted-foreground hover:text-foreground hover:glass-medium'
+                      }`}
+                      aria-label={item.label}
+                    >
+                      <Icon className="w-4 h-4 mb-1" />
+                      <span className="text-xs font-medium leading-none">
+                        {item.label}
+                      </span>
 
-                    {/* Active indicator */}
-                    {isActive && (
-                      <motion.div
-                        layoutId="activeIndicator"
-                        className="absolute -top-1 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-white dark:bg-black rounded-full"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ duration: 0.2 }}
-                      />
-                    )}
-                  </motion.button>
+                      {/* Active indicator */}
+                      {isActive && (
+                        <motion.div
+                          layoutId="activeIndicator"
+                          className="absolute -top-1 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-white dark:bg-black rounded-full"
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          transition={{ duration: 0.2 }}
+                        />
+                      )}
+                    </motion.div>
+                  </Link>
                 );
               })}
             </AnimatePresence>
@@ -297,45 +326,162 @@ export function MobileBottomNav() {
                 const Icon = item.icon;
 
                 return (
-                  <motion.button
+                  <Link
                     key={item.section}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -20 }}
-                    whileTap={{ scale: 0.9 }}
+                    href={item.href}
                     onClick={() => {
                       handleNavClick(item.href, item.section);
                       setIsExpanded(false); // Auto-collapse when navigating
                     }}
-                    className={`relative flex flex-col items-center justify-center p-3 rounded-xl transition-all duration-200 min-h-[48px] min-w-[48px] ${
-                      isActive 
-                        ? 'bg-black dark:bg-white text-white dark:text-black shadow-glass' 
-                        : 'text-muted-foreground hover:text-foreground hover:glass-medium'
-                    }`}
-                    aria-label={item.label}
                   >
-                    <Icon className="w-4 h-4 mb-1" />
-                    <span className="text-xs font-medium leading-none">
-                      {item.label}
-                    </span>
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -20 }}
+                      whileTap={{ scale: 0.9 }}
+                      className={`relative flex flex-col items-center justify-center p-3 rounded-xl transition-all duration-200 min-h-[48px] min-w-[48px] ${
+                        isActive 
+                          ? 'bg-black dark:bg-white text-white dark:text-black shadow-glass' 
+                          : 'text-muted-foreground hover:text-foreground hover:glass-medium'
+                      }`}
+                      aria-label={item.label}
+                    >
+                      <Icon className="w-4 h-4 mb-1" />
+                      <span className="text-xs font-medium leading-none">
+                        {item.label}
+                      </span>
 
-                    {isActive && (
-                      <motion.div
-                        layoutId="activeIndicatorExpanded"
-                        className="absolute -top-1 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-white dark:bg-black rounded-full"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ duration: 0.2 }}
-                      />
-                    )}
-                  </motion.button>
+                      {isActive && (
+                        <motion.div
+                          layoutId="activeIndicatorExpanded"
+                          className="absolute -top-1 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-white dark:bg-black rounded-full"
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          transition={{ duration: 0.2 }}
+                        />
+                      )}
+                    </motion.div>
+                  </Link>
                 );
               })}
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Additional Controls - Theme Toggle, Share, Contact CTA - Only show when expanded */}
+        <AnimatePresence>
+          {isExpanded && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.3, delay: 0.1 }}
+              className="flex items-center justify-center gap-1 pt-3 mt-3 border-t border-white/20 dark:border-white/10"
+            >
+              {/* Theme Toggle */}
+              <ThemeToggleButton />
+              
+              {/* Share Button */}
+              <ShareButtonMobile />
+              
+              {/* Contact CTA */}
+              <Link
+                href={pathname === '/' ? '#contact' : '/#contact'}
+                className="relative flex flex-col items-center justify-center p-3 rounded-xl text-muted-foreground hover:text-foreground hover:glass-medium transition-all duration-200 min-h-[48px] min-w-[48px]"
+              >
+                <FaEnvelope className="w-4 h-4 mb-1" />
+                <span className="text-xs font-medium leading-none">
+                  Contact
+                </span>
+              </Link>
             </motion.div>
           )}
         </AnimatePresence>
       </motion.nav>
       </motion.div>
     </>
+  );
+}
+
+// Theme Toggle Component for Mobile Nav
+function ThemeToggleButton() {
+  const { setTheme, theme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return (
+      <div className="relative flex flex-col items-center justify-center p-3 rounded-xl min-h-[48px] min-w-[48px] text-muted-foreground">
+        <FaSun className="w-4 h-4 mb-1" />
+        <span className="text-xs font-medium leading-none">Theme</span>
+      </div>
+    );
+  }
+
+  return (
+    <motion.button
+      whileHover={{ scale: 1.05 }}
+      whileTap={{ scale: 0.95 }}
+      onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
+      className="relative flex flex-col items-center justify-center p-3 rounded-xl text-muted-foreground hover:text-foreground hover:glass-medium transition-all duration-200 min-h-[48px] min-w-[48px]"
+      aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} theme`}
+    >
+      {theme === 'light' ? (
+        <FaMoon className="w-4 h-4 mb-1" />
+      ) : (
+        <FaSun className="w-4 h-4 mb-1" />
+      )}
+      <span className="text-xs font-medium leading-none">
+        Theme
+      </span>
+    </motion.button>
+  );
+}
+
+// Share Button Component for Mobile Nav
+function ShareButtonMobile() {
+  const [isSharing, setIsSharing] = useState(false);
+
+  const handleShare = async () => {
+    setIsSharing(true);
+    
+    const shareData = {
+      title: "Andrii Furmanets - Senior Full-Stack Developer",
+      text: "Check out my portfolio and latest projects!",
+      url: window.location.href,
+    };
+
+    try {
+      if (navigator.share && typeof navigator.share === 'function') {
+        await navigator.share(shareData);
+      } else {
+        // Fallback to clipboard
+        await navigator.clipboard.writeText(window.location.href);
+        // Could show a toast notification here
+      }
+    } catch (err) {
+      console.log('Error sharing:', err);
+    } finally {
+      setIsSharing(false);
+    }
+  };
+
+  return (
+    <motion.button
+      whileHover={{ scale: 1.05 }}
+      whileTap={{ scale: 0.95 }}
+      onClick={handleShare}
+      disabled={isSharing}
+      className="relative flex flex-col items-center justify-center p-3 rounded-xl text-muted-foreground hover:text-foreground hover:glass-medium transition-all duration-200 min-h-[48px] min-w-[48px]"
+      aria-label="Share this page"
+    >
+      <FaShare className="w-4 h-4 mb-1" />
+      <span className="text-xs font-medium leading-none">
+        Share
+      </span>
+    </motion.button>
   );
 }

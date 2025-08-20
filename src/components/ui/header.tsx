@@ -58,7 +58,7 @@ export function Header() {
 
   return (
     <>
-      {/* Floating Navigation */}
+      {/* Floating Navigation - Hidden on Mobile */}
       <motion.header
         initial={{ y: 0 }}
         animate={{ 
@@ -69,7 +69,7 @@ export function Header() {
           duration: 0.3,
           ease: [0.25, 0.46, 0.45, 0.94]
         }}
-        className="fixed top-0 inset-x-0 z-50 w-full"
+        className="fixed top-0 inset-x-0 z-50 w-full hidden md:block"
       >
         <div className={`container mx-auto transition-all duration-300 ${
           isScrolled 

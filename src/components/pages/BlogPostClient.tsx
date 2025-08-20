@@ -35,7 +35,7 @@ export function BlogPostClient({ post, readingTime, relatedPosts, canonicalUrl }
     }, [post.title]);
 
     return (
-        <div className="container mx-auto px-4 pt-24 pb-12">
+        <div className="container mx-auto px-4 pt-4 md:pt-24 pb-12">
             <Link
                 href="/blogs"
                 className="inline-flex items-center mb-8 text-sm font-medium text-blue-600 dark:text-blue-400 hover:underline"
