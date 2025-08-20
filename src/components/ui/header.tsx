@@ -140,30 +140,35 @@ export function Header() {
 
             {/* Mobile Menu Button */}
             <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="md:hidden flex items-center justify-center p-3 rounded-xl glass hover:glass-light transition-all duration-200 min-h-[44px] min-w-[44px]"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className="md:hidden flex items-center justify-center p-3 rounded-xl glass min-h-[44px] min-w-[44px] will-change-transform"
               onClick={toggleMenu}
               aria-label="Toggle menu"
+              style={{ 
+                transition: 'transform 0.15s ease-out',
+                backfaceVisibility: 'hidden',
+                WebkitBackfaceVisibility: 'hidden'
+              }}
             >
               <AnimatePresence mode="wait">
                 {isMenuOpen ? (
                   <motion.div
                     key="close"
-                    initial={{ rotate: 0 }}
-                    animate={{ rotate: 180 }}
-                    exit={{ rotate: 0 }}
-                    transition={{ duration: 0.2 }}
+                    initial={{ opacity: 0, rotate: -90 }}
+                    animate={{ opacity: 1, rotate: 0 }}
+                    exit={{ opacity: 0, rotate: 90 }}
+                    transition={{ duration: 0.15, ease: "easeOut" }}
                   >
                     <X className="h-5 w-5" />
                   </motion.div>
                 ) : (
                   <motion.div
                     key="menu"
-                    initial={{ rotate: 180 }}
-                    animate={{ rotate: 0 }}
-                    exit={{ rotate: 180 }}
-                    transition={{ duration: 0.2 }}
+                    initial={{ opacity: 0, rotate: 90 }}
+                    animate={{ opacity: 1, rotate: 0 }}
+                    exit={{ opacity: 0, rotate: -90 }}
+                    transition={{ duration: 0.15, ease: "easeOut" }}
                   >
                     <Menu className="h-5 w-5" />
                   </motion.div>
@@ -203,18 +208,27 @@ export function Header() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
-              className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[9998] md:hidden"
+              transition={{ duration: 0.15, ease: "easeOut" }}
+              className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[9998] md:hidden mobile-menu-optimized"
               onClick={toggleMenu}
             />
             
             {/* Menu Panel */}
             <motion.div
-              initial={{ opacity: 0, y: '-100%' }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: '-100%' }}
-              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-              className="fixed top-4 left-4 right-4 glass-light rounded-2xl shadow-glass-lg z-[9999] md:hidden"
+              initial={{ opacity: 0, y: '-100%', scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: '-100%', scale: 0.95 }}
+              transition={{ 
+                type: 'tween',
+                duration: 0.25,
+                ease: [0.25, 0.46, 0.45, 0.94]
+              }}
+              className="fixed top-4 left-4 right-4 glass-light rounded-2xl shadow-glass-lg z-[9999] md:hidden mobile-menu-optimized"
+              style={{
+                backfaceVisibility: 'hidden',
+                WebkitBackfaceVisibility: 'hidden',
+                transformStyle: 'preserve-3d'
+              }}
             >
               {/* Header */}
               <div className="flex items-center justify-between p-6">
@@ -231,7 +245,12 @@ export function Header() {
               </div>
 
               {/* Navigation Links */}
-              <nav className="px-6 pb-6 space-y-2">
+              <motion.nav 
+                className="px-6 pb-6 space-y-2"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.1, duration: 0.2 }}
+              >
                 {[
                   { href: getNavLink('about'), label: 'About' },
                   { href: getNavLink('experience'), label: 'Experience' },
@@ -239,51 +258,36 @@ export function Header() {
                   { href: getNavLink('education'), label: 'Education' },
                   { href: '/blogs', label: 'Blog' },
                   { href: getNavLink('contact'), label: 'Contact' },
-                ].map((item, index) => (
-                  <motion.div
-                    key={item.label}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: index * 0.1 }}
-                  >
+                ].map((item) => (
+                  <div key={item.label}>
                     <Link
                       href={item.href}
-                      className="block py-3 px-4 rounded-xl text-lg font-medium text-foreground/80 hover:text-foreground hover:glass-medium transition-all duration-200"
+                      className="block py-3 px-4 rounded-xl text-lg font-medium text-foreground/80 hover:text-foreground hover:glass-medium transition-colors duration-150"
                       onClick={toggleMenu}
                     >
                       {item.label}
                     </Link>
-                  </motion.div>
+                  </div>
                 ))}
 
                 {/* Theme Toggle and Share */}
-                <motion.div
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.6 }}
-                  className="pt-4 flex justify-center gap-4"
-                >
+                <div className="pt-4 flex justify-center gap-4">
                   {/* Custom Share Button for Mobile Menu */}
                   <MobileMenuShareButton />
                   <ThemeToggle />
-                </motion.div>
+                </div>
 
                 {/* CTA Button */}
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.7 }}
-                  className="pt-6"
-                >
+                <div className="pt-6">
                   <Link
                     href={getNavLink('contact')}
-                    className="glass-button w-full flex items-center justify-center rounded-xl bg-black dark:bg-white px-6 py-3 text-base font-semibold text-white dark:text-black shadow-glass transition-all duration-300 hover:shadow-glass-lg"
+                    className="glass-button w-full flex items-center justify-center rounded-xl bg-black dark:bg-white px-6 py-3 text-base font-semibold text-white dark:text-black shadow-glass transition-all duration-200 hover:shadow-glass-lg"
                     onClick={toggleMenu}
                   >
                     Get In Touch
                   </Link>
-                </motion.div>
-              </nav>
+                </div>
+              </motion.nav>
             </motion.div>
           </>
         )}

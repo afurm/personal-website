@@ -272,6 +272,11 @@ body::before {
     -webkit-backdrop-filter: blur(20px);
     border: 1px solid rgba(255, 255, 255, 0.2);
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    /* Prevent blinking on mobile */
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
   }
   
   .glass-light {
@@ -280,6 +285,11 @@ body::before {
     -webkit-backdrop-filter: blur(25px);
     border: 1px solid rgba(255, 255, 255, 0.3);
     box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
+    /* Prevent blinking on mobile */
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
   }
   
   .glass-medium {
@@ -505,6 +515,21 @@ body::before {
       rgba(255, 255, 255, 0.05) 0%,
       transparent 50%
     );
+  }
+  
+  /* Mobile menu optimizations */
+  .mobile-menu-optimized {
+    will-change: transform, opacity;
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    transform-style: preserve-3d;
+  }
+  
+  .mobile-menu-optimized * {
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
   }
   
   /* Dynamic Text Effects */
