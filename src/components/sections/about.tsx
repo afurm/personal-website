@@ -6,17 +6,17 @@ import Link from 'next/link';
 
 export function About() {
   return (
-    <section id="about" className="py-16 md:py-24">
-      <div className="container px-4 md:px-6">
+    <section id="about" className="spacing-section">
+      <div className="container spacing-container">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
-          className="flex flex-col items-center justify-center space-y-4 text-center mb-12"
+          className="flex flex-col items-center justify-center spacing-gap text-center spacing-heading"
         >
           <div className="space-y-2">
-            <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
+            <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl text-gradient-glass">
               About Me
             </h2>
             <p className="mx-auto max-w-[700px] text-muted-foreground md:text-xl">
@@ -49,7 +49,7 @@ export function About() {
 
           <h3 className="text-2xl font-bold mt-8">What I Bring to the Tech Industry</h3>
 
-          <div className="bg-secondary/30 p-6 rounded-lg my-6">
+          <div className="glass-card p-6 rounded-2xl my-6">
             <h4 className="text-xl font-bold">🚀 A Versatile and Well-Rounded Engineer</h4>
             <p>
               I thrive at the intersection of <strong>frontend and backend development</strong>,
@@ -89,7 +89,7 @@ export function About() {
             </ul>
           </div>
 
-          <div className="bg-secondary/30 p-6 rounded-lg my-6">
+          <div className="glass-card p-6 rounded-2xl my-6">
             <h4 className="text-xl font-bold">⚡ Problem-Solver, Not Just a Coder</h4>
             <p>
               I don't just write code—I{' '}
@@ -125,7 +125,7 @@ export function About() {
             </ul>
           </div>
 
-          <div className="bg-secondary/30 p-6 rounded-lg my-6">
+          <div className="glass-card p-6 rounded-2xl my-6">
             <h4 className="text-xl font-bold">👨‍💻 A Technical Leader with a Growth Mindset</h4>
             <p>
               As a senior developer, I don't just build—I help{' '}
@@ -166,7 +166,7 @@ export function About() {
             </ul>
           </div>
 
-          <div className="bg-secondary/30 p-6 rounded-lg my-6">
+          <div className="glass-card p-6 rounded-2xl my-6">
             <h4 className="text-xl font-bold">
               🎯 A Developer Who Understands Business & Product Needs
             </h4>
@@ -197,7 +197,7 @@ export function About() {
             </p>
           </div>
 
-          <div className="bg-secondary/30 p-6 rounded-lg my-6">
+          <div className="glass-card p-6 rounded-2xl my-6">
             <h4 className="text-xl font-bold">📚 A Lifelong Learner and Innovator</h4>
             <p>
               Technology evolves fast, and I make it a priority to{' '}
@@ -241,7 +241,7 @@ export function About() {
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-6">
               <Link
                 href="#contact"
-                className="inline-flex h-10 items-center justify-center rounded-md bg-primary px-8 text-sm font-medium text-primary-foreground shadow transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50"
+                className="glass-button inline-flex h-10 items-center justify-center rounded-2xl bg-black dark:bg-white px-8 text-sm font-medium text-white dark:text-black shadow-glass transition-all duration-300 hover:shadow-glass-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
               >
                 Let's build something amazing together!
               </Link>

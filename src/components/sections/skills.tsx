@@ -53,17 +53,17 @@ const skillCategories = [
 
 export function Skills() {
   return (
-    <section id="skills" className="py-16 md:py-24 bg-secondary/30">
-      <div className="container px-4 md:px-6">
+    <section id="skills" className="spacing-section">
+      <div className="container spacing-container">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
-          className="flex flex-col items-center justify-center space-y-4 text-center"
+          className="flex flex-col items-center justify-center spacing-gap text-center spacing-heading"
         >
           <div className="space-y-2">
-            <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
+            <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl text-gradient-glass">
               Skills & Expertise
             </h2>
             <p className="mx-auto max-w-[700px] text-muted-foreground md:text-xl">
@@ -72,7 +72,7 @@ export function Skills() {
           </div>
         </motion.div>
 
-        <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid spacing-gap md:grid-cols-2 lg:grid-cols-3">
           {skillCategories.map((skillCategory, categoryIndex) => (
             <motion.div
               key={categoryIndex}
@@ -80,7 +80,7 @@ export function Skills() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.3, delay: categoryIndex * 0.1 }}
-              className="rounded-lg border border-border bg-card p-6 shadow-sm"
+              className="glass-card glass-shimmer rounded-2xl p-6 shadow-glass hover:shadow-glass-lg"
             >
               <h3 className="text-xl font-bold mb-4">{skillCategory.category}</h3>
               <div className="flex flex-wrap gap-2">
@@ -91,7 +91,7 @@ export function Skills() {
                     whileInView={{ opacity: 1, scale: 1 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.2, delay: skillIndex * 0.05 + categoryIndex * 0.1 }}
-                    className="inline-flex items-center rounded-md bg-secondary px-3 py-1 text-sm font-medium"
+                    className="inline-flex items-center rounded-full glass px-3 py-1 text-sm font-medium"
                   >
                     {skill}
                   </motion.span>

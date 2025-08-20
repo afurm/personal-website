@@ -16,6 +16,9 @@ export default {
       },
     },
     extend: {
+      fontFamily: {
+        sans: ['var(--font-inter)', 'system-ui', 'sans-serif'],
+      },
       colors: {
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
@@ -25,6 +28,29 @@ export default {
         primary: {
           DEFAULT: 'hsl(var(--primary))',
           foreground: 'hsl(var(--primary-foreground))',
+          50: 'hsl(var(--primary-50))',
+          100: 'hsl(var(--primary-100))',
+          200: 'hsl(var(--primary-200))',
+          300: 'hsl(var(--primary-300))',
+          400: 'hsl(var(--primary-400))',
+          500: 'hsl(var(--primary-500))',
+          600: 'hsl(var(--primary-600))',
+          700: 'hsl(var(--primary-700))',
+          800: 'hsl(var(--primary-800))',
+          900: 'hsl(var(--primary-900))',
+        },
+        'accent-blue': {
+          DEFAULT: 'hsl(var(--accent-blue))',
+          50: 'hsl(var(--accent-blue-50))',
+          100: 'hsl(var(--accent-blue-100))',
+          500: 'hsl(var(--accent-blue-500))',
+          600: 'hsl(var(--accent-blue-600))',
+        },
+        glass: {
+          white: 'hsl(var(--glass-white))',
+          light: 'hsl(var(--glass-light))',
+          medium: 'hsl(var(--glass-medium))',
+          dark: 'hsl(var(--glass-dark))',
         },
         secondary: {
           DEFAULT: 'hsl(var(--secondary))',
@@ -33,6 +59,14 @@ export default {
         destructive: {
           DEFAULT: 'hsl(var(--destructive))',
           foreground: 'hsl(var(--destructive-foreground))',
+        },
+        success: {
+          DEFAULT: 'hsl(var(--success))',
+          foreground: 'hsl(var(--success-foreground))',
+        },
+        warning: {
+          DEFAULT: 'hsl(var(--warning))',
+          foreground: 'hsl(var(--warning-foreground))',
         },
         muted: {
           DEFAULT: 'hsl(var(--muted))',

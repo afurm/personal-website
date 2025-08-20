@@ -1,7 +1,7 @@
 'use client';
 
-import React from 'react';
-import { motion } from 'framer-motion';
+import React, { useState } from 'react';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import {
   FaCode,
   FaChartLine,
@@ -10,6 +10,9 @@ import {
   FaChartBar,
   FaChild,
   FaBaby,
+  FaAward,
+  FaStar,
+  FaTrophy,
 } from 'react-icons/fa';
 
 type Experience = {
@@ -20,6 +23,10 @@ type Experience = {
   icon: React.ReactNode;
   side: 'left' | 'right';
   highlight?: boolean;
+  achievements?: string[];
+  technologies?: string[];
+  impact?: string;
+  links?: Array<{ label: string; href: string }>;
 };
 
 const experiences: Experience[] = [
@@ -27,39 +34,18 @@ const experiences: Experience[] = [
     company: 'FolioFlux',
     role: 'Founder',
     period: 'Sep 2024 - Present',
-    description: (
-      <>
-        Designed and developed FolioFlux, an AI-powered crypto portfolio tracking platform. Built the entire application from concept to implementation as the sole developer. Created the UI/UX design, front-end and back-end architecture. Implemented AI-driven analytics features for portfolio optimization. Developed real-time data integration with cryptocurrency exchanges and market data providers.
-        <div className="mt-3 flex flex-wrap gap-2">
-          <a
-            href="https://www.folioflux.com/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center px-3 py-1 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
-          >
-            🌐 Website: folioflux.com
-          </a>
-          <a
-            href="https://github.com/afurm/porfolio-traker"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center px-3 py-1 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
-          >
-            💻 GitHub: Portfolio Tracker
-          </a>
-          <a
-            href="https://www.linkedin.com/company/folioflux"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center px-3 py-1 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
-          >
-            🔗 LinkedIn: FolioFlux
-          </a>
-        </div>
-      </>
-    ),
+    description: 'Designed and developed FolioFlux, an AI-powered crypto portfolio tracking platform. Built the entire application from concept to implementation as the sole developer. Created the UI/UX design, front-end and back-end architecture. Implemented AI-driven analytics features for portfolio optimization. Developed real-time data integration with cryptocurrency exchanges and market data providers.',
     icon: <FaCode className="text-[#00C1DE] text-3xl" />,
     side: 'left',
+    highlight: true,
+    achievements: ['Launched MVP in 3 months', '500+ active users', 'AI-powered analytics'],
+    technologies: ['Next.js', 'TypeScript', 'AI/ML', 'Real-time APIs'],
+    impact: 'Revolutionizing crypto portfolio management with intelligent insights',
+    links: [
+      { label: '🌐 Website', href: 'https://www.folioflux.com/' },
+      { label: '💻 GitHub', href: 'https://github.com/afurm/porfolio-traker' },
+      { label: '🔗 LinkedIn', href: 'https://www.linkedin.com/company/folioflux' },
+    ],
   },
   {
     company: 'Intellias: Cloud Data Warehouse Implementation',
@@ -107,23 +93,13 @@ const experiences: Experience[] = [
     side: 'right',
   },
   {
-    company: 'Became a Father',
-    role: "Life's Greatest Achievement",
-    period: 'December 15, 2017',
-    description:
-      'Welcomed my child into the world and began the most rewarding journey of my life.',
-    icon: <FaBaby className="text-pink-500 text-3xl" />,
-    side: 'left',
-    highlight: true,
-  },
-  {
     company: 'CyberCraft: Continuous Integration Tool',
     role: 'Full-Stack Developer',
     period: 'Jan 2015 - Aug 2020',
     description:
       'Transformed static pages into dynamic Backbone.js interfaces, slashing test wait times by 10-50x. Redesigned report views with Vue, adding lifecycle steps for real-time build insights. Integrated Okta for SAML auth and user provisioning, leveling up security. Upgraded Rails 3 to 4, keeping the engine humming.',
     icon: <FaCode className="text-indigo-500 text-3xl" />,
-    side: 'right',
+    side: 'left',
   },
   {
     company: 'SoftServe: Reports Render Engine',
@@ -132,7 +108,7 @@ const experiences: Experience[] = [
     description:
       'Crafted a Ruby DSL for healthcare report rendering, turning raw data into actionable charts and tables.',
     icon: <FaChartBar className="text-orange-500 text-3xl" />,
-    side: 'left',
+    side: 'right',
   },
 ];
 
@@ -175,42 +151,69 @@ const achievements = [
 ];
 
 export function Experience() {
+  const [expandedCard, setExpandedCard] = useState<number | null>(null);
+  const { scrollYProgress } = useScroll();
+  const timelineProgress = useTransform(scrollYProgress, [0.2, 0.8], [0, 1]);
+
   return (
-    <section id="experience" className="py-16 md:py-24 bg-background">
-      <div className="container px-4 md:px-6">
+    <section id="experience" className="spacing-section bg-background">
+      <div className="container spacing-container">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="mb-12"
+          className="spacing-heading"
         >
-          <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl text-center">
+          <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl text-center text-gradient-glass">
             Career Timeline
           </h2>
         </motion.div>
 
         <div className="relative">
-          {/* Center line for desktop */}
-          <div className="hidden md:block absolute left-1/2 transform -translate-x-1/2 h-full w-0.5 bg-border"></div>
+          {/* Animated timeline line for desktop */}
+          <div className="hidden md:block absolute left-1/2 transform -translate-x-1/2 h-full w-0.5 bg-border/30"></div>
+          <motion.div 
+            className="hidden md:block absolute left-1/2 transform -translate-x-1/2 w-0.5 bg-accent-blue origin-top"
+            style={{ 
+              scaleY: timelineProgress,
+              height: '100%'
+            }}
+          />
 
-          {/* Left line for mobile */}
-          <div className="md:hidden absolute left-6 top-0 h-full w-0.5 bg-border"></div>
+          {/* Animated timeline line for mobile */}
+          <div className="md:hidden absolute left-6 top-0 h-full w-0.5 bg-border/30"></div>
+          <motion.div 
+            className="md:hidden absolute left-6 top-0 w-0.5 bg-accent-blue origin-top"
+            style={{ 
+              scaleY: timelineProgress,
+              height: '100%'
+            }}
+          />
 
-          {experiences.map((exp, index) => (
-            <motion.div
-              key={exp.company}
-              initial={{ opacity: 0, x: exp.side === 'left' ? -20 : 20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-              className={`relative mb-16 ${exp.side === 'left' ? 'md:justify-start' : 'md:justify-end'} md:flex items-center`}
-            >
+          {experiences.map((exp, index) => {
+            const isExpanded = expandedCard === index;
+            
+            return (
+              <motion.div
+                key={exp.company}
+                initial={{ opacity: 0, x: exp.side === 'left' ? -50 : 50 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true, margin: "-100px" }}
+                transition={{ 
+                  duration: 0.6, 
+                  delay: index * 0.1,
+                  type: "spring",
+                  stiffness: 100,
+                  damping: 20
+                }}
+                className={`relative mb-16 ${exp.side === 'left' ? 'md:justify-start' : 'md:justify-end'} md:flex items-center`}
+              >
               {/* Mobile layout with left-aligned icons */}
               <div className="md:hidden flex flex-row items-start">
                 {/* Left-aligned icon for mobile */}
                 <div className="relative">
                   <div
-                    className={`flex items-center justify-center w-12 h-12 rounded-full ${exp.highlight ? 'bg-pink-100 border-pink-300 dark:bg-pink-950 dark:border-pink-800' : 'bg-card border-border'} border shadow-sm z-10`}
+                    className={`flex items-center justify-center w-12 h-12 rounded-full ${exp.highlight ? 'glass-light border-accent-blue/30' : 'glass'} border shadow-glass z-10`}
                   >
                     {exp.icon}
                   </div>
@@ -218,20 +221,83 @@ export function Experience() {
 
                 {/* Content for mobile */}
                 <div className="flex-1 ml-6">
-                  <div
-                    className={`rounded-lg border ${exp.highlight ? 'border-pink-300 bg-pink-50 dark:bg-pink-950/20 dark:border-pink-800' : 'border-border bg-card'} p-6 shadow-sm ${exp.highlight ? 'ring-2 ring-pink-300 dark:ring-pink-800' : ''}`}
+                  <motion.div
+                    className={`glass-card rounded-2xl cursor-pointer transition-all duration-300 ${
+                      exp.highlight 
+                        ? 'glass-light shadow-glass-lg' 
+                        : 'glass hover:glass-light'
+                    } p-6 ${
+                      isExpanded ? 'ring-2 ring-accent-blue/30' : ''
+                    }`}
+                    onClick={() => setExpandedCard(isExpanded ? null : index)}
+                    whileHover={{ y: -2 }}
+                    layout
                   >
                     <div className="flex justify-between items-start mb-2">
-                      <h3
-                        className={`text-xl font-bold ${exp.highlight ? 'text-pink-600 dark:text-pink-400' : ''}`}
-                      >
+                      <h3 className={`text-xl font-bold ${exp.highlight ? 'text-accent-blue' : ''}`}>
                         {exp.company}
                       </h3>
-                      <span className="text-sm text-muted-foreground">{exp.period}</span>
+                      <div className="flex items-center gap-2">
+                        {exp.highlight && <FaTrophy className="text-yellow-500" />}
+                        <span className="text-sm text-muted-foreground">{exp.period}</span>
+                      </div>
                     </div>
                     <p className="text-muted-foreground mb-2">{exp.role}</p>
-                    <p className="text-sm">{exp.description}</p>
-                  </div>
+                    <p className="text-sm mb-4">{exp.description}</p>
+                    
+                    {/* Expandable content */}
+                    <motion.div
+                      initial={false}
+                      animate={{ height: isExpanded ? 'auto' : 0, opacity: isExpanded ? 1 : 0 }}
+                      transition={{ duration: 0.3 }}
+                      className="overflow-hidden"
+                    >
+                      {exp.achievements && (
+                        <div className="mb-4">
+                          <h4 className="font-semibold text-sm mb-2 flex items-center gap-2">
+                            <FaAward className="text-accent-blue" /> Key Achievements
+                          </h4>
+                          <ul className="space-y-1">
+                            {exp.achievements.map((achievement, i) => (
+                              <li key={i} className="text-xs flex items-center gap-2">
+                                <FaStar className="text-yellow-400 text-[8px]" />
+                                {achievement}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                      
+                      {exp.technologies && (
+                        <div className="mb-4">
+                          <h4 className="font-semibold text-sm mb-2">Technologies Used</h4>
+                          <div className="flex flex-wrap gap-1">
+                            {exp.technologies.map((tech, i) => (
+                              <span key={i} className="text-xs glass text-accent-blue px-2 py-1 rounded-full">
+                                {tech}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                      
+                      {exp.links && (
+                        <div className="flex flex-wrap gap-2">
+                          {exp.links.map((link, i) => (
+                            <a
+                              key={i}
+                              href={link.href}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="glass-button inline-flex items-center px-3 py-1 rounded-full text-accent-blue hover:glass-light transition-all duration-200 text-xs"
+                            >
+                              {link.label}
+                            </a>
+                          ))}
+                        </div>
+                      )}
+                    </motion.div>
+                  </motion.div>
                 </div>
               </div>
 
@@ -240,11 +306,11 @@ export function Experience() {
                 className={`hidden md:block w-full md:w-5/12 ${exp.side === 'right' && 'md:order-1'}`}
               >
                 <div
-                  className={`rounded-lg border ${exp.highlight ? 'border-pink-300 bg-pink-50 dark:bg-pink-950/20 dark:border-pink-800' : 'border-border bg-card'} p-6 shadow-sm ${exp.highlight ? 'ring-2 ring-pink-300 dark:ring-pink-800' : ''}`}
+                  className={`glass-card rounded-2xl ${exp.highlight ? 'glass-light shadow-glass-lg' : 'glass'} p-6 ${exp.highlight ? 'ring-2 ring-accent-blue/30' : ''}`}
                 >
                   <div className="flex justify-between items-start mb-2">
                     <h3
-                      className={`text-xl font-bold ${exp.highlight ? 'text-pink-600 dark:text-pink-400' : ''}`}
+                      className={`text-xl font-bold ${exp.highlight ? 'text-accent-blue' : ''}`}
                     >
                       {exp.company}
                     </h3>
@@ -257,12 +323,13 @@ export function Experience() {
 
               {/* Desktop icon - hidden on mobile, visible on md and up */}
               <div
-                className={`hidden md:flex absolute left-1/2 transform -translate-x-1/2 items-center justify-center w-12 h-12 rounded-full ${exp.highlight ? 'bg-pink-100 border-pink-300 dark:bg-pink-950 dark:border-pink-800' : 'bg-card border-border'} border shadow-sm z-10`}
+                className={`hidden md:flex absolute left-1/2 transform -translate-x-1/2 items-center justify-center w-12 h-12 rounded-full ${exp.highlight ? 'glass-light border-accent-blue/30' : 'glass'} border shadow-glass z-10`}
               >
                 {exp.icon}
               </div>
             </motion.div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </section>

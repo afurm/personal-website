@@ -1,3 +1,15 @@
+import { type ClassValue, clsx } from 'clsx';
+import { twMerge } from 'tailwind-merge';
+
+/**
+ * Combines CSS classes using clsx and tailwind-merge
+ * @param inputs Class values to combine
+ * @returns Combined and deduplicated CSS classes
+ */
+export function cn(...inputs: ClassValue[]) {
+    return twMerge(clsx(inputs));
+}
+
 /**
  * Format a date string into a more readable format
  * @param dateString The date string to format (e.g., "2023-01-01")
