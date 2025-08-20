@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Share2, Copy, Check, Twitter, Linkedin, Mail } from 'lucide-react';
 import { useReducedMotion } from '@/hooks/use-reduced-motion';
+import { trackBusiness } from '@/lib/analytics';
 
 interface ShareButtonProps {
   title?: string;
@@ -78,6 +79,7 @@ export function ShareButton({
       action: () => {
         const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(shareUrl)}`;
         window.open(twitterUrl, '_blank');
+        trackBusiness.blogPostShare(title, 'Twitter');
         setIsOpen(false);
       },
       color: 'text-blue-500'
@@ -88,6 +90,7 @@ export function ShareButton({
       action: () => {
         const linkedinUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`;
         window.open(linkedinUrl, '_blank');
+        trackBusiness.blogPostShare(title, 'LinkedIn');
         setIsOpen(false);
       },
       color: 'text-blue-600'

@@ -1,10 +1,11 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { trackBusiness } from '@/lib/analytics';
 
 const contactFormSchema = z.object({
   name: z.string().min(2, { message: 'Name must be at least 2 characters.' }),
@@ -18,6 +19,11 @@ export function Contact() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Track contact form view
+  useEffect(() => {
+    trackBusiness.contactFormView();
+  }, []);
 
   const {
     register,
@@ -48,6 +54,7 @@ export function Contact() {
       }
 
       setIsSubmitted(true);
+      trackBusiness.contactFormSubmit();
       reset();
     } catch (err) {
       setError('Failed to send message. Please try again later.');

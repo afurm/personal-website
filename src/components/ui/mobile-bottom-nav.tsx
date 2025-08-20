@@ -15,6 +15,7 @@ import {
   FaChevronDown
 } from 'react-icons/fa';
 import { useReducedMotion, useDevicePerformance } from '@/hooks/use-reduced-motion';
+import { trackMobile } from '@/lib/analytics';
 
 const navigationItems = [
   { href: '#hero', label: 'Home', icon: FaHome, section: 'hero' },
@@ -37,48 +38,120 @@ export function MobileBottomNav() {
   // Hide on non-homepage
   if (pathname !== '/') return null;
 
-  // Track active section based on scroll position
-  useEffect(() => {
-    const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-      
-      // Show/hide based on scroll direction
-      if (currentScrollY > lastScrollY && currentScrollY > 100) {
-        setIsVisible(false);
-      } else {
-        setIsVisible(true);
-      }
-      setLastScrollY(currentScrollY);
+  // Robust section detection function
+  const detectActiveSection = () => {
+    const sections = navigationItems.map(item => item.section);
+    let currentSection = 'hero';
 
-      // Find active section
-      const sections = navigationItems.map(item => item.section);
-      let currentSection = 'hero';
+    // Get all sections and their positions
+    const sectionElements = sections.map(section => ({
+      section,
+      element: document.getElementById(section),
+    })).filter(item => item.element);
 
-      for (const section of sections) {
-        const element = document.getElementById(section);
-        if (element) {
-          const rect = element.getBoundingClientRect();
-          if (rect.top <= 100 && rect.bottom >= 100) {
-            currentSection = section;
-            break;
-          }
+    if (sectionElements.length === 0) return currentSection;
+
+    const scrollOffset = 150; // Account for header height
+    const scrollY = window.scrollY;
+
+    // Simple approach: find the section whose top is closest to the scroll position
+    let closestSection = 'hero';
+    let minDistance = Infinity;
+
+    for (const { section, element } of sectionElements) {
+      if (element) {
+        const rect = element.getBoundingClientRect();
+        const elementTop = scrollY + rect.top;
+        const distance = Math.abs(scrollY + scrollOffset - elementTop);
+
+        // If this section is closer to our scroll position
+        if (distance < minDistance && rect.top <= scrollOffset) {
+          minDistance = distance;
+          closestSection = section;
         }
       }
+    }
 
-      setActiveSection(currentSection);
+    // Debug logging (can be removed in production)
+    if (process.env.NODE_ENV === 'development') {
+      console.log('Section detection:', {
+        currentSection: closestSection,
+        scrollY: scrollY,
+        scrollOffset,
+        sectionElements: sectionElements.map(({ section, element }) => ({
+          section,
+          rect: element?.getBoundingClientRect(),
+          elementTop: element ? scrollY + element.getBoundingClientRect().top : null,
+          distance: element ? Math.abs(scrollY + scrollOffset - (scrollY + element.getBoundingClientRect().top)) : null
+        }))
+      });
+    }
+
+    return closestSection;
+  };
+
+  // Track active section based on scroll position
+  useEffect(() => {
+    let ticking = false;
+
+    const handleScroll = () => {
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          const currentScrollY = window.scrollY;
+          
+          // Show/hide based on scroll direction with improved logic
+          const scrollDifference = currentScrollY - lastScrollY;
+          const scrollThreshold = 10; // Minimum scroll distance to trigger hide/show
+          
+          if (Math.abs(scrollDifference) > scrollThreshold) {
+            if (scrollDifference > 0 && currentScrollY > 200) {
+              // Scrolling DOWN and past initial threshold - hide navigation
+              setIsVisible(false);
+            } else if (scrollDifference < 0 || currentScrollY <= 100) {
+              // Scrolling UP or near top - show navigation
+              setIsVisible(true);
+            }
+            setLastScrollY(currentScrollY);
+          }
+
+          // Update active section
+          const newActiveSection = detectActiveSection();
+          setActiveSection(newActiveSection);
+          
+          ticking = false;
+        });
+        ticking = true;
+      }
     };
+
+    // Run on mount to set initial section
+    handleScroll();
 
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, [lastScrollY]);
 
+  // Initial section detection on mount with delay
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      const newActiveSection = detectActiveSection();
+      setActiveSection(newActiveSection);
+    }, 200); // Longer delay to ensure all sections are rendered
+
+    return () => clearTimeout(timer);
+  }, []);
+
   const handleNavClick = (href: string, section: string) => {
     setActiveSection(section);
     setIsExpanded(false);
     
+    // Track mobile navigation
+    trackMobile.mobileNavigation('navigate');
+    
     // Haptic feedback for touch devices
     if ('vibrate' in navigator) {
       navigator.vibrate(10); // Light haptic feedback
+      trackMobile.hapticFeedback('navigation');
     }
     
     // Smooth scroll to section
@@ -88,20 +161,35 @@ export function MobileBottomNav() {
     }
   };
 
-  const visibleItems = isExpanded ? navigationItems : navigationItems.slice(0, 4);
-  const hiddenCount = navigationItems.length - 4;
+  const visibleItems = navigationItems.slice(0, 4);
+  const hiddenItems = navigationItems.slice(4);
+  const hiddenCount = hiddenItems.length;
 
   return (
-    <motion.div
-      initial={{ y: 100 }}
-      animate={{ 
-        y: isVisible ? 0 : 100,
-        transition: shouldReduceMotion 
-          ? { duration: 0 }
-          : { type: "spring", stiffness: 300, damping: 30 }
-      }}
-      className="fixed bottom-4 left-4 right-4 z-50 md:hidden"
-    >
+    <>
+      {/* Backdrop for closing expanded menu */}
+      <AnimatePresence>
+        {isExpanded && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/20 backdrop-blur-sm z-[90] md:hidden"
+            onClick={() => setIsExpanded(false)}
+          />
+        )}
+      </AnimatePresence>
+
+      <motion.div
+        initial={{ y: 100 }}
+        animate={{ 
+          y: isVisible ? 0 : 100,
+          transition: shouldReduceMotion 
+            ? { duration: 0 }
+            : { type: "spring", stiffness: 300, damping: 30 }
+        }}
+        className="fixed bottom-4 left-4 right-4 z-[100] md:hidden"
+      >
       <motion.nav
         layout
         className="glass-light rounded-2xl shadow-glass-lg px-2 py-3 mx-auto max-w-sm"
@@ -155,7 +243,13 @@ export function MobileBottomNav() {
           {hiddenCount > 0 && (
             <motion.button
               whileTap={{ scale: 0.9 }}
-              onClick={() => setIsExpanded(!isExpanded)}
+              onClick={() => {
+                setIsExpanded(!isExpanded);
+                // Haptic feedback
+                if ('vibrate' in navigator) {
+                  navigator.vibrate(5);
+                }
+              }}
               className="flex flex-col items-center justify-center p-3 rounded-xl text-muted-foreground hover:text-foreground hover:glass-medium transition-all duration-200 min-h-[48px] min-w-[48px] ml-1"
               aria-label={isExpanded ? "Show less" : "Show more"}
             >
@@ -184,7 +278,7 @@ export function MobileBottomNav() {
               transition={{ duration: 0.3 }}
               className="flex items-center justify-center gap-1 pt-3 mt-3 border-t border-white/20 dark:border-white/10"
             >
-              {navigationItems.slice(4).map((item) => {
+              {hiddenItems.map((item) => {
                 const isActive = activeSection === item.section;
                 const Icon = item.icon;
 
@@ -195,7 +289,10 @@ export function MobileBottomNav() {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -20 }}
                     whileTap={{ scale: 0.9 }}
-                    onClick={() => handleNavClick(item.href, item.section)}
+                    onClick={() => {
+                      handleNavClick(item.href, item.section);
+                      setIsExpanded(false); // Auto-collapse when navigating
+                    }}
                     className={`relative flex flex-col items-center justify-center p-3 rounded-xl transition-all duration-200 min-h-[48px] min-w-[48px] ${
                       isActive 
                         ? 'bg-black dark:bg-white text-white dark:text-black shadow-glass' 
@@ -224,6 +321,7 @@ export function MobileBottomNav() {
           )}
         </AnimatePresence>
       </motion.nav>
-    </motion.div>
+      </motion.div>
+    </>
   );
 }

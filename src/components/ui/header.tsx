@@ -4,6 +4,7 @@ import * as React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { ThemeToggle } from './theme-toggle';
+import { ShareButton } from './share-button';
 import { Menu, X, Sun, Moon } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -117,6 +118,11 @@ export function Header() {
 
             {/* Desktop Controls */}
             <div className="hidden md:flex items-center gap-4">
+              <ShareButton 
+                title="Andrii Furmanets - Senior Full-Stack Developer"
+                text="Check out my portfolio and latest projects!"
+                variant="icon"
+              />
               <ThemeToggle />
               <motion.div
                 whileHover={{ scale: 1.05 }}
@@ -249,13 +255,18 @@ export function Header() {
                   </motion.div>
                 ))}
 
-                {/* Theme Toggle */}
+                {/* Theme Toggle and Share */}
                 <motion.div
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.6 }}
-                  className="pt-4 flex justify-center"
+                  className="pt-4 flex justify-center gap-4"
                 >
+                  <ShareButton 
+                    title="Andrii Furmanets - Senior Full-Stack Developer"
+                    text="Check out my portfolio and latest projects!"
+                    variant="icon"
+                  />
                   <ThemeToggle />
                 </motion.div>
 

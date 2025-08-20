@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { RefreshCcw } from 'lucide-react';
 import { useReducedMotion } from '@/hooks/use-reduced-motion';
+import { trackMobile } from '@/lib/analytics';
 
 interface PullToRefreshProps {
   onRefresh?: () => Promise<void> | void;
@@ -54,9 +55,13 @@ export function PullToRefresh({
         setIsRefreshing(true);
         setShouldShowRefresh(true);
         
+        // Track pull-to-refresh usage
+        trackMobile.pullToRefresh();
+        
         // Haptic feedback
         if ('vibrate' in navigator) {
           navigator.vibrate(20);
+          trackMobile.hapticFeedback('pull_to_refresh');
         }
         
         try {

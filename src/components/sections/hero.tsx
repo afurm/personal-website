@@ -5,6 +5,8 @@ import { motion, useScroll, useTransform } from 'framer-motion';
 import Link from 'next/link';
 import { TechIcon } from '../ui/tech-icon';
 import { TypewriterText } from '../ui/typewriter-text';
+import { useReducedMotion, useDevicePerformance } from '@/hooks/use-reduced-motion';
+import { trackBusiness } from '@/lib/analytics';
 
 const techStack = [
   { name: 'React', icon: '/icons/react.svg', proficiency: 95 },
@@ -22,53 +24,61 @@ const techStack = [
 ];
 
 export function Hero() {
+  const shouldReduceMotion = useReducedMotion();
+  const { isLowPowerMode } = useDevicePerformance();
+  
   const { scrollY } = useScroll();
-  const y1 = useTransform(scrollY, [0, 1000], [0, -200]);
-  const y2 = useTransform(scrollY, [0, 1000], [0, -100]);
-  const y3 = useTransform(scrollY, [0, 1000], [0, -300]);
+  // Disable parallax on low power mode for better performance
+  const y1 = useTransform(scrollY, [0, 1000], isLowPowerMode ? [0, 0] : [0, -200]);
+  const y2 = useTransform(scrollY, [0, 1000], isLowPowerMode ? [0, 0] : [0, -100]);
+  const y3 = useTransform(scrollY, [0, 1000], isLowPowerMode ? [0, 0] : [0, -300]);
 
   return (
-    <section className="spacing-section relative overflow-hidden bg-gradient-to-br from-white via-gray-50 to-gray-100 dark:from-gray-950 dark:via-black dark:to-gray-900">
-      {/* Subtle glass orbs background with parallax */}
-      <motion.div className="absolute inset-0 overflow-hidden" style={{ y: y3 }}>
-        <div className="absolute top-0 -left-4 w-72 h-72 bg-gradient-to-br from-gray-200/20 to-gray-400/10 rounded-full filter blur-2xl animate-blob floating-glass"></div>
-        <div className="absolute top-0 -right-4 w-72 h-72 bg-gradient-to-bl from-gray-300/15 to-gray-500/10 rounded-full filter blur-2xl animate-blob animation-delay-2000 floating-glass"></div>
-        <div className="absolute -bottom-8 left-20 w-72 h-72 bg-gradient-to-tr from-gray-400/10 to-gray-600/15 rounded-full filter blur-2xl animate-blob animation-delay-4000 floating-glass"></div>
-      </motion.div>
+    <section id="hero" className="spacing-section relative overflow-hidden bg-gradient-to-br from-white via-gray-50 to-gray-100 dark:from-gray-950 dark:via-black dark:to-gray-900">
+      {/* Subtle glass orbs background with parallax - disabled on low power mode */}
+      {!isLowPowerMode && (
+        <motion.div className="absolute inset-0 overflow-hidden" style={{ y: y3 }}>
+          <div className="absolute top-0 -left-4 w-72 h-72 bg-gradient-to-br from-gray-200/20 to-gray-400/10 rounded-full filter blur-2xl animate-blob floating-glass"></div>
+          <div className="absolute top-0 -right-4 w-72 h-72 bg-gradient-to-bl from-gray-300/15 to-gray-500/10 rounded-full filter blur-2xl animate-blob animation-delay-2000 floating-glass"></div>
+          <div className="absolute -bottom-8 left-20 w-72 h-72 bg-gradient-to-tr from-gray-400/10 to-gray-600/15 rounded-full filter blur-2xl animate-blob animation-delay-4000 floating-glass"></div>
+        </motion.div>
+      )}
       
-      {/* Minimal floating glass elements with parallax */}
-      <motion.div className="absolute inset-0 overflow-hidden pointer-events-none" style={{ y: y1 }}>
-        <motion.div
-          initial={{ x: -100, y: 100, rotate: 0 }}
-          animate={{ x: 100, y: -100, rotate: 360 }}
-          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-          className="absolute top-1/4 left-1/4 w-6 h-6 glass-medium rounded-full opacity-30"
-        />
-        <motion.div
-          initial={{ x: 100, y: -50, rotate: 0 }}
-          animate={{ x: -50, y: 100, rotate: -360 }}
-          transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
-          className="absolute top-3/4 right-1/3 w-4 h-4 glass-light transform rotate-45 opacity-25"
-        />
-        <motion.div
-          initial={{ x: 0, y: 0, rotate: 0 }}
-          animate={{ x: 80, y: -60, rotate: 180 }}
-          transition={{ duration: 18, repeat: Infinity, ease: "linear" }}
-          className="absolute top-1/2 right-1/4 w-3 h-3 glass rounded-full opacity-35"
-        />
-        <motion.div
-          initial={{ x: 50, y: -80, rotate: 0 }}
-          animate={{ x: -100, y: 50, rotate: 270 }}
-          transition={{ duration: 22, repeat: Infinity, ease: "linear" }}
-          className="absolute top-1/3 left-1/2 w-5 h-5 glass-dark transform rotate-12 opacity-20"
-        />
-      </motion.div>
+      {/* Minimal floating glass elements with parallax - disabled on low power mode */}
+      {!isLowPowerMode && (
+        <motion.div className="absolute inset-0 overflow-hidden pointer-events-none" style={{ y: y1 }}>
+          <motion.div
+            initial={shouldReduceMotion ? {} : { x: -100, y: 100, rotate: 0 }}
+            animate={shouldReduceMotion ? {} : { x: 100, y: -100, rotate: 360 }}
+            transition={shouldReduceMotion ? {} : { duration: 20, repeat: Infinity, ease: "linear" }}
+            className="absolute top-1/4 left-1/4 w-6 h-6 glass-medium rounded-full opacity-30"
+          />
+          <motion.div
+            initial={shouldReduceMotion ? {} : { x: 100, y: -50, rotate: 0 }}
+            animate={shouldReduceMotion ? {} : { x: -50, y: 100, rotate: -360 }}
+            transition={shouldReduceMotion ? {} : { duration: 25, repeat: Infinity, ease: "linear" }}
+            className="absolute top-3/4 right-1/3 w-4 h-4 glass-light transform rotate-45 opacity-25"
+          />
+          <motion.div
+            initial={shouldReduceMotion ? {} : { x: 0, y: 0, rotate: 0 }}
+            animate={shouldReduceMotion ? {} : { x: 80, y: -60, rotate: 180 }}
+            transition={shouldReduceMotion ? {} : { duration: 18, repeat: Infinity, ease: "linear" }}
+            className="absolute top-1/2 right-1/4 w-3 h-3 glass rounded-full opacity-35"
+          />
+          <motion.div
+            initial={shouldReduceMotion ? {} : { x: 50, y: -80, rotate: 0 }}
+            animate={shouldReduceMotion ? {} : { x: -100, y: 50, rotate: 270 }}
+            transition={shouldReduceMotion ? {} : { duration: 22, repeat: Infinity, ease: "linear" }}
+            className="absolute top-1/3 left-1/2 w-5 h-5 glass-dark transform rotate-12 opacity-20"
+          />
+        </motion.div>
+      )}
       <motion.div className="container spacing-container relative z-10" style={{ y: y2 }}>
         <div className="grid spacing-gap-lg lg:grid-cols-[1fr_400px] xl:grid-cols-[1fr_600px]">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
+            initial={shouldReduceMotion ? {} : { opacity: 0, y: 20 }}
+            animate={shouldReduceMotion ? {} : { opacity: 1, y: 0 }}
+            transition={shouldReduceMotion ? {} : { duration: 0.5 }}
             className="flex flex-col justify-center spacing-gap"
           >
             <div className="spacing-gap-sm flex flex-col">
@@ -99,9 +109,9 @@ export function Hero() {
             </p>
             <div className="flex flex-col spacing-gap sm:flex-row">
               <motion.div
-                whileHover={{ scale: 1.05, y: -2 }}
-                whileTap={{ scale: 0.98 }}
-                transition={{ type: "spring", stiffness: 400, damping: 17 }}
+                whileHover={shouldReduceMotion ? {} : { scale: 1.05, y: -2 }}
+                whileTap={shouldReduceMotion ? {} : { scale: 0.98 }}
+                transition={shouldReduceMotion ? {} : { type: "spring", stiffness: 400, damping: 17 }}
               >
                 <Link
                   href="#contact"
@@ -111,14 +121,15 @@ export function Hero() {
                 </Link>
               </motion.div>
               <motion.div
-                whileHover={{ scale: 1.02, y: -1 }}
-                whileTap={{ scale: 0.98 }}
-                transition={{ type: "spring", stiffness: 400, damping: 17 }}
+                whileHover={shouldReduceMotion ? {} : { scale: 1.02, y: -1 }}
+                whileTap={shouldReduceMotion ? {} : { scale: 0.98 }}
+                transition={shouldReduceMotion ? {} : { type: "spring", stiffness: 400, damping: 17 }}
               >
                 <Link
                   href="/Andrii Furmanets Full-Stack React_Ruby on Rails.pdf"
                   target="_blank"
                   rel="noopener noreferrer"
+                  onClick={() => trackBusiness.resumeDownload()}
                   className="glass group inline-flex h-12 items-center justify-center rounded-2xl px-8 text-sm font-semibold transition-all duration-300 hover:shadow-glass focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 w-full sm:w-auto"
                 >
                   <span className="mr-2">Download Resume</span>
@@ -130,20 +141,20 @@ export function Hero() {
             </div>
           </motion.div>
           <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
+            initial={shouldReduceMotion ? {} : { opacity: 0, scale: 0.9 }}
+            animate={shouldReduceMotion ? {} : { opacity: 1, scale: 1 }}
+            transition={shouldReduceMotion ? {} : { duration: 0.5, delay: 0.2 }}
             className="flex items-center justify-center"
           >
             <motion.div 
               className="grid grid-cols-3 gap-3 sm:grid-cols-4 md:gap-4 lg:grid-cols-6"
-              initial="hidden"
+              initial={shouldReduceMotion ? "visible" : "hidden"}
               animate="visible"
               variants={{
                 hidden: { opacity: 0 },
                 visible: {
                   opacity: 1,
-                  transition: {
+                  transition: shouldReduceMotion ? {} : {
                     staggerChildren: 0.1,
                     delayChildren: 0.2
                   }
@@ -153,7 +164,10 @@ export function Hero() {
               {techStack.map((tech, index) => (
                 <motion.div
                   key={tech.name}
-                  variants={{
+                  variants={shouldReduceMotion ? {
+                    hidden: { opacity: 1 },
+                    visible: { opacity: 1 }
+                  } : {
                     hidden: { opacity: 0, y: 20, scale: 0.8 },
                     visible: { 
                       opacity: 1, 
@@ -166,7 +180,7 @@ export function Hero() {
                       }
                     }
                   }}
-                  whileHover={{ 
+                  whileHover={shouldReduceMotion ? {} : { 
                     scale: 1.1, 
                     rotateY: 15,
                     rotateX: 5,
@@ -176,7 +190,7 @@ export function Hero() {
                       damping: 20
                     }
                   }}
-                  whileTap={{ scale: 0.95 }}
+                  whileTap={shouldReduceMotion ? {} : { scale: 0.95 }}
                   style={{ 
                     transformStyle: "preserve-3d",
                     perspective: "1000px"
@@ -192,9 +206,9 @@ export function Hero() {
                   <div className="w-full bg-muted/30 rounded-full h-1 relative z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                     <motion.div
                       className="h-1 bg-gradient-to-r from-foreground to-accent-blue rounded-full"
-                      initial={{ width: 0 }}
-                      whileInView={{ width: `${tech.proficiency}%` }}
-                      transition={{ duration: 1, delay: index * 0.1 }}
+                      initial={shouldReduceMotion ? { width: `${tech.proficiency}%` } : { width: 0 }}
+                      whileInView={shouldReduceMotion ? {} : { width: `${tech.proficiency}%` }}
+                      transition={shouldReduceMotion ? {} : { duration: 1, delay: index * 0.1 }}
                     />
                   </div>
                 </motion.div>
