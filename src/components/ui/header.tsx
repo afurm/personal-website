@@ -6,11 +6,14 @@ import { usePathname } from 'next/navigation';
 import { ThemeToggle } from './theme-toggle';
 import { Menu, X, Sun, Moon } from 'lucide-react';
 import { useTheme } from 'next-themes';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const { setTheme, theme } = useTheme();
   const [mounted, setMounted] = React.useState(false);
+  const [isScrolled, setIsScrolled] = React.useState(false);
+  const [scrollY, setScrollY] = React.useState(0);
   const pathname = usePathname();
 
   // Check if we're on the homepage
@@ -21,9 +24,18 @@ export function Header() {
     return isHomePage ? `#${section}` : `/#${section}`;
   };
 
-  // useEffect for mounting
+  // useEffect for mounting and scroll detection
   React.useEffect(() => {
     setMounted(true);
+
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      setScrollY(currentScrollY);
+      setIsScrolled(currentScrollY > 50);
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   const toggleMenu = () => {
@@ -45,187 +57,228 @@ export function Header() {
 
   return (
     <>
-      <header className="sticky top-0 z-40 w-full border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 bg-opacity-90 dark:bg-opacity-90 backdrop-blur-sm">
-        <div className="container flex h-16 items-center justify-between">
-          <div className="flex items-center gap-6 md:gap-10">
-            <Link href="/" className="font-bold text-xl">
-              Andrii Furmanets
-            </Link>
-            <nav className="hidden md:flex gap-6">
-              <Link
-                href={getNavLink('about')}
-                className="text-sm font-medium transition-colors hover:text-primary"
-              >
-                About
-              </Link>
-              <Link
-                href={getNavLink('experience')}
-                className="text-sm font-medium transition-colors hover:text-primary"
-              >
-                Experience
-              </Link>
-              <Link
-                href={getNavLink('skills')}
-                className="text-sm font-medium transition-colors hover:text-primary"
-              >
-                Skills
-              </Link>
-              <Link
-                href={getNavLink('education')}
-                className="text-sm font-medium transition-colors hover:text-primary"
-              >
-                Education
-              </Link>
-              <Link
-                href="/blogs"
-                className="text-sm font-medium transition-colors hover:text-primary"
-              >
-                Blog
-              </Link>
-              <Link
-                href={getNavLink('contact')}
-                className="text-sm font-medium transition-colors hover:text-primary"
-              >
-                Contact
-              </Link>
-            </nav>
-          </div>
-          <div className="flex items-center gap-4">
-            {/* Theme toggle - visible only on desktop */}
-            <div className="hidden md:block">
-              <ThemeToggle />
-            </div>
-            <Link
-              href={getNavLink('contact')}
-              className="hidden md:inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+      {/* Floating Navigation */}
+      <motion.header
+        initial={{ y: 0 }}
+        animate={{ 
+          y: isScrolled ? 16 : 0,
+          scale: isScrolled ? 0.95 : 1,
+        }}
+        transition={{ 
+          duration: 0.3,
+          ease: [0.25, 0.46, 0.45, 0.94]
+        }}
+        className="fixed top-0 inset-x-0 z-50 w-full"
+      >
+        <div className={`container mx-auto transition-all duration-300 ${
+          isScrolled 
+            ? 'rounded-2xl border border-white/20 bg-white/80 shadow-xl shadow-black/5 backdrop-blur-xl dark:border-white/10 dark:bg-black/80 dark:shadow-white/5' 
+            : 'rounded-none border-transparent bg-transparent backdrop-blur-none'
+        }`}>
+          <div className="flex h-16 items-center justify-between px-6">
+            {/* Logo */}
+            <motion.div
+              animate={{ scale: isScrolled ? 0.9 : 1 }}
+              transition={{ duration: 0.3 }}
             >
-              Contact Me
-            </Link>
-            {/* Hamburger menu button - visible only on mobile */}
-            <button
-              className="md:hidden flex items-center justify-center p-2 rounded-md text-gray-700 dark:text-gray-300 hover:text-primary hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none"
+              <Link 
+                href="/" 
+                className="font-bold text-xl bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent hover:from-purple-600 hover:to-blue-600 transition-all duration-300"
+              >
+                Andrii Furmanets
+              </Link>
+            </motion.div>
+
+            {/* Desktop Navigation */}
+            <nav className="hidden md:flex items-center gap-8">
+              {[
+                { href: getNavLink('about'), label: 'About' },
+                { href: getNavLink('experience'), label: 'Experience' },
+                { href: getNavLink('skills'), label: 'Skills' },
+                { href: getNavLink('education'), label: 'Education' },
+                { href: '/blogs', label: 'Blog' },
+                { href: getNavLink('contact'), label: 'Contact' },
+              ].map((item) => (
+                <Link
+                  key={item.label}
+                  href={item.href}
+                  className="group relative text-sm font-medium text-foreground/80 hover:text-foreground transition-colors duration-200"
+                >
+                  {item.label}
+                  <motion.div
+                    className="absolute -bottom-1 left-0 h-0.5 bg-gradient-to-r from-purple-500 to-blue-500 opacity-0 group-hover:opacity-100"
+                    initial={{ width: 0 }}
+                    whileHover={{ width: '100%' }}
+                    transition={{ duration: 0.2 }}
+                  />
+                </Link>
+              ))}
+            </nav>
+
+            {/* Desktop Controls */}
+            <div className="hidden md:flex items-center gap-4">
+              <ThemeToggle />
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <Link
+                  href={getNavLink('contact')}
+                  className="inline-flex h-10 items-center justify-center rounded-full bg-gradient-to-r from-purple-600 to-blue-600 px-6 text-sm font-semibold text-white shadow-lg transition-all duration-200 hover:shadow-xl hover:shadow-purple-500/25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-2"
+                >
+                  Contact Me
+                </Link>
+              </motion.div>
+            </div>
+
+            {/* Mobile Menu Button */}
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="md:hidden flex items-center justify-center p-2 rounded-xl bg-background/50 backdrop-blur-sm border border-border hover:bg-background transition-colors duration-200"
               onClick={toggleMenu}
               aria-label="Toggle menu"
             >
-              {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-            </button>
-          </div>
-        </div>
-      </header>
-
-      {/* Mobile menu - full screen overlay */}
-      {isMenuOpen && (
-        <div
-          className="fixed inset-0 bg-white dark:bg-gray-950 z-[9999] md:hidden flex flex-col"
-          style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            width: '100vw',
-            height: '100vh',
-          }}
-        >
-          <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-800">
-            <span className="font-bold text-lg">Menu</span>
-            <button
-              className="p-2 rounded-md text-gray-700 dark:text-gray-300 hover:text-primary hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none"
-              onClick={toggleMenu}
-              aria-label="Close menu"
-            >
-              <X className="h-6 w-6" />
-            </button>
-          </div>
-          <nav className="flex flex-col p-4 flex-grow">
-            <Link
-              href={getNavLink('about')}
-              className="py-4 text-lg font-medium transition-colors hover:text-primary border-b border-gray-200 dark:border-gray-800 text-center"
-              onClick={toggleMenu}
-            >
-              About
-            </Link>
-            <Link
-              href={getNavLink('experience')}
-              className="py-4 text-lg font-medium transition-colors hover:text-primary border-b border-gray-200 dark:border-gray-800 text-center"
-              onClick={toggleMenu}
-            >
-              Experience
-            </Link>
-            <Link
-              href={getNavLink('skills')}
-              className="py-4 text-lg font-medium transition-colors hover:text-primary border-b border-gray-200 dark:border-gray-800 text-center"
-              onClick={toggleMenu}
-            >
-              Skills
-            </Link>
-            <Link
-              href={getNavLink('education')}
-              className="py-4 text-lg font-medium transition-colors hover:text-primary border-b border-gray-200 dark:border-gray-800 text-center"
-              onClick={toggleMenu}
-            >
-              Education
-            </Link>
-            <Link
-              href="/blogs"
-              className="py-4 text-lg font-medium transition-colors hover:text-primary border-b border-gray-200 dark:border-gray-800 text-center"
-              onClick={toggleMenu}
-            >
-              Blog
-            </Link>
-            <Link
-              href={getNavLink('contact')}
-              className="py-4 text-lg font-medium transition-colors hover:text-primary border-b border-gray-200 dark:border-gray-800 text-center"
-              onClick={toggleMenu}
-            >
-              Contact
-            </Link>
-
-            {/* Custom theme toggle in mobile menu */}
-            <div className="py-6 flex justify-center items-center border-b border-gray-200 dark:border-gray-800">
-              <div className="flex flex-col items-center gap-3">
-                <span className="text-lg font-medium">Theme</span>
-                {mounted && (
-                  <div className="flex items-center bg-gray-100 dark:bg-gray-800 p-1 rounded-full">
-                    <button
-                      onClick={() => setTheme('light')}
-                      className={`flex items-center gap-2 px-3 py-2 rounded-full transition-colors ${theme === 'light'
-                          ? 'bg-white text-black shadow-sm'
-                          : 'text-gray-500 dark:text-gray-400'
-                        }`}
-                      aria-label="Light mode"
-                    >
-                      <Sun className="h-4 w-4" />
-                      <span className="text-sm font-medium">Light</span>
-                    </button>
-                    <button
-                      onClick={() => setTheme('dark')}
-                      className={`flex items-center gap-2 px-3 py-2 rounded-full transition-colors ${theme === 'dark'
-                          ? 'bg-gray-700 text-white shadow-sm'
-                          : 'text-gray-500 dark:text-gray-400'
-                        }`}
-                      aria-label="Dark mode"
-                    >
-                      <Moon className="h-4 w-4" />
-                      <span className="text-sm font-medium">Dark</span>
-                    </button>
-                  </div>
+              <AnimatePresence mode="wait">
+                {isMenuOpen ? (
+                  <motion.div
+                    key="close"
+                    initial={{ rotate: 0 }}
+                    animate={{ rotate: 180 }}
+                    exit={{ rotate: 0 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <X className="h-5 w-5" />
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    key="menu"
+                    initial={{ rotate: 180 }}
+                    animate={{ rotate: 0 }}
+                    exit={{ rotate: 180 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <Menu className="h-5 w-5" />
+                  </motion.div>
                 )}
-              </div>
-            </div>
-
-            <div className="mt-auto pb-8">
-              <Link
-                href={getNavLink('contact')}
-                className="w-full flex items-center justify-center rounded-md bg-primary px-4 py-3 text-base font-medium text-primary-foreground shadow transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-                onClick={toggleMenu}
-              >
-                Contact Me
-              </Link>
-            </div>
-          </nav>
+              </AnimatePresence>
+            </motion.button>
+          </div>
         </div>
-      )}
+
+        {/* Progress indicator */}
+        <div className="absolute bottom-0 inset-x-0">
+          <div className="container mx-auto px-4">
+            <motion.div
+              className="h-0.5 bg-gradient-to-r from-purple-500/20 to-blue-500/20 rounded-full overflow-hidden"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: isScrolled ? 1 : 0 }}
+              transition={{ duration: 0.3 }}
+            >
+              <motion.div
+                className="h-full bg-gradient-to-r from-purple-500 to-blue-500 rounded-full"
+                style={{
+                  scaleX: scrollY / (document.documentElement.scrollHeight - window.innerHeight),
+                  transformOrigin: '0%',
+                }}
+              />
+            </motion.div>
+          </div>
+        </div>
+      </motion.header>
+
+      {/* Mobile menu - modern overlay */}
+      <AnimatePresence>
+        {isMenuOpen && (
+          <>
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[9998] md:hidden"
+              onClick={toggleMenu}
+            />
+            
+            {/* Menu Panel */}
+            <motion.div
+              initial={{ opacity: 0, y: '-100%' }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: '-100%' }}
+              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+              className="fixed top-4 left-4 right-4 bg-white/95 dark:bg-black/95 backdrop-blur-xl border border-white/20 dark:border-white/10 rounded-2xl shadow-2xl z-[9999] md:hidden"
+            >
+              {/* Header */}
+              <div className="flex items-center justify-between p-6">
+                <span className="font-bold text-lg">Navigation</span>
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="p-2 rounded-xl bg-background/50 hover:bg-background transition-colors"
+                  onClick={toggleMenu}
+                  aria-label="Close menu"
+                >
+                  <X className="h-5 w-5" />
+                </motion.button>
+              </div>
+
+              {/* Navigation Links */}
+              <nav className="px-6 pb-6 space-y-2">
+                {[
+                  { href: getNavLink('about'), label: 'About' },
+                  { href: getNavLink('experience'), label: 'Experience' },
+                  { href: getNavLink('skills'), label: 'Skills' },
+                  { href: getNavLink('education'), label: 'Education' },
+                  { href: '/blogs', label: 'Blog' },
+                  { href: getNavLink('contact'), label: 'Contact' },
+                ].map((item, index) => (
+                  <motion.div
+                    key={item.label}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: index * 0.1 }}
+                  >
+                    <Link
+                      href={item.href}
+                      className="block py-3 px-4 rounded-xl text-lg font-medium text-foreground/80 hover:text-foreground hover:bg-background/50 transition-all duration-200"
+                      onClick={toggleMenu}
+                    >
+                      {item.label}
+                    </Link>
+                  </motion.div>
+                ))}
+
+                {/* Theme Toggle */}
+                <motion.div
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.6 }}
+                  className="pt-4 flex justify-center"
+                >
+                  <ThemeToggle />
+                </motion.div>
+
+                {/* CTA Button */}
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.7 }}
+                  className="pt-6"
+                >
+                  <Link
+                    href={getNavLink('contact')}
+                    className="w-full flex items-center justify-center rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 px-6 py-3 text-base font-semibold text-white shadow-lg transition-all duration-200 hover:shadow-xl hover:shadow-purple-500/25"
+                    onClick={toggleMenu}
+                  >
+                    Get In Touch
+                  </Link>
+                </motion.div>
+              </nav>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
     </>
   );
 }

@@ -107,23 +107,13 @@ const experiences: Experience[] = [
     side: 'right',
   },
   {
-    company: 'Became a Father',
-    role: "Life's Greatest Achievement",
-    period: 'December 15, 2017',
-    description:
-      'Welcomed my child into the world and began the most rewarding journey of my life.',
-    icon: <FaBaby className="text-pink-500 text-3xl" />,
-    side: 'left',
-    highlight: true,
-  },
-  {
     company: 'CyberCraft: Continuous Integration Tool',
     role: 'Full-Stack Developer',
     period: 'Jan 2015 - Aug 2020',
     description:
       'Transformed static pages into dynamic Backbone.js interfaces, slashing test wait times by 10-50x. Redesigned report views with Vue, adding lifecycle steps for real-time build insights. Integrated Okta for SAML auth and user provisioning, leveling up security. Upgraded Rails 3 to 4, keeping the engine humming.',
     icon: <FaCode className="text-indigo-500 text-3xl" />,
-    side: 'right',
+    side: 'left',
   },
   {
     company: 'SoftServe: Reports Render Engine',
@@ -132,7 +122,7 @@ const experiences: Experience[] = [
     description:
       'Crafted a Ruby DSL for healthcare report rendering, turning raw data into actionable charts and tables.',
     icon: <FaChartBar className="text-orange-500 text-3xl" />,
-    side: 'left',
+    side: 'right',
   },
 ];
 
