@@ -178,7 +178,7 @@ export function Header() {
               <motion.div
                 className="h-full bg-gradient-to-r from-purple-500 to-blue-500 rounded-full"
                 style={{
-                  scaleX: scrollY / (document.documentElement.scrollHeight - window.innerHeight),
+                  scaleX: mounted ? scrollY / (document.documentElement.scrollHeight - window.innerHeight) : 0,
                   transformOrigin: '0%',
                 }}
               />

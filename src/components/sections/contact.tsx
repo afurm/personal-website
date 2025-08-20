@@ -58,14 +58,14 @@ export function Contact() {
   };
 
   return (
-    <section id="contact" className="py-16 md:py-24">
-      <div className="container px-4 md:px-6">
+    <section id="contact" className="spacing-section">
+      <div className="container spacing-container">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
-          className="flex flex-col items-center justify-center space-y-4 text-center"
+          className="flex flex-col items-center justify-center spacing-gap text-center spacing-heading"
         >
           <div className="space-y-2">
             <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
@@ -78,7 +78,7 @@ export function Contact() {
           </div>
         </motion.div>
 
-        <div className="mx-auto mt-12 grid max-w-5xl gap-8 md:grid-cols-2">
+        <div className="mx-auto grid max-w-5xl spacing-gap md:grid-cols-2">
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             whileInView={{ opacity: 1, x: 0 }}

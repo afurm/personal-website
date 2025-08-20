@@ -6,14 +6,14 @@ import Link from 'next/link';
 
 export function About() {
   return (
-    <section id="about" className="py-16 md:py-24">
-      <div className="container px-4 md:px-6">
+    <section id="about" className="spacing-section">
+      <div className="container spacing-container">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
-          className="flex flex-col items-center justify-center space-y-4 text-center mb-12"
+          className="flex flex-col items-center justify-center spacing-gap text-center spacing-heading"
         >
           <div className="space-y-2">
             <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">

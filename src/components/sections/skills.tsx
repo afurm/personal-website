@@ -53,14 +53,14 @@ const skillCategories = [
 
 export function Skills() {
   return (
-    <section id="skills" className="py-16 md:py-24 bg-secondary/30">
-      <div className="container px-4 md:px-6">
+    <section id="skills" className="spacing-section bg-secondary/30">
+      <div className="container spacing-container">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
-          className="flex flex-col items-center justify-center space-y-4 text-center"
+          className="flex flex-col items-center justify-center spacing-gap text-center spacing-heading"
         >
           <div className="space-y-2">
             <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
@@ -72,7 +72,7 @@ export function Skills() {
           </div>
         </motion.div>
 
-        <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid spacing-gap md:grid-cols-2 lg:grid-cols-3">
           {skillCategories.map((skillCategory, categoryIndex) => (
             <motion.div
               key={categoryIndex}

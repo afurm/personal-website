@@ -166,13 +166,13 @@ const achievements = [
 
 export function Experience() {
   return (
-    <section id="experience" className="py-16 md:py-24 bg-background">
-      <div className="container px-4 md:px-6">
+    <section id="experience" className="spacing-section bg-background">
+      <div className="container spacing-container">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="mb-12"
+          className="spacing-heading"
         >
           <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl text-center">
             Career Timeline
