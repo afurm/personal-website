@@ -99,6 +99,7 @@ export function Header() {
                 { href: getNavLink('skills'), label: 'Skills' },
                 { href: getNavLink('education'), label: 'Education' },
                 { href: '/blogs', label: 'Blog' },
+                { href: '/book', label: 'Book Meeting' },
                 { href: getNavLink('contact'), label: 'Contact' },
               ].map((item) => (
                 <Link
@@ -131,11 +132,11 @@ export function Header() {
                 whileTap={{ scale: 0.95 }}
               >
                 <Link
-                  href={getNavLink('contact')}
+                  href="/book"
                   onClick={() => haptics.medium()}
                   className="glass-button inline-flex h-10 items-center justify-center rounded-full bg-black dark:bg-white px-6 text-sm font-semibold text-white dark:text-black shadow-glass transition-all duration-300 hover:shadow-glass-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
                 >
-                  Contact Me
+                  Book Meeting
                 </Link>
               </motion.div>
             </div>
@@ -209,6 +210,7 @@ export function Header() {
                   { href: getNavLink('skills'), label: 'Skills' },
                   { href: getNavLink('education'), label: 'Education' },
                   { href: '/blogs', label: 'Blog' },
+                  { href: '/book', label: 'Book Meeting' },
                   { href: getNavLink('contact'), label: 'Contact' },
                 ].map((item) => (
                   <div key={item.label}>
