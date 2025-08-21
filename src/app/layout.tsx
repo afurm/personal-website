@@ -63,7 +63,7 @@ export const metadata: Metadata = {
     siteName: 'Andrii Furmanets Portfolio',
     images: [
       {
-        url: '/og-image.jpg', // You'll need to create this image
+        url: '/opengraph-image',
         width: 1200,
         height: 630,
         alt: 'Andrii Furmanets - Senior Full-Stack Developer',
@@ -75,7 +75,7 @@ export const metadata: Metadata = {
     title: 'Andrii Furmanets - Senior Full-Stack Developer',
     description:
       'Expert in React, TypeScript, Next.js & Ruby on Rails. Specializing in fintech and Web3 solutions.',
-    images: ['/og-image.jpg'], // Same image as OpenGraph
+    images: ['/twitter-image'], // Same image as OpenGraph
     creator: '@andriifurmanets', // Replace with your Twitter handle if you have one
   },
 };

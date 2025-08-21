@@ -9,6 +9,18 @@ export function Footer() {
   return (
     <footer className="border-t border-border bg-background">
       <div className="container py-8 md:py-12">
+        {/* Call-to-Action Section */}
+        <div className="text-center mb-8 pb-8 border-b border-border">
+          <h3 className="text-xl font-bold mb-2">Ready to start your project?</h3>
+          <p className="text-muted-foreground mb-4">Available for freelance projects and consultations</p>
+          <Link
+            href="#contact"
+            className="glass-button inline-flex items-center justify-center rounded-2xl bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground shadow-glass hover:shadow-glass-lg transition-all duration-300"
+          >
+            Get In Touch
+          </Link>
+        </div>
+        
         <div className="flex flex-col md:flex-row justify-between items-center">
           <div className="mb-4 md:mb-0">
             <p className="text-sm text-muted-foreground">
