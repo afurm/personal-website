@@ -195,15 +195,15 @@ export function Hero() {
                     transformStyle: "preserve-3d",
                     perspective: "1000px"
                   }}
-                  className="glass-card glass-shimmer group relative flex flex-col items-center justify-center space-y-2 rounded-2xl p-3 shadow-glass transition-all duration-300 cursor-pointer overflow-hidden"
+                  className="glass-card glass-shimmer group relative flex flex-col items-center justify-center space-y-2 rounded-2xl p-3 shadow-glass transition-all duration-300 md:cursor-pointer md:hover:scale-105 overflow-hidden touch-none pointer-events-none md:pointer-events-auto"
                 >
-                  <div className="relative h-10 w-10 group-hover:scale-110 transition-transform duration-300">
+                  <div className="relative h-10 w-10 md:group-hover:scale-110 transition-transform duration-300">
                     <TechIcon name={tech.name} icon={tech.icon} />
                   </div>
                   <div className="text-center text-xs font-medium relative z-10">{tech.name}</div>
                   
                   {/* Proficiency bar */}
-                  <div className="w-full bg-muted/30 rounded-full h-1 relative z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <div className="w-full bg-muted/30 rounded-full h-1 relative z-10 opacity-0 md:group-hover:opacity-100 transition-opacity duration-300">
                     <motion.div
                       className="h-1 bg-gradient-to-r from-foreground to-accent-blue rounded-full"
                       initial={shouldReduceMotion ? { width: `${tech.proficiency}%` } : { width: 0 }}

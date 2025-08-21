@@ -7,6 +7,7 @@ import { ThemeToggle } from './theme-toggle';
 import { ShareButton } from './share-button';
 import { Menu, X, Share2 } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { haptics } from '@/lib/haptics';
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
@@ -38,6 +39,7 @@ export function Header() {
   }, []);
 
   const toggleMenu = () => {
+    haptics.light();
     setIsMenuOpen(!isMenuOpen);
   };
 
@@ -102,6 +104,7 @@ export function Header() {
                 <Link
                   key={item.label}
                   href={item.href}
+                  onClick={() => haptics.light()}
                   className="group relative text-sm font-medium text-foreground/80 hover:text-foreground transition-colors duration-200"
                 >
                   {item.label}
@@ -129,6 +132,7 @@ export function Header() {
               >
                 <Link
                   href={getNavLink('contact')}
+                  onClick={() => haptics.medium()}
                   className="glass-button inline-flex h-10 items-center justify-center rounded-full bg-black dark:bg-white px-6 text-sm font-semibold text-white dark:text-black shadow-glass transition-all duration-300 hover:shadow-glass-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
                 >
                   Contact Me
@@ -211,7 +215,10 @@ export function Header() {
                     <Link
                       href={item.href}
                       className="block py-3 px-4 rounded-xl text-lg font-medium text-foreground/80 hover:text-foreground hover:glass-medium transition-colors duration-150"
-                      onClick={toggleMenu}
+                      onClick={() => {
+                        haptics.light();
+                        toggleMenu();
+                      }}
                     >
                       {item.label}
                     </Link>
@@ -230,7 +237,10 @@ export function Header() {
                   <Link
                     href={getNavLink('contact')}
                     className="glass-button w-full flex items-center justify-center rounded-xl bg-black dark:bg-white px-6 py-3 text-base font-semibold text-white dark:text-black shadow-glass transition-all duration-200 hover:shadow-glass-lg"
-                    onClick={toggleMenu}
+                    onClick={() => {
+                      haptics.medium();
+                      toggleMenu();
+                    }}
                   >
                     Get In Touch
                   </Link>
@@ -249,11 +259,7 @@ function MobileMenuShareButton() {
 
   const handleShare = async () => {
     setIsSharing(true);
-    
-    // Haptic feedback
-    if ('vibrate' in navigator) {
-      navigator.vibrate(10);
-    }
+    haptics.click();
     
     const shareData = {
       title: "Andrii Furmanets - Senior Full-Stack Developer",
@@ -267,10 +273,11 @@ function MobileMenuShareButton() {
       } else {
         // Fallback to clipboard
         await navigator.clipboard.writeText(shareData.url);
-        // Could show a toast notification here
+        haptics.success();
       }
     } catch (err) {
       console.log('Error sharing:', err);
+      haptics.error();
     } finally {
       setIsSharing(false);
     }

@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Share2, Copy, Check, Twitter, Linkedin, Mail } from 'lucide-react';
 import { useReducedMotion } from '@/hooks/use-reduced-motion';
 import { trackBusiness } from '@/lib/analytics';
+import { haptics } from '@/lib/haptics';
 
 interface ShareButtonProps {
   title?: string;
@@ -28,10 +29,7 @@ export function ShareButton({
   const shareUrl = url || (typeof window !== 'undefined' ? window.location.href : '');
 
   const handleNativeShare = async () => {
-    // Haptic feedback
-    if ('vibrate' in navigator) {
-      navigator.vibrate(10);
-    }
+    haptics.click();
 
     if (navigator.share) {
       try {
@@ -54,15 +52,11 @@ export function ShareButton({
     try {
       await navigator.clipboard.writeText(shareUrl);
       setCopied(true);
-      
-      // Haptic feedback
-      if ('vibrate' in navigator) {
-        navigator.vibrate(15);
-      }
-      
+      haptics.success();
       setTimeout(() => setCopied(false), 2000);
     } catch (error) {
       console.error('Failed to copy:', error);
+      haptics.error();
     }
   };
 
@@ -77,6 +71,7 @@ export function ShareButton({
       name: 'Twitter',
       icon: Twitter,
       action: () => {
+        haptics.light();
         const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(shareUrl)}`;
         window.open(twitterUrl, '_blank');
         trackBusiness.blogPostShare(title, 'Twitter');
@@ -88,6 +83,7 @@ export function ShareButton({
       name: 'LinkedIn',
       icon: Linkedin,
       action: () => {
+        haptics.light();
         const linkedinUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`;
         window.open(linkedinUrl, '_blank');
         trackBusiness.blogPostShare(title, 'LinkedIn');
@@ -99,6 +95,7 @@ export function ShareButton({
       name: 'Email',
       icon: Mail,
       action: () => {
+        haptics.light();
         const mailtoUrl = `mailto:?subject=${encodeURIComponent(title)}&body=${encodeURIComponent(text + ' ' + shareUrl)}`;
         window.location.href = mailtoUrl;
         setIsOpen(false);

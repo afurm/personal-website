@@ -1,54 +1,54 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:news="http://www.google.com/schemas/sitemap-news/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:mobile="http://www.google.com/schemas/sitemap-mobile/1.0" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">
-<url><loc>https://andriifurmanets.com/robots.txt</loc><lastmod>2025-08-21T08:28:14.796Z</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-<url><loc>https://andriifurmanets.com/sitemap.xml</loc><lastmod>2025-08-21T08:28:14.797Z</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-<url><loc>https://andriifurmanets.com</loc><lastmod>2025-08-21T08:28:14.797Z</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-<url><loc>https://andriifurmanets.com/blogs</loc><lastmod>2025-08-21T08:28:14.797Z</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-<url><loc>https://andriifurmanets.com/blogs/tag/AI Development</loc><lastmod>2025-08-21T08:28:14.797Z</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-<url><loc>https://andriifurmanets.com/blogs/tag/AI Integration</loc><lastmod>2025-08-21T08:28:14.797Z</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-<url><loc>https://andriifurmanets.com/blogs/tag/AI Tools</loc><lastmod>2025-08-21T08:28:14.797Z</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-<url><loc>https://andriifurmanets.com/blogs/tag/Agile</loc><lastmod>2025-08-21T08:28:14.797Z</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-<url><loc>https://andriifurmanets.com/blogs/tag/App Development</loc><lastmod>2025-08-21T08:28:14.797Z</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-<url><loc>https://andriifurmanets.com/blogs/tag/Artificial Intelligence</loc><lastmod>2025-08-21T08:28:14.797Z</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-<url><loc>https://andriifurmanets.com/blogs/tag/Authentication</loc><lastmod>2025-08-21T08:28:14.797Z</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-<url><loc>https://andriifurmanets.com/blogs/tag/Backend</loc><lastmod>2025-08-21T08:28:14.797Z</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-<url><loc>https://andriifurmanets.com/blogs/tag/Coding Assistants</loc><lastmod>2025-08-21T08:28:14.797Z</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-<url><loc>https://andriifurmanets.com/blogs/tag/Cursor IDE</loc><lastmod>2025-08-21T08:28:14.797Z</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-<url><loc>https://andriifurmanets.com/blogs/tag/Developer Productivity</loc><lastmod>2025-08-21T08:28:14.797Z</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-<url><loc>https://andriifurmanets.com/blogs/tag/Developer Tools</loc><lastmod>2025-08-21T08:28:14.797Z</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-<url><loc>https://andriifurmanets.com/blogs/tag/GPT-5</loc><lastmod>2025-08-21T08:28:14.797Z</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-<url><loc>https://andriifurmanets.com/blogs/tag/GitHub</loc><lastmod>2025-08-21T08:28:14.797Z</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-<url><loc>https://andriifurmanets.com/blogs/tag/GitHub Copilot</loc><lastmod>2025-08-21T08:28:14.797Z</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-<url><loc>https://andriifurmanets.com/blogs/tag/Instagram</loc><lastmod>2025-08-21T08:28:14.797Z</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-<url><loc>https://andriifurmanets.com/blogs/tag/Jira</loc><lastmod>2025-08-21T08:28:14.797Z</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-<url><loc>https://andriifurmanets.com/blogs/tag/Legacy Systems</loc><lastmod>2025-08-21T08:28:14.797Z</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-<url><loc>https://andriifurmanets.com/blogs/tag/MCP</loc><lastmod>2025-08-21T08:28:14.797Z</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-<url><loc>https://andriifurmanets.com/blogs/tag/Monetization</loc><lastmod>2025-08-21T08:28:14.797Z</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-<url><loc>https://andriifurmanets.com/blogs/tag/Notion</loc><lastmod>2025-08-21T08:28:14.797Z</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-<url><loc>https://andriifurmanets.com/blogs/tag/PostgreSQL</loc><lastmod>2025-08-21T08:28:14.797Z</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-<url><loc>https://andriifurmanets.com/blogs/tag/Productivity</loc><lastmod>2025-08-21T08:28:14.797Z</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-<url><loc>https://andriifurmanets.com/blogs/tag/Programming</loc><lastmod>2025-08-21T08:28:14.797Z</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-<url><loc>https://andriifurmanets.com/blogs/tag/Rails</loc><lastmod>2025-08-21T08:28:14.797Z</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-<url><loc>https://andriifurmanets.com/blogs/tag/Ruby</loc><lastmod>2025-08-21T08:28:14.797Z</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-<url><loc>https://andriifurmanets.com/blogs/tag/SaaS</loc><lastmod>2025-08-21T08:28:14.797Z</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-<url><loc>https://andriifurmanets.com/blogs/tag/Security</loc><lastmod>2025-08-21T08:28:14.797Z</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-<url><loc>https://andriifurmanets.com/blogs/tag/Slack</loc><lastmod>2025-08-21T08:28:14.797Z</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-<url><loc>https://andriifurmanets.com/blogs/tag/Social Media</loc><lastmod>2025-08-21T08:28:14.797Z</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-<url><loc>https://andriifurmanets.com/blogs/tag/Software Development</loc><lastmod>2025-08-21T08:28:14.797Z</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-<url><loc>https://andriifurmanets.com/blogs/tag/Software Engineering</loc><lastmod>2025-08-21T08:28:14.797Z</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-<url><loc>https://andriifurmanets.com/blogs/tag/Startup</loc><lastmod>2025-08-21T08:28:14.797Z</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-<url><loc>https://andriifurmanets.com/blogs/tag/Tech Stack</loc><lastmod>2025-08-21T08:28:14.797Z</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-<url><loc>https://andriifurmanets.com/blogs/tag/Tech Talent</loc><lastmod>2025-08-21T08:28:14.797Z</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-<url><loc>https://andriifurmanets.com/blogs/tag/Vibe Coding</loc><lastmod>2025-08-21T08:28:14.797Z</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-<url><loc>https://andriifurmanets.com/blogs/tag/Web Development</loc><lastmod>2025-08-21T08:28:14.797Z</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-<url><loc>https://andriifurmanets.com/blogs/tag/business innovation</loc><lastmod>2025-08-21T08:28:14.797Z</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-<url><loc>https://andriifurmanets.com/blogs/tag/future trends</loc><lastmod>2025-08-21T08:28:14.797Z</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-<url><loc>https://andriifurmanets.com/blogs/tag/technology</loc><lastmod>2025-08-21T08:28:14.797Z</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-<url><loc>https://andriifurmanets.com/blogs/build-a-global-scale-instagram-like-app</loc><lastmod>2025-08-21T08:28:14.797Z</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-<url><loc>https://andriifurmanets.com/blogs/built-in-authentication-in-rails</loc><lastmod>2025-08-21T08:28:14.797Z</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-<url><loc>https://andriifurmanets.com/blogs/gpt-5-new-era-for-software-developers</loc><lastmod>2025-08-21T08:28:14.797Z</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-<url><loc>https://andriifurmanets.com/blogs/key-challenges-for-scaling-saas-companies</loc><lastmod>2025-08-21T08:28:14.797Z</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-<url><loc>https://andriifurmanets.com/blogs/ultimate-ai-integration-guide</loc><lastmod>2025-08-21T08:28:14.797Z</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-<url><loc>https://andriifurmanets.com/blogs/unlocking-ai-assisted-development-with-model-context-protocol-mcp-in-cursor-ide</loc><lastmod>2025-08-21T08:28:14.797Z</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-<url><loc>https://andriifurmanets.com/blogs/vibe-coding-ai-development</loc><lastmod>2025-08-21T08:28:14.797Z</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+<url><loc>https://andriifurmanets.com/robots.txt</loc><lastmod>2025-08-21T09:00:20.380Z</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+<url><loc>https://andriifurmanets.com/sitemap.xml</loc><lastmod>2025-08-21T09:00:20.380Z</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+<url><loc>https://andriifurmanets.com</loc><lastmod>2025-08-21T09:00:20.380Z</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+<url><loc>https://andriifurmanets.com/blogs</loc><lastmod>2025-08-21T09:00:20.380Z</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+<url><loc>https://andriifurmanets.com/blogs/build-a-global-scale-instagram-like-app</loc><lastmod>2025-08-21T09:00:20.380Z</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+<url><loc>https://andriifurmanets.com/blogs/built-in-authentication-in-rails</loc><lastmod>2025-08-21T09:00:20.380Z</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+<url><loc>https://andriifurmanets.com/blogs/gpt-5-new-era-for-software-developers</loc><lastmod>2025-08-21T09:00:20.380Z</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+<url><loc>https://andriifurmanets.com/blogs/key-challenges-for-scaling-saas-companies</loc><lastmod>2025-08-21T09:00:20.380Z</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+<url><loc>https://andriifurmanets.com/blogs/ultimate-ai-integration-guide</loc><lastmod>2025-08-21T09:00:20.380Z</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+<url><loc>https://andriifurmanets.com/blogs/unlocking-ai-assisted-development-with-model-context-protocol-mcp-in-cursor-ide</loc><lastmod>2025-08-21T09:00:20.380Z</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+<url><loc>https://andriifurmanets.com/blogs/vibe-coding-ai-development</loc><lastmod>2025-08-21T09:00:20.380Z</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+<url><loc>https://andriifurmanets.com/blogs/tag/AI Development</loc><lastmod>2025-08-21T09:00:20.380Z</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+<url><loc>https://andriifurmanets.com/blogs/tag/AI Integration</loc><lastmod>2025-08-21T09:00:20.380Z</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+<url><loc>https://andriifurmanets.com/blogs/tag/AI Tools</loc><lastmod>2025-08-21T09:00:20.380Z</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+<url><loc>https://andriifurmanets.com/blogs/tag/Agile</loc><lastmod>2025-08-21T09:00:20.380Z</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+<url><loc>https://andriifurmanets.com/blogs/tag/App Development</loc><lastmod>2025-08-21T09:00:20.380Z</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+<url><loc>https://andriifurmanets.com/blogs/tag/Artificial Intelligence</loc><lastmod>2025-08-21T09:00:20.380Z</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+<url><loc>https://andriifurmanets.com/blogs/tag/Authentication</loc><lastmod>2025-08-21T09:00:20.380Z</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+<url><loc>https://andriifurmanets.com/blogs/tag/Backend</loc><lastmod>2025-08-21T09:00:20.380Z</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+<url><loc>https://andriifurmanets.com/blogs/tag/Coding Assistants</loc><lastmod>2025-08-21T09:00:20.380Z</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+<url><loc>https://andriifurmanets.com/blogs/tag/Cursor IDE</loc><lastmod>2025-08-21T09:00:20.380Z</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+<url><loc>https://andriifurmanets.com/blogs/tag/Developer Productivity</loc><lastmod>2025-08-21T09:00:20.380Z</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+<url><loc>https://andriifurmanets.com/blogs/tag/Developer Tools</loc><lastmod>2025-08-21T09:00:20.380Z</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+<url><loc>https://andriifurmanets.com/blogs/tag/GPT-5</loc><lastmod>2025-08-21T09:00:20.380Z</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+<url><loc>https://andriifurmanets.com/blogs/tag/GitHub</loc><lastmod>2025-08-21T09:00:20.380Z</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+<url><loc>https://andriifurmanets.com/blogs/tag/GitHub Copilot</loc><lastmod>2025-08-21T09:00:20.380Z</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+<url><loc>https://andriifurmanets.com/blogs/tag/Instagram</loc><lastmod>2025-08-21T09:00:20.380Z</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+<url><loc>https://andriifurmanets.com/blogs/tag/Jira</loc><lastmod>2025-08-21T09:00:20.380Z</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+<url><loc>https://andriifurmanets.com/blogs/tag/Legacy Systems</loc><lastmod>2025-08-21T09:00:20.380Z</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+<url><loc>https://andriifurmanets.com/blogs/tag/MCP</loc><lastmod>2025-08-21T09:00:20.380Z</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+<url><loc>https://andriifurmanets.com/blogs/tag/Monetization</loc><lastmod>2025-08-21T09:00:20.380Z</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+<url><loc>https://andriifurmanets.com/blogs/tag/Notion</loc><lastmod>2025-08-21T09:00:20.380Z</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+<url><loc>https://andriifurmanets.com/blogs/tag/PostgreSQL</loc><lastmod>2025-08-21T09:00:20.380Z</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+<url><loc>https://andriifurmanets.com/blogs/tag/Productivity</loc><lastmod>2025-08-21T09:00:20.380Z</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+<url><loc>https://andriifurmanets.com/blogs/tag/Programming</loc><lastmod>2025-08-21T09:00:20.380Z</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+<url><loc>https://andriifurmanets.com/blogs/tag/Rails</loc><lastmod>2025-08-21T09:00:20.380Z</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+<url><loc>https://andriifurmanets.com/blogs/tag/Ruby</loc><lastmod>2025-08-21T09:00:20.380Z</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+<url><loc>https://andriifurmanets.com/blogs/tag/SaaS</loc><lastmod>2025-08-21T09:00:20.380Z</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+<url><loc>https://andriifurmanets.com/blogs/tag/Security</loc><lastmod>2025-08-21T09:00:20.380Z</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+<url><loc>https://andriifurmanets.com/blogs/tag/Slack</loc><lastmod>2025-08-21T09:00:20.380Z</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+<url><loc>https://andriifurmanets.com/blogs/tag/Social Media</loc><lastmod>2025-08-21T09:00:20.380Z</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+<url><loc>https://andriifurmanets.com/blogs/tag/Software Development</loc><lastmod>2025-08-21T09:00:20.380Z</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+<url><loc>https://andriifurmanets.com/blogs/tag/Software Engineering</loc><lastmod>2025-08-21T09:00:20.380Z</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+<url><loc>https://andriifurmanets.com/blogs/tag/Startup</loc><lastmod>2025-08-21T09:00:20.380Z</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+<url><loc>https://andriifurmanets.com/blogs/tag/Tech Stack</loc><lastmod>2025-08-21T09:00:20.380Z</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+<url><loc>https://andriifurmanets.com/blogs/tag/Tech Talent</loc><lastmod>2025-08-21T09:00:20.380Z</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+<url><loc>https://andriifurmanets.com/blogs/tag/Vibe Coding</loc><lastmod>2025-08-21T09:00:20.380Z</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+<url><loc>https://andriifurmanets.com/blogs/tag/Web Development</loc><lastmod>2025-08-21T09:00:20.380Z</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+<url><loc>https://andriifurmanets.com/blogs/tag/business innovation</loc><lastmod>2025-08-21T09:00:20.380Z</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+<url><loc>https://andriifurmanets.com/blogs/tag/future trends</loc><lastmod>2025-08-21T09:00:20.380Z</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+<url><loc>https://andriifurmanets.com/blogs/tag/technology</loc><lastmod>2025-08-21T09:00:20.380Z</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
 </urlset>

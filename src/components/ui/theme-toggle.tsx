@@ -3,6 +3,7 @@
 import * as React from 'react';
 import { useTheme } from 'next-themes';
 import { motion, AnimatePresence } from 'framer-motion';
+import { haptics } from '@/lib/haptics';
 
 export function ThemeToggle() {
   const { setTheme, theme, resolvedTheme } = useTheme();
@@ -25,7 +26,10 @@ export function ThemeToggle() {
 
   return (
     <button
-      onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
+      onClick={() => {
+        haptics.light();
+        setTheme(theme === 'light' ? 'dark' : 'light');
+      }}
       className="glass-button group relative inline-flex h-10 w-20 items-center rounded-full glass p-1 transition-shadow duration-100 hover:shadow-glass focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
       aria-label="Toggle theme"
     >
