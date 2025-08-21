@@ -40,7 +40,7 @@ const experiences: Experience[] = [
     side: 'left',
     highlight: true,
     achievements: ['Launched MVP in 3 months', '500+ active users', 'AI-powered analytics'],
-    technologies: ['Next.js', 'TypeScript', 'AI/ML', 'Real-time APIs'],
+    technologies: ['Next.js', 'TypeScript', 'AI/ML', 'Real-time APIs', 'Ruby on Rails'],
     impact: 'Revolutionizing crypto portfolio management with intelligent insights',
     links: [
       { label: '🌐 Website', href: 'https://www.folioflux.com/' },
@@ -153,7 +153,6 @@ const achievements = [
 
 export function Experience() {
   const shouldReduceMotion = useReducedMotion();
-  const [expandedCard, setExpandedCard] = useState<number | null>(null);
   const { scrollYProgress } = useScroll();
   const timelineProgress = useTransform(scrollYProgress, [0.2, 0.8], [0, 1]);
 
@@ -193,8 +192,6 @@ export function Experience() {
           />
 
           {experiences.map((exp, index) => {
-            const isExpanded = expandedCard === index;
-            
             return (
               <motion.div
                 key={exp.company}
@@ -223,17 +220,12 @@ export function Experience() {
 
                 {/* Content for mobile */}
                 <div className="flex-1 ml-6">
-                  <motion.div
-                    className={`glass-card rounded-2xl cursor-pointer transition-all duration-300 ${
+                  <div
+                    className={`glass-card rounded-2xl transition-all duration-300 ${
                       exp.highlight 
                         ? 'glass-light shadow-glass-lg' 
-                        : 'glass hover:glass-light'
-                    } p-6 ${
-                      isExpanded ? 'ring-2 ring-accent-blue/30' : ''
-                    }`}
-                    onClick={() => setExpandedCard(isExpanded ? null : index)}
-                    whileHover={shouldReduceMotion ? {} : { y: -2 }}
-                    layout
+                        : 'glass'
+                    } p-6 ${exp.highlight ? 'ring-2 ring-accent-blue/30' : ''}`}
                   >
                     <div className="flex justify-between items-start mb-2">
                       <h3 className={`text-xl font-bold ${exp.highlight ? 'text-accent-blue' : ''}`}>
@@ -247,68 +239,65 @@ export function Experience() {
                     <p className="text-muted-foreground mb-2">{exp.role}</p>
                     <p className="text-sm mb-4">{exp.description}</p>
                     
-                    {/* Expandable content */}
-                    <motion.div
-                      initial={false}
-                      animate={{ height: isExpanded ? 'auto' : 0, opacity: isExpanded ? 1 : 0 }}
-                      transition={{ duration: 0.3 }}
-                      className="overflow-hidden"
-                    >
-                      {exp.achievements && (
-                        <div className="mb-4">
-                          <h4 className="font-semibold text-sm mb-2 flex items-center gap-2">
-                            <FaAward className="text-accent-blue" /> Key Achievements
-                          </h4>
-                          <ul className="space-y-1">
-                            {exp.achievements.map((achievement, i) => (
-                              <li key={i} className="text-xs flex items-center gap-2">
-                                <FaStar className="text-yellow-400 text-[8px]" />
-                                {achievement}
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      )}
-                      
-                      {exp.technologies && (
-                        <div className="mb-4">
-                          <h4 className="font-semibold text-sm mb-2">Technologies Used</h4>
-                          <div className="flex flex-wrap gap-1">
-                            {exp.technologies.map((tech, i) => (
-                              <span key={i} className="text-xs glass text-accent-blue px-2 py-1 rounded-full">
-                                {tech}
-                              </span>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-                      
-                      {exp.links && (
-                        <div className="flex flex-wrap gap-2">
-                          {exp.links.map((link, i) => (
-                            <a
-                              key={i}
-                              href={link.href}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="glass-button inline-flex items-center px-3 py-1 rounded-full text-accent-blue hover:glass-light transition-all duration-200 text-xs"
-                            >
-                              {link.label}
-                            </a>
+                    {/* Always show detailed content */}
+                    {exp.achievements && (
+                      <div className="mb-4">
+                        <h4 className="font-semibold text-sm mb-2 flex items-center gap-2">
+                          <FaAward className="text-accent-blue" /> Key Achievements
+                        </h4>
+                        <ul className="space-y-1">
+                          {exp.achievements.map((achievement, i) => (
+                            <li key={i} className="text-xs flex items-center gap-2">
+                              <FaStar className="text-yellow-400 text-[8px]" />
+                              {achievement}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                    
+                    {exp.technologies && (
+                      <div className="mb-4">
+                        <h4 className="font-semibold text-sm mb-2">Technologies Used</h4>
+                        <div className="flex flex-wrap gap-1">
+                          {exp.technologies.map((tech, i) => (
+                            <span key={i} className="text-xs glass text-accent-blue px-2 py-1 rounded-full">
+                              {tech}
+                            </span>
                           ))}
                         </div>
-                      )}
-                    </motion.div>
-                  </motion.div>
+                      </div>
+                    )}
+                    
+                    {exp.links && (
+                      <div className="flex flex-wrap gap-2">
+                        {exp.links.map((link, i) => (
+                          <a
+                            key={i}
+                            href={link.href}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="glass-button inline-flex items-center px-3 py-1 rounded-full text-accent-blue hover:glass-light transition-all duration-200 text-xs"
+                          >
+                            {link.label}
+                          </a>
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
 
-              {/* Desktop layout (unchanged) */}
+              {/* Desktop layout */}
               <div
                 className={`hidden md:block w-full md:w-5/12 ${exp.side === 'right' && 'md:order-1'}`}
               >
                 <div
-                  className={`glass-card rounded-2xl ${exp.highlight ? 'glass-light shadow-glass-lg' : 'glass'} p-6 ${exp.highlight ? 'ring-2 ring-accent-blue/30' : ''}`}
+                  className={`glass-card rounded-2xl transition-all duration-300 ${
+                    exp.highlight 
+                      ? 'glass-light shadow-glass-lg' 
+                      : 'glass'
+                  } p-6 ${exp.highlight ? 'ring-2 ring-accent-blue/30' : ''}`}
                 >
                   <div className="flex justify-between items-start mb-2">
                     <h3
@@ -316,10 +305,59 @@ export function Experience() {
                     >
                       {exp.company}
                     </h3>
-                    <span className="text-sm text-muted-foreground">{exp.period}</span>
+                    <div className="flex items-center gap-2">
+                      {exp.highlight && <FaTrophy className="text-yellow-500" />}
+                      <span className="text-sm text-muted-foreground">{exp.period}</span>
+                    </div>
                   </div>
                   <p className="text-muted-foreground mb-2">{exp.role}</p>
-                  <p className="text-sm">{exp.description}</p>
+                  <p className="text-sm mb-4">{exp.description}</p>
+                  
+                  {/* Always show detailed content */}
+                  {exp.achievements && (
+                    <div className="mb-4">
+                      <h4 className="font-semibold text-sm mb-2 flex items-center gap-2">
+                        <FaAward className="text-accent-blue" /> Key Achievements
+                      </h4>
+                      <ul className="space-y-1">
+                        {exp.achievements.map((achievement, i) => (
+                          <li key={i} className="text-xs flex items-center gap-2">
+                            <FaStar className="text-yellow-400 text-[8px]" />
+                            {achievement}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                  
+                  {exp.technologies && (
+                    <div className="mb-4">
+                      <h4 className="font-semibold text-sm mb-2">Technologies Used</h4>
+                      <div className="flex flex-wrap gap-1">
+                        {exp.technologies.map((tech, i) => (
+                          <span key={i} className="text-xs glass text-accent-blue px-2 py-1 rounded-full">
+                            {tech}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  
+                  {exp.links && (
+                    <div className="flex flex-wrap gap-2">
+                      {exp.links.map((link, i) => (
+                        <a
+                          key={i}
+                          href={link.href}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="glass-button inline-flex items-center px-3 py-1 rounded-full text-accent-blue hover:glass-light transition-all duration-200 text-xs"
+                        >
+                          {link.label}
+                        </a>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
 

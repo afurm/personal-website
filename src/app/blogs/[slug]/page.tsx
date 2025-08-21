@@ -1,8 +1,11 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getAllBlogPosts, getBlogPostBySlug, getReadingTime, getRelatedPosts } from '../../../lib/blog';
-import Script from 'next/script';
 import { BlogPostClient } from '../../../components/pages/BlogPostClient';
+import { Header } from '@/components/ui/header';
+import { Footer } from '@/components/ui/footer';
+import { Breadcrumbs } from '@/components/ui/breadcrumbs';
+import { BlogStructuredData } from '@/components/ui/blog-structured-data';
 
 // Define the params type to match Next.js expectations
 type PageProps = {
@@ -100,52 +103,32 @@ export default async function BlogPostPage({ params }: PageProps) {
     const relatedPosts = await getRelatedPosts(post);
     const canonicalUrl = `https://andriifurmanets.com/blogs/${slug}`;
 
-    // Create structured data for the blog post
-    const structuredData = {
-        '@context': 'https://schema.org',
-        '@type': 'BlogPosting',
-        headline: post.title,
-        description: post.description,
-        datePublished: post.date,
-        dateModified: post.date,
-        author: {
-            '@type': 'Person',
-            name: 'Andrii Furmanets',
-            url: 'https://andriifurmanets.com',
-        },
-        publisher: {
-            '@type': 'Person',
-            name: 'Andrii Furmanets',
-            url: 'https://andriifurmanets.com',
-        },
-        mainEntityOfPage: {
-            '@type': 'WebPage',
-            '@id': canonicalUrl,
-        },
-        url: canonicalUrl,
-        keywords: post.tags.join(', '),
-        articleSection: 'Technology',
-        wordCount: post.content.replace(/<[^>]*>/g, '').split(/\s+/).length,
-    };
+    const breadcrumbItems = [
+        { name: 'Home', href: '/' },
+        { name: 'Blog', href: '/blogs' },
+        { name: post.title, href: `/blogs/${slug}` },
+    ];
 
     return (
-        <>
-            {/* Add canonical link */}
-            <link rel="canonical" href={canonicalUrl} />
-            
-            {/* Add structured data script */}
-            <Script
-                id="blog-post-structured-data"
-                type="application/ld+json"
-                dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+        <div className="flex min-h-screen flex-col">
+            <Header />
+            <main className="flex-1">
+                <div className="container mx-auto px-4 pt-20 md:pt-24">
+                    <Breadcrumbs items={breadcrumbItems} />
+                </div>
+                <BlogPostClient 
+                    post={post}
+                    readingTime={readingTime}
+                    relatedPosts={relatedPosts}
+                    canonicalUrl={canonicalUrl}
+                />
+            </main>
+            <Footer />
+            <BlogStructuredData 
+                post={post} 
+                canonicalUrl={canonicalUrl} 
+                readingTime={readingTime} 
             />
-
-            <BlogPostClient 
-                post={post}
-                readingTime={readingTime}
-                relatedPosts={relatedPosts}
-                canonicalUrl={canonicalUrl}
-            />
-        </>
+        </div>
     );
 } 

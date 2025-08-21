@@ -84,8 +84,10 @@ export function Contact() {
               Get In Touch
             </h2>
             <p className="mx-auto max-w-[700px] text-muted-foreground md:text-xl">
-              Have a project in mind or want to discuss potential opportunities? Feel free to reach
-              out.
+              Have a project in mind or want to discuss potential opportunities?
+            </p>
+            <p className="text-accent-blue font-semibold text-lg">
+              🚀 Available for freelance projects
             </p>
           </div>
         </motion.div>
@@ -127,7 +129,7 @@ export function Contact() {
                     href="mailto:furmanets.andriy@gmail.com"
                     className="text-sm text-muted-foreground hover:text-primary"
                   >
-                    furmanets.andriy@gmail.com
+                    furmanets.andriy [at] gmail.com
                   </a>
                 </div>
               </div>
