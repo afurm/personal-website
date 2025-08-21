@@ -117,40 +117,23 @@ export async function POST(request: NextRequest) {
 
     // Create calendar event (without attendees to avoid permission issues)
     const event = {
-      summary: `${MEETING_TYPE_LABELS[body.meetingType]} with ${body.name}`,
+      summary: `${MEETING_TYPE_LABELS[body.meetingType]} - ${body.name}`,
       description: `
-📅 Meeting Details:
+Meeting Details:
 • Type: ${MEETING_TYPE_LABELS[body.meetingType]}
 • Duration: ${body.duration} minutes
 • Client: ${body.name}
 • Email: ${body.email}
 
-${body.message ? `📝 Client Message:\n${body.message}\n\n` : ''}
+${body.message ? `Client Message:\n"${body.message}"\n\n` : ''}---
 
-🎯 ACTION REQUIRED:
-1. Add Google Meet to this event
-2. Add ${body.email} as attendee
-3. Send calendar invitation
-
-📧 READY-TO-COPY MESSAGE FOR CLIENT:
----
-Hi ${body.name},
-
-Thank you for scheduling a ${MEETING_TYPE_LABELS[body.meetingType].toLowerCase()} with me!
-
-📅 Meeting Details:
-• Date: ${startDateTime.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
-• Time: ${startDateTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })} (UTC+2)
-• Duration: ${body.duration} minutes
-
-Looking forward to our conversation!
-
-Best regards,
 Andrii Furmanets
 Senior Full-Stack Developer
----
+🌐 Website: andriifurmanets.com
+💼 LinkedIn: linkedin.com/in/andrii-furmanets
+📧 Email: furmanets.andriy@gmail.com
 
-Meeting scheduled through andriifurmanets.com
+Professional meeting scheduled via online booking system.
       `.trim(),
       start: {
         dateTime: startDateTime.toISOString(),
@@ -180,46 +163,25 @@ Meeting scheduled through andriifurmanets.com
     if (response.status === 200 && response.data) {
       const meetLink = response.data.conferenceData?.entryPoints?.[0]?.uri || '';
       
-      // Send email notification to client via your existing Telegram bot (since it's already set up)
+      // Send notification via Telegram
       try {
-        // Create ready-to-copy invitation message
-        const invitationTemplate = `Hi ${body.name},
-
-Thank you for scheduling a ${MEETING_TYPE_LABELS[body.meetingType].toLowerCase()} with me!
-
-📅 Meeting Details:
-• Date: ${startDateTime.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
-• Time: ${startDateTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })} (UTC+2)
-• Duration: ${body.duration} minutes
-
-Looking forward to our conversation!
-
-Best regards,
-Andrii Furmanets
-Senior Full-Stack Developer`;
-
         const telegramMessage = `
-🗓️ NEW BOOKING REQUEST
+🗓️ NEW PROFESSIONAL BOOKING
 
-📋 Meeting Details:
-• Type: ${MEETING_TYPE_LABELS[body.meetingType]}
-• Date: ${startDateTime.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
-• Time: ${startDateTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })} (UTC+2)
-• Duration: ${body.duration} minutes
+📋 ${MEETING_TYPE_LABELS[body.meetingType]}
+📅 ${startDateTime.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+🕒 ${startDateTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })} - ${endDateTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })} (${body.duration}min)
 
-👤 Client Information:
-• Name: ${body.name}
-• Email: ${body.email}
+👤 Client: ${body.name}
+📧 Email: ${body.email}
 
-${body.message ? `💬 Client Message:\n${body.message}\n\n` : ''}
+${body.message ? `💬 Message: "${body.message}"\n\n` : ''}✅ Event created in Google Calendar
+📝 Action needed:
+• Add Google Meet link to event
+• Add ${body.email} as attendee
+• Send calendar invitation
 
-⚡ ACTION REQUIRED: 
-1. Edit calendar event → Add Google Meet
-2. Add client as attendee: ${body.email}
-3. Send this message to client:
-
-📧 COPY & PASTE MESSAGE:
-${invitationTemplate}
+🔗 Event ID: ${response.data.id}
         `.trim();
 
         // Send to your Telegram (using existing setup)
