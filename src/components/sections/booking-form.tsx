@@ -5,7 +5,8 @@ import { motion } from 'framer-motion';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { format, addDays, isSameDay, isAfter, startOfDay } from 'date-fns';
+import { format, addDays, isSameDay, isAfter, startOfDay, addHours, isBefore } from 'date-fns';
+import { formatInTimeZone, toZonedTime } from 'date-fns-tz';
 import { useReducedMotion } from '@/hooks/use-reduced-motion';
 import { trackBusiness } from '@/lib/analytics';
 import { haptics } from '@/lib/haptics';
@@ -17,10 +18,11 @@ import {
 const bookingFormSchema = z.object({
   name: z.string().min(2, { message: 'Name must be at least 2 characters.' }),
   email: z.string().email({ message: 'Please enter a valid email address.' }),
-  selectedDate: z.string().min(1, { message: 'Please select a date.' }),
-  selectedTime: z.string().min(1, { message: 'Please select a time slot.' }),
+  selectedDate: z.string().min(1, { message: 'Please select a date for your meeting.' }),
+  selectedTime: z.string().min(1, { message: 'Please select a time slot for your meeting.' }),
   meetingType: z.enum(['consultation', 'project-discussion', 'technical-review'], {
     required_error: 'Please select a meeting type.',
+    invalid_type_error: 'Please select a valid meeting type.',
   }),
   message: z.string().optional(),
 });
@@ -49,6 +51,13 @@ const TIME_SLOTS: TimeSlot[] = [
   { time: '16:00', available: true },
   { time: '16:30', available: true },
   { time: '17:00', available: true },
+  { time: '17:30', available: true },
+  { time: '18:00', available: true },
+  { time: '18:30', available: true },
+  { time: '19:00', available: true },
+  { time: '19:30', available: true },
+  { time: '20:00', available: true },
+  { time: '20:30', available: true },
 ];
 
 export default function BookingForm() {
@@ -58,13 +67,77 @@ export default function BookingForm() {
   const [error, setError] = useState<string | null>(null);
   const [selectedDate, setSelectedDate] = useState<string>('');
   const [selectedTime, setSelectedTime] = useState<string>('');
-  const [availableSlots, setAvailableSlots] = useState<TimeSlot[]>(TIME_SLOTS);
+  const [availableSlots, setAvailableSlots] = useState<TimeSlot[]>([]);
   const [isCheckingAvailability, setIsCheckingAvailability] = useState(false);
+  const [userTimezone, setUserTimezone] = useState<string>('');
+  const [ukraineTimezone] = useState('Europe/Kiev');
 
-  // Track booking form view
+  // Track booking form view and detect timezone
   useEffect(() => {
     trackBusiness.contactFormView();
+    // Detect user's timezone
+    const detectedTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    setUserTimezone(detectedTimezone);
+    
+    // Generate time slots converted to user's timezone
+    generateLocalTimeSlots(detectedTimezone);
   }, []);
+
+  // Convert Ukraine time to user's local time with proper DST handling
+  const convertUkraineTimeToLocal = (ukraineTimeStr: string, userTz: string, dateStr: string) => {
+    try {
+      // Create Ukraine datetime with proper timezone handling
+      const ukraineDateTime = toZonedTime(`${dateStr}T${ukraineTimeStr}:00`, ukraineTimezone);
+      
+      // Format in user's timezone with DST awareness
+      const userLocalTime = formatInTimeZone(ukraineDateTime, userTz, 'HH:mm');
+      
+      return userLocalTime;
+    } catch (error) {
+      console.error('Timezone conversion error:', error);
+      // Fallback to original time if conversion fails
+      return ukraineTimeStr;
+    }
+  };
+
+  // Check if booking is too close to current time (minimum 2 hours advance)
+  const isBookingTooSoon = (dateStr: string, timeStr: string) => {
+    const bookingDateTime = new Date(`${dateStr}T${timeStr}:00`);
+    // Add 2 hours offset for Ukraine timezone (UTC+2)
+    const ukraineDateTime = new Date(bookingDateTime.getTime() + (2 * 60 * 60 * 1000));
+    const minimumAdvanceTime = addHours(new Date(), 2);
+    return isBefore(ukraineDateTime, minimumAdvanceTime);
+  };
+
+  // Generate time slots converted to user's timezone with buffer time
+  const generateLocalTimeSlots = (userTz: string, dateStr?: string) => {
+    const slots: TimeSlot[] = [];
+    
+    // Use provided date or current date
+    const targetDateStr = dateStr || format(new Date(), 'yyyy-MM-dd');
+    
+    for (let hour = 9; hour < 21; hour++) {
+      for (let minute = 0; minute < 60; minute += 30) {
+        const ukraineTimeStr = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
+        
+        // Check if this slot is too soon to book (2-hour minimum advance)
+        const isTooSoon = isBookingTooSoon(targetDateStr, ukraineTimeStr);
+        
+        // Skip slots that are too soon for same-day bookings
+        if (isTooSoon) continue;
+        
+        const userLocalTime = convertUkraineTimeToLocal(ukraineTimeStr, userTz, targetDateStr);
+        
+        slots.push({
+          time: ukraineTimeStr, // Keep original Ukraine time for backend
+          available: true,
+          displayTime: userLocalTime // User's local time for display
+        });
+      }
+    }
+    
+    setAvailableSlots(slots);
+  };
 
   const {
     register,
@@ -75,6 +148,9 @@ export default function BookingForm() {
     watch,
   } = useForm<BookingFormValues>({
     resolver: zodResolver(bookingFormSchema),
+    defaultValues: {
+      meetingType: 'consultation', // Set default meeting type
+    },
   });
 
   const watchedMeetingType = watch('meetingType');
@@ -95,16 +171,23 @@ export default function BookingForm() {
       const response = await fetch(`/api/book?date=${dateString}`);
       if (response.ok) {
         const data = await response.json();
-        setAvailableSlots(data.timeSlots);
+        // Convert API response times to user's timezone and filter out slots that are too soon
+        const convertedSlots = data.timeSlots
+          .filter((slot: TimeSlot) => !isBookingTooSoon(dateString, slot.time))
+          .map((slot: TimeSlot) => ({
+            ...slot,
+            displayTime: userTimezone ? convertUkraineTimeToLocal(slot.time, userTimezone, dateString) : slot.time
+          }));
+        setAvailableSlots(convertedSlots);
       } else {
-        // Fallback to default slots if API fails
+        // Fallback to local time slots if API fails
         console.warn('Failed to check availability, using default slots');
-        setAvailableSlots(TIME_SLOTS);
+        generateLocalTimeSlots(userTimezone, dateString);
       }
     } catch (error) {
       console.error('Failed to check availability:', error);
-      // Fallback to default slots if API fails
-      setAvailableSlots(TIME_SLOTS);
+      // Fallback to local time slots if API fails
+      generateLocalTimeSlots(userTimezone, dateString);
     } finally {
       setIsCheckingAvailability(false);
     }
@@ -123,11 +206,27 @@ export default function BookingForm() {
     setIsSubmitting(true);
     setError(null);
 
+    // Additional validation to ensure all required fields are filled
+    if (!data.meetingType || !data.selectedDate || !data.selectedTime) {
+      setError('Please complete all required fields before submitting.');
+      setIsSubmitting(false);
+      return;
+    }
+
+    // Check if selected slot is still too soon (race condition protection)
+    if (isBookingTooSoon(data.selectedDate, data.selectedTime)) {
+      setError('This time slot is too soon. Please select a time at least 2 hours in advance.');
+      setIsSubmitting(false);
+      return;
+    }
+
     try {
       const meetingType = MEETING_TYPES.find(type => type.value === data.meetingType);
       const bookingData = {
         ...data,
         duration: meetingType?.duration || 30,
+        // Add timestamp for server-side race condition detection
+        requestTimestamp: new Date().toISOString(),
       };
 
       // Submit booking via API
@@ -142,7 +241,18 @@ export default function BookingForm() {
       const result = await response.json();
 
       if (!response.ok) {
-        throw new Error(result.error || 'Failed to schedule meeting');
+        // Handle specific error types with user-friendly messages
+        if (response.status === 409) {
+          setError('Sorry, this time slot was just booked by someone else. Please select a different time.');
+        } else if (response.status === 403) {
+          setError('There seems to be a calendar access issue. Please try again or contact support.');
+        } else if (response.status === 429) {
+          setError('Too many booking requests. Please wait a moment and try again.');
+        } else {
+          setError(result.error || 'Failed to schedule meeting. Please try again or contact support.');
+        }
+        setIsSubmitting(false);
+        return;
       }
 
       setIsSubmitted(true);
@@ -153,7 +263,20 @@ export default function BookingForm() {
       setSelectedTime('');
     } catch (err) {
       console.error('Booking creation failed:', err);
-      setError(err instanceof Error ? err.message : 'Failed to create booking. Please try again later.');
+      
+      // Handle network and other errors with user-friendly messages
+      if (err instanceof Error) {
+        if (err.message.includes('Failed to fetch') || err.message.includes('NetworkError')) {
+          setError('Network connection issue. Please check your internet connection and try again.');
+        } else if (err.message.includes('timeout')) {
+          setError('Request timed out. Please try again.');
+        } else {
+          setError('Something went wrong. Please try again or contact support if the problem persists.');
+        }
+      } else {
+        setError('An unexpected error occurred. Please try again.');
+      }
+      
       haptics.error();
     } finally {
       setIsSubmitting(false);
@@ -207,24 +330,33 @@ export default function BookingForm() {
                 Select Meeting Type
               </label>
               <div className="grid gap-3">
-                {MEETING_TYPES.map((type) => (
-                  <label
-                    key={type.value}
-                    className="relative flex items-center space-x-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
-                  >
-                    <input
-                      type="radio"
-                      {...register('meetingType')}
-                      value={type.value}
-                      className="h-4 w-4 text-primary focus:ring-primary"
-                    />
-                    <div className="flex-1">
-                      <div className="font-medium text-gray-900 dark:text-white">
-                        {type.label}
+                {MEETING_TYPES.map((type) => {
+                  const isSelected = watchedMeetingType === type.value;
+                  return (
+                    <label
+                      key={type.value}
+                      className={`relative flex items-center space-x-3 rounded-xl border p-4 cursor-pointer transition-all ${
+                        isSelected
+                          ? 'border-primary bg-primary/5 dark:bg-primary/10'
+                          : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700'
+                      }`}
+                    >
+                      <input
+                        type="radio"
+                        {...register('meetingType')}
+                        value={type.value}
+                        className="h-4 w-4 text-primary focus:ring-primary"
+                      />
+                      <div className="flex-1">
+                        <div className={`font-medium ${
+                          isSelected ? 'text-primary' : 'text-gray-900 dark:text-white'
+                        }`}>
+                          {type.label}
+                        </div>
                       </div>
-                    </div>
-                  </label>
-                ))}
+                    </label>
+                  );
+                })}
               </div>
               {errors.meetingType && (
                 <p className="text-sm text-red-500 flex items-center gap-1">
@@ -279,7 +411,12 @@ export default function BookingForm() {
             {selectedDate && (
               <div className="space-y-4">
                 <label className="text-sm font-medium text-gray-900 dark:text-white">
-                  Select Time (UTC+2)
+                  Select Time
+                  {userTimezone && (
+                    <span className="ml-2 text-xs text-gray-500">
+                      (Times shown in your local timezone: {userTimezone.split('/').pop()})
+                    </span>
+                  )}
                   {isCheckingAvailability && (
                     <span className="ml-2 text-xs text-gray-500">Checking availability...</span>
                   )}
@@ -287,6 +424,16 @@ export default function BookingForm() {
                 {isCheckingAvailability ? (
                   <div className="flex justify-center items-center py-8">
                     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+                  </div>
+                ) : availableSlots.length === 0 ? (
+                  <div className="text-center py-8">
+                    <p className="text-gray-500 dark:text-gray-400">
+                      No time slots available for this date. 
+                      {selectedDate === format(new Date(), 'yyyy-MM-dd') 
+                        ? ' Try selecting a future date or a time at least 2 hours from now.'
+                        : ' Please try a different date.'
+                      }
+                    </p>
                   </div>
                 ) : (
                   <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3">
@@ -310,7 +457,14 @@ export default function BookingForm() {
                             : 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white hover:bg-gray-200 dark:hover:bg-gray-600'
                         }`}
                       >
-                        {slot.time}
+                        <div className="text-center">
+                          <div>{slot.displayTime || slot.time}</div>
+                          {slot.displayTime && (
+                            <div className="text-xs opacity-75">
+                              ({slot.time} Ukraine)
+                            </div>
+                          )}
+                        </div>
                       </motion.button>
                     );
                   })}
@@ -328,7 +482,7 @@ export default function BookingForm() {
             )}
 
             {/* Contact Information */}
-            {selectedDate && selectedTime && (
+            {selectedDate && selectedTime && watchedMeetingType && (
               <div className="grid md:grid-cols-2 gap-6">
                 <div className="relative group">
                   <input
@@ -380,7 +534,7 @@ export default function BookingForm() {
             )}
 
             {/* Optional Message */}
-            {selectedDate && selectedTime && (
+            {selectedDate && selectedTime && watchedMeetingType && (
               <div className="relative group">
                 <textarea
                   id="message"
@@ -412,7 +566,7 @@ export default function BookingForm() {
             )}
 
             {/* Submit Button */}
-            {selectedDate && selectedTime && (
+            {selectedDate && selectedTime && watchedMeetingType && (
               <motion.button
                 type="submit"
                 disabled={isSubmitting}

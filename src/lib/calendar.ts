@@ -24,6 +24,8 @@ export interface BookingData {
 export interface TimeSlot {
   time: string;
   available: boolean;
+  displayTime?: string; // User's local time for display
+  userLocalTime?: string; // Alternative property name
 }
 
 // Initialize Google Auth client

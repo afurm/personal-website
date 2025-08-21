@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { google } from 'googleapis';
+import { addHours, isBefore } from 'date-fns';
 
 // Interface for booking request
 interface BookingRequest {
@@ -10,6 +11,7 @@ interface BookingRequest {
   meetingType: 'consultation' | 'project-discussion' | 'technical-review';
   message?: string;
   duration: number;
+  requestTimestamp?: string;
 }
 
 // Meeting type labels
@@ -17,6 +19,13 @@ const MEETING_TYPE_LABELS = {
   'consultation': 'Initial Consultation',
   'project-discussion': 'Project Discussion', 
   'technical-review': 'Technical Review',
+};
+
+// Validation helper functions
+const isBookingTooSoon = (dateStr: string, timeStr: string): boolean => {
+  const bookingDateTime = new Date(`${dateStr}T${timeStr}:00`);
+  const minimumAdvanceTime = addHours(new Date(), 2);
+  return isBefore(bookingDateTime, minimumAdvanceTime);
 };
 
 export async function POST(request: NextRequest) {
@@ -31,6 +40,23 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Validate booking time is not too soon (2-hour minimum advance)
+    if (isBookingTooSoon(body.selectedDate, body.selectedTime)) {
+      return NextResponse.json(
+        { error: 'Booking must be at least 2 hours in advance' },
+        { status: 400 }
+      );
+    }
+
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(body.email)) {
+      return NextResponse.json(
+        { error: 'Invalid email format' },
+        { status: 400 }
+      );
+    }
+
     // Create service account authentication
     const auth = new google.auth.GoogleAuth({
       credentials: {
@@ -40,9 +66,6 @@ export async function POST(request: NextRequest) {
         private_key: process.env.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
         client_email: process.env.GOOGLE_CLIENT_EMAIL,
         client_id: process.env.GOOGLE_CLIENT_ID,
-        auth_uri: 'https://accounts.google.com/o/oauth2/auth',
-        token_uri: 'https://oauth2.googleapis.com/token',
-        auth_provider_x509_cert_url: 'https://www.googleapis.com/oauth2/v1/certs',
       },
       scopes: [
         'https://www.googleapis.com/auth/calendar',
@@ -56,6 +79,42 @@ export async function POST(request: NextRequest) {
     const startDateTime = new Date(`${body.selectedDate}T${body.selectedTime}:00`);
     const endDateTime = new Date(startDateTime.getTime() + body.duration * 60000);
 
+    // Race condition protection: Check if slot is still available right before booking
+    try {
+      const startOfDay = new Date(`${body.selectedDate}T00:00:00`);
+      const endOfDay = new Date(`${body.selectedDate}T23:59:59`);
+
+      const availabilityCheck = await calendar.events.list({
+        calendarId: 'furmanets.andriy@gmail.com',
+        timeMin: startOfDay.toISOString(),
+        timeMax: endOfDay.toISOString(),
+        singleEvents: true,
+        orderBy: 'startTime',
+      });
+
+      const existingEvents = availabilityCheck.data.items || [];
+      
+      // Check for conflicts with the requested time slot
+      const hasConflict = existingEvents.some((event: any) => {
+        if (!event.start?.dateTime || !event.end?.dateTime) return false;
+        
+        const eventStart = new Date(event.start.dateTime);
+        const eventEnd = new Date(event.end.dateTime);
+        
+        return (startDateTime < eventEnd && endDateTime > eventStart);
+      });
+
+      if (hasConflict) {
+        return NextResponse.json(
+          { error: 'This time slot has already been booked. Please select a different time.' },
+          { status: 409 } // Conflict status code
+        );
+      }
+    } catch (availabilityError) {
+      console.error('Failed to check availability:', availabilityError);
+      // Continue with booking attempt - availability check failure shouldn't block booking
+    }
+
     // Create calendar event (without attendees to avoid permission issues)
     const event = {
       summary: `${MEETING_TYPE_LABELS[body.meetingType]} with ${body.name}`,
@@ -66,23 +125,32 @@ export async function POST(request: NextRequest) {
 • Client: ${body.name}
 • Email: ${body.email}
 
-${body.message ? `📝 Additional Message:\n${body.message}\n\n` : ''}
+${body.message ? `📝 Client Message:\n${body.message}\n\n` : ''}
 
-📞 Contact Information:
-• Client Email: ${body.email}
-• Meeting scheduled through andriifurmanets.com
+🎯 ACTION REQUIRED:
+1. Add Google Meet to this event
+2. Add ${body.email} as attendee
+3. Send calendar invitation
 
-🤝 Next Steps:
-1. You'll receive this calendar event
-2. Client will be sent a manual invitation
-3. Google Meet link will be included
-
+📧 READY-TO-COPY MESSAGE FOR CLIENT:
 ---
+Hi ${body.name},
+
+Thank you for scheduling a ${MEETING_TYPE_LABELS[body.meetingType].toLowerCase()} with me!
+
+📅 Meeting Details:
+• Date: ${startDateTime.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+• Time: ${startDateTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })} (UTC+2)
+• Duration: ${body.duration} minutes
+
 Looking forward to our conversation!
 
 Best regards,
 Andrii Furmanets
 Senior Full-Stack Developer
+---
+
+Meeting scheduled through andriifurmanets.com
       `.trim(),
       start: {
         dateTime: startDateTime.toISOString(),
@@ -106,7 +174,7 @@ Senior Full-Stack Developer
     // Create the event in YOUR calendar (using your email as calendar ID)
     const response = await calendar.events.insert({
       calendarId: 'furmanets.andriy@gmail.com', // Your actual calendar
-      resource: event,
+      requestBody: event,
     });
 
     if (response.status === 200 && response.data) {
@@ -114,25 +182,44 @@ Senior Full-Stack Developer
       
       // Send email notification to client via your existing Telegram bot (since it's already set up)
       try {
+        // Create ready-to-copy invitation message
+        const invitationTemplate = `Hi ${body.name},
+
+Thank you for scheduling a ${MEETING_TYPE_LABELS[body.meetingType].toLowerCase()} with me!
+
+📅 Meeting Details:
+• Date: ${startDateTime.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+• Time: ${startDateTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })} (UTC+2)
+• Duration: ${body.duration} minutes
+
+Looking forward to our conversation!
+
+Best regards,
+Andrii Furmanets
+Senior Full-Stack Developer`;
+
         const telegramMessage = `
 🗓️ NEW BOOKING REQUEST
 
 📋 Meeting Details:
 • Type: ${MEETING_TYPE_LABELS[body.meetingType]}
 • Date: ${startDateTime.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
-• Time: ${startDateTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
+• Time: ${startDateTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })} (UTC+2)
 • Duration: ${body.duration} minutes
 
 👤 Client Information:
 • Name: ${body.name}
 • Email: ${body.email}
 
-${body.message ? `💬 Message:\n${body.message}\n\n` : ''}
+${body.message ? `💬 Client Message:\n${body.message}\n\n` : ''}
 
-⚡ Action Required: 
-1. Check your Google Calendar - event has been created
-2. Create Google Meet link manually
-3. Send calendar invitation to ${body.email} with the Meet link
+⚡ ACTION REQUIRED: 
+1. Edit calendar event → Add Google Meet
+2. Add client as attendee: ${body.email}
+3. Send this message to client:
+
+📧 COPY & PASTE MESSAGE:
+${invitationTemplate}
         `.trim();
 
         // Send to your Telegram (using existing setup)
@@ -163,10 +250,30 @@ ${body.message ? `💬 Message:\n${body.message}\n\n` : ''}
   } catch (error) {
     console.error('Booking API Error:', error);
     
+    // Handle specific Google Calendar API errors
+    if (error instanceof Error) {
+      if (error.message.includes('insufficient permissions') || error.message.includes('access denied')) {
+        return NextResponse.json(
+          { error: 'Calendar access issue. Please contact support.' },
+          { status: 403 }
+        );
+      } else if (error.message.includes('quota exceeded') || error.message.includes('rate limit')) {
+        return NextResponse.json(
+          { error: 'Service temporarily unavailable. Please try again in a few minutes.' },
+          { status: 429 }
+        );
+      } else if (error.message.includes('network') || error.message.includes('timeout')) {
+        return NextResponse.json(
+          { error: 'Connection timeout. Please check your internet connection and try again.' },
+          { status: 503 }
+        );
+      }
+    }
+    
     return NextResponse.json(
       { 
         error: 'Failed to schedule meeting. Please try again or contact support.',
-        details: error instanceof Error ? error.message : 'Unknown error'
+        details: process.env.NODE_ENV === 'development' ? (error instanceof Error ? error.message : 'Unknown error') : undefined
       },
       { status: 500 }
     );
@@ -192,9 +299,6 @@ export async function GET(request: NextRequest) {
         private_key: process.env.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
         client_email: process.env.GOOGLE_CLIENT_EMAIL,
         client_id: process.env.GOOGLE_CLIENT_ID,
-        auth_uri: 'https://accounts.google.com/o/oauth2/auth',
-        token_uri: 'https://oauth2.googleapis.com/token',
-        auth_provider_x509_cert_url: 'https://www.googleapis.com/oauth2/v1/certs',
       },
       scopes: ['https://www.googleapis.com/auth/calendar.readonly'],
     });
@@ -215,9 +319,9 @@ export async function GET(request: NextRequest) {
 
     const existingEvents = response.data.items || [];
     
-    // Generate available time slots (9 AM to 5 PM, 30-minute intervals)
+    // Generate available time slots (9 AM to 9 PM, 30-minute intervals)
     const timeSlots = [];
-    for (let hour = 9; hour < 17; hour++) {
+    for (let hour = 9; hour < 21; hour++) {
       for (let minute = 0; minute < 60; minute += 30) {
         const time = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
         const slotStart = new Date(date + `T${time}:00`);
@@ -233,10 +337,13 @@ export async function GET(request: NextRequest) {
           return (slotStart < eventEnd && slotEnd > eventStart);
         });
 
-        timeSlots.push({
-          time,
-          available: isAvailable,
-        });
+        // Only include slots that are not too soon to book
+        if (!isBookingTooSoon(date, time)) {
+          timeSlots.push({
+            time,
+            available: isAvailable,
+          });
+        }
       }
     }
 
