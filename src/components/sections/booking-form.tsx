@@ -89,33 +89,58 @@ export default function BookingForm() {
       // Create Ukraine datetime with proper timezone handling
       const ukraineDateTime = toZonedTime(`${dateStr}T${ukraineTimeStr}:00`, ukraineTimezone);
       
-      // Format in user's timezone with DST awareness
-      const userLocalTime = formatInTimeZone(ukraineDateTime, userTz, 'HH:mm');
+      // Format in user's timezone with DST awareness and AM/PM format
+      const userLocalTime = formatInTimeZone(ukraineDateTime, userTz, 'h:mm a');
       
       return userLocalTime;
     } catch (error) {
       console.error('Timezone conversion error:', error);
-      // Fallback to original time if conversion fails
-      return ukraineTimeStr;
+      // Fallback to original time if conversion fails - convert to AM/PM
+      const [hours, minutes] = ukraineTimeStr.split(':');
+      const hour = parseInt(hours);
+      const ampm = hour >= 12 ? 'PM' : 'AM';
+      const displayHour = hour === 0 ? 12 : hour > 12 ? hour - 12 : hour;
+      return `${displayHour}:${minutes} ${ampm}`;
     }
+  };
+
+  // Convert Ukraine time to AM/PM format
+  const convertToAMPM = (timeStr: string) => {
+    const [hours, minutes] = timeStr.split(':');
+    const hour = parseInt(hours);
+    const ampm = hour >= 12 ? 'PM' : 'AM';
+    const displayHour = hour === 0 ? 12 : hour > 12 ? hour - 12 : hour;
+    return `${displayHour}:${minutes} ${ampm}`;
   };
 
   // Check if booking is too close to current time (minimum 2 hours advance)
   const isBookingTooSoon = (dateStr: string, timeStr: string) => {
-    const bookingDateTime = new Date(`${dateStr}T${timeStr}:00`);
-    // Add 2 hours offset for Ukraine timezone (UTC+2)
-    const ukraineDateTime = new Date(bookingDateTime.getTime() + (2 * 60 * 60 * 1000));
-    const minimumAdvanceTime = addHours(new Date(), 2);
-    return isBefore(ukraineDateTime, minimumAdvanceTime);
+    try {
+      // Create proper Ukraine datetime with timezone awareness
+      const ukraineDateTime = toZonedTime(`${dateStr}T${timeStr}:00`, ukraineTimezone);
+      const currentTimeInUkraine = toZonedTime(new Date(), ukraineTimezone);
+      const minimumAdvanceTime = addHours(currentTimeInUkraine, 2);
+      return isBefore(ukraineDateTime, minimumAdvanceTime);
+    } catch (error) {
+      console.error('Error checking booking time:', error);
+      // Fallback to simple comparison if timezone conversion fails
+      const bookingDateTime = new Date(`${dateStr}T${timeStr}:00`);
+      const minimumAdvanceTime = addHours(new Date(), 2);
+      return isBefore(bookingDateTime, minimumAdvanceTime);
+    }
   };
 
   // Generate time slots converted to user's timezone with buffer time
+  // IMPORTANT: Always generates slots within HOST'S comfort hours (9 AM - 9 PM Ukraine time)
+  // but displays them in client's local timezone for convenience
   const generateLocalTimeSlots = (userTz: string, dateStr?: string) => {
     const slots: TimeSlot[] = [];
     
     // Use provided date or current date
     const targetDateStr = dateStr || format(new Date(), 'yyyy-MM-dd');
     
+    // Generate slots from 9 AM to 9 PM UKRAINE TIME (host's comfort hours)
+    // These times ensure meetings are always during convenient hours for the host
     for (let hour = 9; hour < 21; hour++) {
       for (let minute = 0; minute < 60; minute += 30) {
         const ukraineTimeStr = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
@@ -126,12 +151,13 @@ export default function BookingForm() {
         // Skip slots that are too soon for same-day bookings
         if (isTooSoon) continue;
         
+        // Convert Ukraine time to client's local time for display purposes only
         const userLocalTime = convertUkraineTimeToLocal(ukraineTimeStr, userTz, targetDateStr);
         
         slots.push({
-          time: ukraineTimeStr, // Keep original Ukraine time for backend
+          time: ukraineTimeStr, // ALWAYS keep original Ukraine time for backend booking
           available: true,
-          displayTime: userLocalTime // User's local time for display
+          displayTime: userLocalTime // Show user's local time for their convenience
         });
       }
     }
@@ -261,6 +287,9 @@ export default function BookingForm() {
       reset();
       setSelectedDate('');
       setSelectedTime('');
+      
+      // Scroll to top to show success message
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (err) {
       console.error('Booking creation failed:', err);
       
@@ -458,10 +487,10 @@ export default function BookingForm() {
                         }`}
                       >
                         <div className="text-center">
-                          <div>{slot.displayTime || slot.time}</div>
+                          <div>{slot.displayTime || convertToAMPM(slot.time)}</div>
                           {slot.displayTime && (
                             <div className="text-xs opacity-75">
-                              ({slot.time} Ukraine)
+                              ({convertToAMPM(slot.time)} Ukraine)
                             </div>
                           )}
                         </div>

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { google } from 'googleapis';
 import { addHours, isBefore } from 'date-fns';
+import { toZonedTime, formatInTimeZone } from 'date-fns-tz';
 
 // Interface for booking request
 interface BookingRequest {
@@ -22,10 +23,22 @@ const MEETING_TYPE_LABELS = {
 };
 
 // Validation helper functions
+const UKRAINE_TIMEZONE = 'Europe/Kiev';
+
 const isBookingTooSoon = (dateStr: string, timeStr: string): boolean => {
-  const bookingDateTime = new Date(`${dateStr}T${timeStr}:00`);
-  const minimumAdvanceTime = addHours(new Date(), 2);
-  return isBefore(bookingDateTime, minimumAdvanceTime);
+  try {
+    // Create proper Ukraine datetime with timezone awareness
+    const ukraineDateTime = toZonedTime(`${dateStr}T${timeStr}:00`, UKRAINE_TIMEZONE);
+    const currentTimeInUkraine = toZonedTime(new Date(), UKRAINE_TIMEZONE);
+    const minimumAdvanceTime = addHours(currentTimeInUkraine, 2);
+    return isBefore(ukraineDateTime, minimumAdvanceTime);
+  } catch (error) {
+    console.error('Error validating booking time:', error);
+    // Fallback to simple comparison if timezone conversion fails
+    const bookingDateTime = new Date(`${dateStr}T${timeStr}:00`);
+    const minimumAdvanceTime = addHours(new Date(), 2);
+    return isBefore(bookingDateTime, minimumAdvanceTime);
+  }
 };
 
 export async function POST(request: NextRequest) {
@@ -75,14 +88,14 @@ export async function POST(request: NextRequest) {
 
     const calendar = google.calendar({ version: 'v3', auth });
 
-    // Create date/time objects
-    const startDateTime = new Date(`${body.selectedDate}T${body.selectedTime}:00`);
+    // Create date/time objects with proper Ukraine timezone handling
+    const startDateTime = toZonedTime(`${body.selectedDate}T${body.selectedTime}:00`, UKRAINE_TIMEZONE);
     const endDateTime = new Date(startDateTime.getTime() + body.duration * 60000);
 
     // Race condition protection: Check if slot is still available right before booking
     try {
-      const startOfDay = new Date(`${body.selectedDate}T00:00:00`);
-      const endOfDay = new Date(`${body.selectedDate}T23:59:59`);
+      const startOfDay = toZonedTime(`${body.selectedDate}T00:00:00`, UKRAINE_TIMEZONE);
+      const endOfDay = toZonedTime(`${body.selectedDate}T23:59:59`, UKRAINE_TIMEZONE);
 
       const availabilityCheck = await calendar.events.list({
         calendarId: 'furmanets.andriy@gmail.com',
@@ -267,8 +280,8 @@ export async function GET(request: NextRequest) {
 
     const calendar = google.calendar({ version: 'v3', auth });
     
-    const startOfDay = new Date(date + 'T00:00:00');
-    const endOfDay = new Date(date + 'T23:59:59');
+    const startOfDay = toZonedTime(date + 'T00:00:00', UKRAINE_TIMEZONE);
+    const endOfDay = toZonedTime(date + 'T23:59:59', UKRAINE_TIMEZONE);
 
     // Get existing events for the date from YOUR calendar
     const response = await calendar.events.list({
@@ -281,12 +294,14 @@ export async function GET(request: NextRequest) {
 
     const existingEvents = response.data.items || [];
     
-    // Generate available time slots (9 AM to 9 PM, 30-minute intervals)
+    // Generate available time slots (9 AM to 9 PM Ukraine time, 30-minute intervals)
+    // IMPORTANT: These are HOST'S comfort hours in Ukraine timezone
+    // Frontend will convert these for client display but booking uses Ukraine time
     const timeSlots = [];
     for (let hour = 9; hour < 21; hour++) {
       for (let minute = 0; minute < 60; minute += 30) {
         const time = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
-        const slotStart = new Date(date + `T${time}:00`);
+        const slotStart = toZonedTime(date + `T${time}:00`, UKRAINE_TIMEZONE);
         const slotEnd = new Date(slotStart.getTime() + 30 * 60000);
 
         // Check if this time slot conflicts with existing events
