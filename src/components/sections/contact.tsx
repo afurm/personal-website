@@ -7,6 +7,7 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useReducedMotion } from '@/hooks/use-reduced-motion';
 import { trackBusiness } from '@/lib/analytics';
+import { haptics } from '@/lib/haptics';
 
 const contactFormSchema = z.object({
   name: z.string().min(2, { message: 'Name must be at least 2 characters.' }),
@@ -56,10 +57,12 @@ export function Contact() {
       }
 
       setIsSubmitted(true);
+      haptics.success();
       trackBusiness.contactFormSubmit();
       reset();
     } catch (err) {
       setError('Failed to send message. Please try again later.');
+      haptics.error();
       console.error(err);
     } finally {
       setIsSubmitting(false);
@@ -259,6 +262,7 @@ export function Contact() {
                   whileHover={shouldReduceMotion ? {} : { scale: 1.05 }}
                   whileTap={shouldReduceMotion ? {} : { scale: 0.95 }}
                   onClick={() => {
+                    haptics.light();
                     setIsSubmitted(false);
                     reset();
                   }}
