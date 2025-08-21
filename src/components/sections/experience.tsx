@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
+import { useReducedMotion } from '@/hooks/use-reduced-motion';
 import {
   FaCode,
   FaChartLine,
@@ -151,6 +152,7 @@ const achievements = [
 ];
 
 export function Experience() {
+  const shouldReduceMotion = useReducedMotion();
   const [expandedCard, setExpandedCard] = useState<number | null>(null);
   const { scrollYProgress } = useScroll();
   const timelineProgress = useTransform(scrollYProgress, [0.2, 0.8], [0, 1]);
@@ -159,9 +161,9 @@ export function Experience() {
     <section id="experience" className="spacing-section bg-background">
       <div className="container spacing-container">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={shouldReduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
+          transition={shouldReduceMotion ? {} : { duration: 0.5 }}
           className="spacing-heading"
         >
           <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl text-center text-gradient-glass">
@@ -196,10 +198,10 @@ export function Experience() {
             return (
               <motion.div
                 key={exp.company}
-                initial={{ opacity: 0, x: exp.side === 'left' ? -50 : 50 }}
+                initial={shouldReduceMotion ? { opacity: 1, x: 0 } : { opacity: 0, x: exp.side === 'left' ? -50 : 50 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true, margin: "-100px" }}
-                transition={{ 
+                transition={shouldReduceMotion ? {} : { 
                   duration: 0.6, 
                   delay: index * 0.1,
                   type: "spring",
@@ -230,7 +232,7 @@ export function Experience() {
                       isExpanded ? 'ring-2 ring-accent-blue/30' : ''
                     }`}
                     onClick={() => setExpandedCard(isExpanded ? null : index)}
-                    whileHover={{ y: -2 }}
+                    whileHover={shouldReduceMotion ? {} : { y: -2 }}
                     layout
                   >
                     <div className="flex justify-between items-start mb-2">

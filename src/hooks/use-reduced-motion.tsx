@@ -9,16 +9,33 @@ export function useReducedMotion() {
     // Ensure we're on the client side
     if (typeof window === 'undefined') return;
 
+    // Check if device is mobile
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+      navigator.userAgent
+    ) || window.innerWidth <= 768;
+
     // Check user's motion preference
     const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
-    setShouldReduceMotion(motionQuery.matches);
+    
+    // Reduce motion if user prefers it OR if on mobile device
+    setShouldReduceMotion(motionQuery.matches || isMobile);
 
     const handleChange = (event: MediaQueryListEvent) => {
-      setShouldReduceMotion(event.matches);
+      setShouldReduceMotion(event.matches || isMobile);
+    };
+
+    const handleResize = () => {
+      const isMobileNow = window.innerWidth <= 768;
+      setShouldReduceMotion(motionQuery.matches || isMobileNow);
     };
 
     motionQuery.addEventListener('change', handleChange);
-    return () => motionQuery.removeEventListener('change', handleChange);
+    window.addEventListener('resize', handleResize);
+    
+    return () => {
+      motionQuery.removeEventListener('change', handleChange);
+      window.removeEventListener('resize', handleResize);
+    };
   }, []);
 
   return shouldReduceMotion;
@@ -36,7 +53,7 @@ export function useDevicePerformance() {
     const checkMobile = () => {
       const isMobileDevice = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
         navigator.userAgent
-      );
+      ) || window.innerWidth <= 768;
       setIsMobile(isMobileDevice);
     };
 

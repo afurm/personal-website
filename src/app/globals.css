@@ -162,6 +162,42 @@
     body {
       padding-bottom: 100px; /* Space for mobile bottom nav */
     }
+    
+    /* Disable all animations and transitions on mobile for better performance */
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+    
+    /* Disable specific problematic animations */
+    .animate-blob,
+    .floating-glass,
+    .text-gradient-animated,
+    .text-shimmer,
+    .animate-gradient-x {
+      animation: none !important;
+    }
+    
+    /* Disable hover effects on touch devices */
+    .glass-card:hover {
+      transform: none !important;
+      backdrop-filter: blur(20px) !important;
+    }
+    
+    .glass-card::before,
+    .glass-card:hover::before,
+    .glass-shimmer::after,
+    .glass-shimmer:hover::after {
+      display: none !important;
+    }
+    
+    /* Simplify glass effects for mobile */
+    .glass, .glass-light, .glass-medium, .glass-dark {
+      backdrop-filter: blur(10px) !important;
+      -webkit-backdrop-filter: blur(10px) !important;
+    }
   }
   
   .dark body {

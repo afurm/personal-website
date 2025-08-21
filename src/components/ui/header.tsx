@@ -5,13 +5,11 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { ThemeToggle } from './theme-toggle';
 import { ShareButton } from './share-button';
-import { Menu, X, Sun, Moon, Share2 } from 'lucide-react';
-import { useTheme } from 'next-themes';
-import { motion, AnimatePresence } from 'framer-motion';
+import { Menu, X, Share2 } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
-  const { setTheme, theme } = useTheme();
   const [mounted, setMounted] = React.useState(false);
   const [isScrolled, setIsScrolled] = React.useState(false);
   const [scrollY, setScrollY] = React.useState(0);

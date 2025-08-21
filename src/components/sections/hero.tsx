@@ -73,11 +73,11 @@ export function Hero() {
           />
         </motion.div>
       )}
-      <motion.div className="container spacing-container relative z-10" style={{ y: y2 }}>
+      <motion.div className="container spacing-container relative z-10" style={{ y: shouldReduceMotion || isLowPowerMode ? 0 : y2 }}>
         <div className="grid spacing-gap-lg lg:grid-cols-[1fr_400px] xl:grid-cols-[1fr_600px]">
           <motion.div
-            initial={shouldReduceMotion ? {} : { opacity: 0, y: 20 }}
-            animate={shouldReduceMotion ? {} : { opacity: 1, y: 0 }}
+            initial={shouldReduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
             transition={shouldReduceMotion ? {} : { duration: 0.5 }}
             className="flex flex-col justify-center spacing-gap"
           >
@@ -141,8 +141,8 @@ export function Hero() {
             </div>
           </motion.div>
           <motion.div
-            initial={shouldReduceMotion ? {} : { opacity: 0, scale: 0.9 }}
-            animate={shouldReduceMotion ? {} : { opacity: 1, scale: 1 }}
+            initial={shouldReduceMotion ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
             transition={shouldReduceMotion ? {} : { duration: 0.5, delay: 0.2 }}
             className="flex items-center justify-center"
           >

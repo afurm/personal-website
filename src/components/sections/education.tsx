@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
+import { useReducedMotion } from '@/hooks/use-reduced-motion';
 
 const educationItems = [
   {
@@ -27,14 +28,15 @@ const certifications = [
 ];
 
 export function Education() {
+  const shouldReduceMotion = useReducedMotion();
   return (
     <section id="education" className="spacing-section">
       <div className="container spacing-container">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={shouldReduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
+          transition={shouldReduceMotion ? {} : { duration: 0.5 }}
           className="flex flex-col items-center justify-center spacing-gap text-center spacing-heading"
         >
           <div className="space-y-2">
@@ -49,10 +51,10 @@ export function Education() {
 
         <div className="grid spacing-gap md:grid-cols-2">
           <motion.div
-            initial={{ opacity: 0, x: -20 }}
+            initial={shouldReduceMotion ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
+            transition={shouldReduceMotion ? {} : { duration: 0.5 }}
             className="space-y-4"
           >
             <h3 className="text-2xl font-bold">Education</h3>
@@ -60,10 +62,10 @@ export function Education() {
               {educationItems.map((item, index) => (
                 <motion.div
                   key={index}
-                  initial={{ opacity: 0, y: 20 }}
+                  initial={shouldReduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
-                  transition={{ duration: 0.3, delay: index * 0.1 }}
+                  transition={shouldReduceMotion ? {} : { duration: 0.3, delay: index * 0.1 }}
                   className="glass-card glass-shimmer rounded-2xl p-6 shadow-glass hover:shadow-glass-lg"
                 >
                   <div className="flex flex-col space-y-2">
@@ -80,10 +82,10 @@ export function Education() {
           </motion.div>
 
           <motion.div
-            initial={{ opacity: 0, x: 20 }}
+            initial={shouldReduceMotion ? { opacity: 1, x: 0 } : { opacity: 0, x: 20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
+            transition={shouldReduceMotion ? {} : { duration: 0.5 }}
             className="space-y-4"
           >
             <h3 className="text-2xl font-bold">Certifications</h3>
@@ -91,10 +93,10 @@ export function Education() {
               {certifications.map((cert, index) => (
                 <motion.div
                   key={index}
-                  initial={{ opacity: 0, y: 20 }}
+                  initial={shouldReduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
-                  transition={{ duration: 0.3, delay: index * 0.1 }}
+                  transition={shouldReduceMotion ? {} : { duration: 0.3, delay: index * 0.1 }}
                   className="glass-card rounded-2xl p-4 shadow-glass hover:shadow-glass-lg"
                 >
                   <div className="flex items-center justify-between">
