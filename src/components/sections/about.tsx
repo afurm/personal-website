@@ -3,16 +3,19 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
+import { useReducedMotion } from '@/hooks/use-reduced-motion';
 
 export function About() {
+  const shouldReduceMotion = useReducedMotion();
+  
   return (
     <section id="about" className="spacing-section">
       <div className="container spacing-container">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={shouldReduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
+          transition={shouldReduceMotion ? {} : { duration: 0.5 }}
           className="flex flex-col items-center justify-center spacing-gap text-center spacing-heading"
         >
           <div className="space-y-2">
@@ -26,10 +29,10 @@ export function About() {
         </motion.div>
 
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={shouldReduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: 0.1 }}
+          transition={shouldReduceMotion ? {} : { duration: 0.5, delay: 0.1 }}
           className="prose prose-lg dark:prose-invert mx-auto max-w-4xl"
         >
           <p className="lead">

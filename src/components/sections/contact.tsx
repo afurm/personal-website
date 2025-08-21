@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useReducedMotion } from '@/hooks/use-reduced-motion';
 import { trackBusiness } from '@/lib/analytics';
 
 const contactFormSchema = z.object({
@@ -16,6 +17,7 @@ const contactFormSchema = z.object({
 type ContactFormValues = z.infer<typeof contactFormSchema>;
 
 export function Contact() {
+  const shouldReduceMotion = useReducedMotion();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -68,10 +70,10 @@ export function Contact() {
     <section id="contact" className="spacing-section">
       <div className="container spacing-container">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={shouldReduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
+          transition={shouldReduceMotion ? {} : { duration: 0.5 }}
           className="flex flex-col items-center justify-center spacing-gap text-center spacing-heading"
         >
           <div className="space-y-2">
@@ -87,10 +89,10 @@ export function Contact() {
 
         <div className="mx-auto grid max-w-5xl spacing-gap md:grid-cols-2">
           <motion.div
-            initial={{ opacity: 0, x: -20 }}
+            initial={shouldReduceMotion ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
+            transition={shouldReduceMotion ? {} : { duration: 0.5 }}
             className="space-y-6"
           >
             <div>
@@ -191,17 +193,17 @@ export function Contact() {
           </motion.div>
 
           <motion.div
-            initial={{ opacity: 0, x: 20 }}
+            initial={shouldReduceMotion ? { opacity: 1, x: 0 } : { opacity: 0, x: 20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
+            transition={shouldReduceMotion ? {} : { duration: 0.5 }}
             className="space-y-4"
           >
             {isSubmitted ? (
               <motion.div
-                initial={{ opacity: 0, scale: 0.8, y: 20 }}
+                initial={shouldReduceMotion ? { opacity: 1, scale: 1, y: 0 } : { opacity: 0, scale: 0.8, y: 20 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
-                transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                transition={shouldReduceMotion ? {} : { type: "spring", stiffness: 300, damping: 30 }}
                 className="glass-card relative rounded-2xl p-8 text-center shadow-glass-lg overflow-hidden"
               >
                 {/* Background Effect */}
@@ -209,15 +211,15 @@ export function Contact() {
                 
                 {/* Success Icon with Animation */}
                 <motion.div
-                  initial={{ scale: 0 }}
+                  initial={shouldReduceMotion ? { scale: 1 } : { scale: 0 }}
                   animate={{ scale: 1 }}
-                  transition={{ delay: 0.2, type: "spring", stiffness: 400, damping: 10 }}
+                  transition={shouldReduceMotion ? {} : { delay: 0.2, type: "spring", stiffness: 400, damping: 10 }}
                   className="relative z-10 mx-auto w-16 h-16 bg-black dark:bg-white rounded-full flex items-center justify-center mb-4"
                 >
                   <motion.svg
-                    initial={{ pathLength: 0 }}
+                    initial={shouldReduceMotion ? { pathLength: 1 } : { pathLength: 0 }}
                     animate={{ pathLength: 1 }}
-                    transition={{ delay: 0.5, duration: 0.5 }}
+                    transition={shouldReduceMotion ? {} : { delay: 0.5, duration: 0.5 }}
                     width="24"
                     height="24"
                     viewBox="0 0 24 24"
@@ -233,29 +235,29 @@ export function Contact() {
                 </motion.div>
 
                 <motion.h3 
-                  initial={{ opacity: 0, y: 20 }}
+                  initial={shouldReduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.3 }}
+                  transition={shouldReduceMotion ? {} : { delay: 0.3 }}
                   className="relative z-10 text-2xl font-bold text-primary mb-2"
                 >
                   Message Sent Successfully!
                 </motion.h3>
                 
                 <motion.p 
-                  initial={{ opacity: 0, y: 20 }}
+                  initial={shouldReduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.4 }}
+                  transition={shouldReduceMotion ? {} : { delay: 0.4 }}
                   className="relative z-10 text-muted-foreground mb-6"
                 >
                   Thank you for reaching out! I'll get back to you within 24 hours.
                 </motion.p>
                 
                 <motion.button
-                  initial={{ opacity: 0, y: 20 }}
+                  initial={shouldReduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.5 }}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
+                  transition={shouldReduceMotion ? {} : { delay: 0.5 }}
+                  whileHover={shouldReduceMotion ? {} : { scale: 1.05 }}
+                  whileTap={shouldReduceMotion ? {} : { scale: 0.95 }}
                   onClick={() => {
                     setIsSubmitted(false);
                     reset();
@@ -282,7 +284,7 @@ export function Contact() {
                     Full Name
                   </label>
                   <motion.div
-                    initial={{ opacity: 0, y: -10 }}
+                    initial={shouldReduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: -10 }}
                     animate={{ opacity: errors.name ? 1 : 0, y: errors.name ? 0 : -10 }}
                     className="mt-2 flex items-center gap-1 text-xs text-destructive"
                   >
@@ -312,7 +314,7 @@ export function Contact() {
                     Email Address
                   </label>
                   <motion.div
-                    initial={{ opacity: 0, y: -10 }}
+                    initial={shouldReduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: -10 }}
                     animate={{ opacity: errors.email ? 1 : 0, y: errors.email ? 0 : -10 }}
                     className="mt-2 flex items-center gap-1 text-xs text-destructive"
                   >
@@ -341,7 +343,7 @@ export function Contact() {
                     Your Message
                   </label>
                   <motion.div
-                    initial={{ opacity: 0, y: -10 }}
+                    initial={shouldReduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: -10 }}
                     animate={{ opacity: errors.message ? 1 : 0, y: errors.message ? 0 : -10 }}
                     className="mt-2 flex items-center gap-1 text-xs text-destructive"
                   >
@@ -357,7 +359,7 @@ export function Contact() {
                 </div>
                 {/* Error Message */}
                 <motion.div
-                  initial={{ opacity: 0, y: -10 }}
+                  initial={shouldReduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: -10 }}
                   animate={{ opacity: error ? 1 : 0, y: error ? 0 : -10 }}
                   className="flex items-center gap-2 text-sm text-destructive"
                 >
@@ -375,8 +377,8 @@ export function Contact() {
                 <motion.button
                   type="submit"
                   disabled={isSubmitting}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
+                  whileHover={shouldReduceMotion ? {} : { scale: 1.02 }}
+                  whileTap={shouldReduceMotion ? {} : { scale: 0.98 }}
                   className="glass-button group relative inline-flex h-14 w-full items-center justify-center rounded-2xl bg-black dark:bg-white px-8 text-sm font-semibold text-white dark:text-black shadow-glass transition-all duration-300 hover:shadow-glass-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 overflow-hidden"
                 >
                   {/* Background Glow Effect */}

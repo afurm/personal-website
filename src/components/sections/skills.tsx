@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
+import { useReducedMotion } from '@/hooks/use-reduced-motion';
 
 const skillCategories = [
   {
@@ -52,14 +53,16 @@ const skillCategories = [
 ];
 
 export function Skills() {
+  const shouldReduceMotion = useReducedMotion();
+  
   return (
     <section id="skills" className="spacing-section">
       <div className="container spacing-container">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={shouldReduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
+          transition={shouldReduceMotion ? {} : { duration: 0.5 }}
           className="flex flex-col items-center justify-center spacing-gap text-center spacing-heading"
         >
           <div className="space-y-2">
@@ -76,10 +79,10 @@ export function Skills() {
           {skillCategories.map((skillCategory, categoryIndex) => (
             <motion.div
               key={categoryIndex}
-              initial={{ opacity: 0, y: 20 }}
+              initial={shouldReduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.3, delay: categoryIndex * 0.1 }}
+              transition={shouldReduceMotion ? {} : { duration: 0.3, delay: categoryIndex * 0.1 }}
               className="glass-card glass-shimmer rounded-2xl p-6 shadow-glass hover:shadow-glass-lg"
             >
               <h3 className="text-xl font-bold mb-4">{skillCategory.category}</h3>
@@ -87,10 +90,10 @@ export function Skills() {
                 {skillCategory.skills.map((skill, skillIndex) => (
                   <motion.span
                     key={skillIndex}
-                    initial={{ opacity: 0, scale: 0.8 }}
+                    initial={shouldReduceMotion ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.8 }}
                     whileInView={{ opacity: 1, scale: 1 }}
                     viewport={{ once: true }}
-                    transition={{ duration: 0.2, delay: skillIndex * 0.05 + categoryIndex * 0.1 }}
+                    transition={shouldReduceMotion ? {} : { duration: 0.2, delay: skillIndex * 0.05 + categoryIndex * 0.1 }}
                     className="inline-flex items-center rounded-full glass px-3 py-1 text-sm font-medium"
                   >
                     {skill}

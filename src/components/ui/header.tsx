@@ -5,13 +5,11 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { ThemeToggle } from './theme-toggle';
 import { ShareButton } from './share-button';
-import { Menu, X, Sun, Moon, Share2 } from 'lucide-react';
-import { useTheme } from 'next-themes';
-import { motion, AnimatePresence } from 'framer-motion';
+import { Menu, X, Share2 } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
-  const { setTheme, theme } = useTheme();
   const [mounted, setMounted] = React.useState(false);
   const [isScrolled, setIsScrolled] = React.useState(false);
   const [scrollY, setScrollY] = React.useState(0);
@@ -139,42 +137,17 @@ export function Header() {
             </div>
 
             {/* Mobile Menu Button */}
-            <motion.button
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              className="md:hidden flex items-center justify-center p-3 rounded-xl glass min-h-[44px] min-w-[44px] will-change-transform"
+            <button
+              className="md:hidden flex items-center justify-center p-3 rounded-xl glass min-h-[44px] min-w-[44px]"
               onClick={toggleMenu}
               aria-label="Toggle menu"
-              style={{ 
-                transition: 'transform 0.15s ease-out',
-                backfaceVisibility: 'hidden',
-                WebkitBackfaceVisibility: 'hidden'
-              }}
             >
-              <AnimatePresence mode="wait">
-                {isMenuOpen ? (
-                  <motion.div
-                    key="close"
-                    initial={{ opacity: 0, rotate: -90 }}
-                    animate={{ opacity: 1, rotate: 0 }}
-                    exit={{ opacity: 0, rotate: 90 }}
-                    transition={{ duration: 0.15, ease: "easeOut" }}
-                  >
-                    <X className="h-5 w-5" />
-                  </motion.div>
-                ) : (
-                  <motion.div
-                    key="menu"
-                    initial={{ opacity: 0, rotate: 90 }}
-                    animate={{ opacity: 1, rotate: 0 }}
-                    exit={{ opacity: 0, rotate: -90 }}
-                    transition={{ duration: 0.15, ease: "easeOut" }}
-                  >
-                    <Menu className="h-5 w-5" />
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </motion.button>
+              {isMenuOpen ? (
+                <X className="h-5 w-5" />
+              ) : (
+                <Menu className="h-5 w-5" />
+              )}
+            </button>
           </div>
         </div>
 
@@ -200,57 +173,32 @@ export function Header() {
       </motion.header>
 
       {/* Mobile menu - modern overlay */}
-      <AnimatePresence>
-        {isMenuOpen && (
-          <>
-            {/* Backdrop */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.15, ease: "easeOut" }}
-              className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[9998] md:hidden mobile-menu-optimized"
-              onClick={toggleMenu}
-            />
-            
-            {/* Menu Panel */}
-            <motion.div
-              initial={{ opacity: 0, y: '-100%', scale: 0.95 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: '-100%', scale: 0.95 }}
-              transition={{ 
-                type: 'tween',
-                duration: 0.25,
-                ease: [0.25, 0.46, 0.45, 0.94]
-              }}
-              className="fixed top-4 left-4 right-4 glass-light rounded-2xl shadow-glass-lg z-[9999] md:hidden mobile-menu-optimized"
-              style={{
-                backfaceVisibility: 'hidden',
-                WebkitBackfaceVisibility: 'hidden',
-                transformStyle: 'preserve-3d'
-              }}
-            >
+      {isMenuOpen && (
+        <>
+          {/* Backdrop */}
+          <div
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[9998] md:hidden"
+            onClick={toggleMenu}
+          />
+          
+          {/* Menu Panel */}
+          <div
+            className="fixed top-4 left-4 right-4 glass-light rounded-2xl shadow-glass-lg z-[9999] md:hidden"
+          >
               {/* Header */}
               <div className="flex items-center justify-between p-6">
                 <span className="font-bold text-lg">Navigation</span>
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
+                <button
                   className="p-2 rounded-xl glass hover:glass-medium transition-all duration-200"
                   onClick={toggleMenu}
                   aria-label="Close menu"
                 >
                   <X className="h-5 w-5" />
-                </motion.button>
+                </button>
               </div>
 
               {/* Navigation Links */}
-              <motion.nav 
-                className="px-6 pb-6 space-y-2"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.1, duration: 0.2 }}
-              >
+              <nav className="px-6 pb-6 space-y-2">
                 {[
                   { href: getNavLink('about'), label: 'About' },
                   { href: getNavLink('experience'), label: 'Experience' },
@@ -287,11 +235,10 @@ export function Header() {
                     Get In Touch
                   </Link>
                 </div>
-              </motion.nav>
-            </motion.div>
+              </nav>
+            </div>
           </>
         )}
-      </AnimatePresence>
     </>
   );
 }
@@ -330,20 +277,13 @@ function MobileMenuShareButton() {
   };
 
   return (
-    <motion.button
+    <button
       onClick={handleShare}
       disabled={isSharing}
-      whileHover={{ scale: 1.02 }}
-      whileTap={{ scale: 0.98 }}
       className="glass-button group relative inline-flex h-10 w-10 items-center justify-center rounded-full glass transition-shadow duration-100 hover:shadow-glass focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
       aria-label="Share"
     >
-      <motion.div
-        animate={{ rotate: isSharing ? 360 : 0 }}
-        transition={{ duration: 0.5 }}
-      >
-        <Share2 className="h-5 w-5 text-foreground/80" />
-      </motion.div>
-    </motion.button>
+      <Share2 className="h-5 w-5 text-foreground/80" />
+    </button>
   );
 }
