@@ -176,4 +176,15 @@ export function getReadingTime(content: string): number {
     const wordsPerMinute = 200;
     const wordCount = content.split(/\s+/).length;
     return Math.ceil(wordCount / wordsPerMinute);
+}
+
+/**
+ * Generate optimized alt text for blog post images
+ * @param title The blog post title
+ * @param description Optional description for more context
+ * @returns Optimized alt text for SEO
+ */
+export function generateOptimizedAlt(title: string, description?: string): string {
+    const baseAlt = `${title} - Technical insights by Andrii Furmanets`;
+    return description ? `${baseAlt}. ${description}` : baseAlt;
 } 

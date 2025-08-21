@@ -2,6 +2,9 @@ import { Metadata } from 'next';
 import { getAllBlogPosts, getAllTags } from '../../lib/blog';
 import Script from 'next/script';
 import { BlogsPageClient } from '../../components/pages/BlogsPageClient';
+import { Header } from '@/components/ui/header';
+import { Footer } from '@/components/ui/footer';
+import { Breadcrumbs } from '@/components/ui/breadcrumbs';
 
 export const metadata: Metadata = {
     title: 'Blog | Andrii Furmanets - Web Development & Technology Insights',
@@ -69,10 +72,21 @@ export default async function BlogsPage() {
         },
     };
 
+    const breadcrumbItems = [
+        { name: 'Home', href: '/' },
+        { name: 'Blog', href: '/blogs' },
+    ];
+
     return (
-        <>
-            {/* Add canonical link */}
-            <link rel="canonical" href="https://andriifurmanets.com/blogs" />
+        <div className="flex min-h-screen flex-col">
+            <Header />
+            <main className="flex-1">
+                <div className="container mx-auto px-4 pt-20 md:pt-24">
+                    <Breadcrumbs items={breadcrumbItems} />
+                </div>
+                <BlogsPageClient initialPosts={posts} allTags={allTags} />
+            </main>
+            <Footer />
             
             {/* Add structured data script */}
             <Script
@@ -80,8 +94,6 @@ export default async function BlogsPage() {
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
             />
-
-            <BlogsPageClient initialPosts={posts} allTags={allTags} />
-        </>
+        </div>
     );
 } 

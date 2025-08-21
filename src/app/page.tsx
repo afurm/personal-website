@@ -7,6 +7,7 @@ import { Skills } from '@/components/sections/skills';
 import { Education } from '@/components/sections/education';
 import { Contact } from '@/components/sections/contact';
 import { About } from '@/components/sections/about';
+import { SkipToContent } from '@/components/ui/skip-to-content';
 
 export const metadata: Metadata = {
   title: 'Andrii Furmanets - Senior Full-Stack Developer | React, Next.js & Ruby on Rails',
@@ -19,8 +20,9 @@ export const metadata: Metadata = {
 export default function Home() {
   return (
     <div className="flex min-h-screen flex-col">
+      <SkipToContent />
       <Header />
-      <main className="flex-1">
+      <main id="main" className="flex-1">
         <Hero />
         <About />
         <Experience />

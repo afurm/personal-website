@@ -35,17 +35,7 @@ export function BlogPostClient({ post, readingTime, relatedPosts, canonicalUrl }
     }, [post.title]);
 
     return (
-        <div className="container mx-auto px-4 pt-20 md:pt-24 pb-12">
-            <Link
-                href="/blogs"
-                className="inline-flex items-center mb-8 text-sm font-medium text-blue-600 dark:text-blue-400 hover:underline"
-            >
-                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
-                </svg>
-                Back to all blogs
-            </Link>
-
+        <div className="container mx-auto px-4 pb-12">
             <article className="max-w-3xl mx-auto">
                 <header className="mb-8">
                     <div className="flex items-start justify-between gap-4 mb-4">
