@@ -54,17 +54,7 @@ export const convertUkraineTimeToUserLocal = (
     // Format the UTC time in user's timezone
     const userLocalTime = formatInTimeZone(utcDateTime, userTimezone, 'h:mm a');
     
-    // Debug logging for Vercel
-    console.log('🔄 TIMEZONE CONVERSION (date-fns-tz):', {
-      input: ukraineTimeStr,
-      dateStr,
-      ukraineTimeString,
-      utcDateTime: utcDateTime.toISOString(),
-      userLocalTime,
-      userTimezone,
-      ukraineTimezone: UKRAINE_TIMEZONE,
-      environment: typeof window !== 'undefined' ? 'client' : 'server'
-    });
+
     
     return userLocalTime;
   } catch (error) {
@@ -102,17 +92,7 @@ export const isBookingTooSoon = (dateStr: string, timeStr: string): boolean => {
     
     const result = isBefore(utcDateTime, minimumAdvanceTime);
     
-    // Debug logging for Vercel
-    console.log('⏰ BOOKING TIME VALIDATION (date-fns-tz):', {
-      dateStr, 
-      timeStr,
-      ukraineTimeString,
-      utcDateTime: utcDateTime.toISOString(),
-      now: now.toISOString(),
-      minimumAdvanceTime: minimumAdvanceTime.toISOString(),
-      result,
-      environment: typeof window !== 'undefined' ? 'client' : 'server'
-    });
+
     
     return result;
   } catch (error) {
@@ -197,14 +177,7 @@ export const createCalendarEventTimes = (
     const startDateTime = fromZonedTime(ukraineTimeString, UKRAINE_TIMEZONE);
     const endDateTime = new Date(startDateTime.getTime() + duration * 60000);
     
-    console.log('📅 CALENDAR EVENT TIMES (date-fns-tz):', {
-      inputTime: ukraineTimeString,
-      startDateTime: startDateTime.toISOString(),
-      endDateTime: endDateTime.toISOString(),
-      timezone: UKRAINE_TIMEZONE,
-      duration,
-      environment: typeof window !== 'undefined' ? 'client' : 'server'
-    });
+
     
     return {
       startDateTime,

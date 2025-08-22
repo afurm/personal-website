@@ -30,19 +30,7 @@ const MEETING_TYPE_LABELS = {
 // Environment configuration
 const SERVER_TIMEZONE = process.env.SERVER_TIMEZONE || 'UTC';
 
-// Log timezone configuration for debugging - Enhanced for Vercel
-console.log('🌍 VERCEL API TIMEZONE CONFIG (FIXED):', {
-  UKRAINE_TIMEZONE,
-  SERVER_TIMEZONE,
-  systemTimezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-  processEnv: {
-    TZ: process.env.TZ,
-    SERVER_TIMEZONE: process.env.SERVER_TIMEZONE,
-    NODE_ENV: process.env.NODE_ENV
-  },
-  currentTime: new Date().toISOString(),
-  currentLocalTime: new Date().toLocaleString()
-});
+
 
 // Booking validation now handled by imported utilities from @/lib/timezone
 

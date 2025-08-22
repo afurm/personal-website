@@ -85,14 +85,7 @@ export default function BookingForm() {
     const detectedTimezone = TimezoneDetector.detect();
     setUserTimezone(detectedTimezone);
     
-    // Debug timezone information - will show in browser console
-    console.log('🕒 TIMEZONE DEBUG - Client Side (FIXED):', {
-      detectedUserTimezone: detectedTimezone,
-      ukraineTimezone: UKRAINE_TIMEZONE,
-      browserTime: new Date().toISOString(),
-      browserLocalTime: new Date().toLocaleString(),
-      browserTimezoneOffset: new Date().getTimezoneOffset()
-    });
+
     
     // Generate time slots converted to user's timezone
     generateLocalTimeSlots(detectedTimezone);
@@ -134,17 +127,7 @@ export default function BookingForm() {
           displayTime: userLocalTime // Show user's local time for their convenience
         });
         
-        // Debug logging for slot generation - Show first few slots always
-        if (slots.length <= 3) {
-          console.log('⚙️ SLOT GENERATION DEBUG:', {
-            slotNumber: slots.length,
-            ukraineTimeStr,
-            userLocalTime,
-            targetDateStr,
-            userTz,
-            environment: process.env.NODE_ENV || 'unknown'
-          });
-        }
+
       }
     }
     
@@ -422,43 +405,7 @@ export default function BookingForm() {
               )}
             </div>
 
-            {/* Timezone Debug Info */}
-            <div className="mb-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-xl border border-blue-200 dark:border-blue-800">
-              <h3 className="text-sm font-semibold text-blue-800 dark:text-blue-200 mb-2">
-                🔍 Debug: Timezone Information
-              </h3>
-              <div className="text-xs space-y-1 text-blue-700 dark:text-blue-300">
-                <div>
-                  <strong>Your Timezone:</strong>{' '}
-                  <HydratedTime 
-                    time={userTimezone || 'Detecting...'}
-                    fallback="Detecting..."
-                  />
-                </div>
-                <div><strong>Host Timezone:</strong> {UKRAINE_TIMEZONE}</div>
-                <div>
-                  <strong>Current Time:</strong>{' '}
-                  <HydratedTime 
-                    time={new Date().toLocaleString()}
-                    fallback="Loading..."
-                  />
-                </div>
-                <div>
-                  <strong>Current UTC:</strong>{' '}
-                  <HydratedTime 
-                    time={new Date().toISOString()}
-                    fallback={new Date().toISOString()}
-                  />
-                </div>
-                <div>
-                  <strong>Browser Offset:</strong>{' '}
-                  <HydratedTime 
-                    time={`${new Date().getTimezoneOffset()} minutes`}
-                    fallback="Calculating..."
-                  />
-                </div>
-              </div>
-            </div>
+          
 
             {/* Time Selection */}
             {selectedDate && (
