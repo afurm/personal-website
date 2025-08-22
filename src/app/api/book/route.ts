@@ -1,7 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { google } from 'googleapis';
-import { addHours, isBefore } from 'date-fns';
-import { toZonedTime, formatInTimeZone } from 'date-fns-tz';
+import { toZonedTime } from 'date-fns-tz';
+import {
+  UKRAINE_TIMEZONE,
+  isBookingTooSoon,
+  createCalendarEventTimes,
+  validateTimezone
+} from '@/lib/timezone';
 
 // Interface for booking request
 interface BookingRequest {
@@ -22,63 +27,24 @@ const MEETING_TYPE_LABELS = {
   'technical-review': 'Technical Review',
 };
 
-// Validation helper functions
-const UKRAINE_TIMEZONE = process.env.HOST_TIMEZONE || 'Europe/Kiev';
+// Environment configuration
 const SERVER_TIMEZONE = process.env.SERVER_TIMEZONE || 'UTC';
 
 // Log timezone configuration for debugging - Enhanced for Vercel
-console.log('🌍 VERCEL API TIMEZONE CONFIG:', {
+console.log('🌍 VERCEL API TIMEZONE CONFIG (FIXED):', {
   UKRAINE_TIMEZONE,
   SERVER_TIMEZONE,
   systemTimezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
   processEnv: {
     TZ: process.env.TZ,
     SERVER_TIMEZONE: process.env.SERVER_TIMEZONE,
-    HOST_TIMEZONE: process.env.HOST_TIMEZONE,
     NODE_ENV: process.env.NODE_ENV
   },
   currentTime: new Date().toISOString(),
   currentLocalTime: new Date().toLocaleString()
 });
 
-const isBookingTooSoon = (dateStr: string, timeStr: string): boolean => {
-  try {
-    // CORRECTED: Use proper Ukraine timezone conversion
-    const ukraineTimeString = `${dateStr}T${timeStr}:00`;
-    const naiveDate = new Date(ukraineTimeString);
-    
-    // Ukraine is UTC+3 in summer, so subtract 3 hours to get UTC
-    const ukraineOffset = 3 * 60; // 3 hours in minutes
-    const ukraineDateTime = new Date(naiveDate.getTime() - (ukraineOffset * 60 * 1000));
-    
-    // Get current time in Ukraine for comparison
-    const now = new Date();
-    const currentTimeInUkraine = formatInTimeZone(now, UKRAINE_TIMEZONE, "yyyy-MM-dd'T'HH:mm:ss");
-    const currentUkraineDate = new Date(currentTimeInUkraine + '+03:00');
-    const minimumAdvanceTime = addHours(currentUkraineDate, 2);
-    
-    const result = isBefore(ukraineDateTime, minimumAdvanceTime);
-    console.log('⚠️ VERCEL API - BOOKING VALIDATION (FIXED):', {
-      dateStr, timeStr,
-      ukraineTimeString,
-      naiveDate: naiveDate.toISOString(),
-      ukraineDateTime: ukraineDateTime.toISOString(),
-      currentTimeInUkraine,
-      currentUkraineDate: currentUkraineDate.toISOString(),
-      minimumAdvanceTime: minimumAdvanceTime.toISOString(),
-      result,
-      systemTime: new Date().toISOString(),
-      environment: 'Vercel API'
-    });
-    return result;
-  } catch (error) {
-    console.error('Error validating booking time:', error);
-    // Fallback to simple comparison if timezone conversion fails
-    const bookingDateTime = new Date(`${dateStr}T${timeStr}:00`);
-    const minimumAdvanceTime = addHours(new Date(), 2);
-    return isBefore(bookingDateTime, minimumAdvanceTime);
-  }
-};
+// Booking validation now handled by imported utilities from @/lib/timezone
 
 export async function POST(request: NextRequest) {
   try {
@@ -127,30 +93,12 @@ export async function POST(request: NextRequest) {
 
     const calendar = google.calendar({ version: 'v3', auth });
 
-    // CORRECTED: Create calendar event with proper Ukraine timezone handling
-    const ukraineTimeString = `${body.selectedDate}T${body.selectedTime}:00`;
-    const naiveDate = new Date(ukraineTimeString);
-    
-    // Ukraine is UTC+3 in summer, so subtract 3 hours to get proper UTC time
-    const ukraineOffset = 3 * 60; // 3 hours in minutes
-    const startDateTime = new Date(naiveDate.getTime() - (ukraineOffset * 60 * 1000));
-    const endDateTime = new Date(startDateTime.getTime() + body.duration * 60000);
-    
-    console.log('📅 VERCEL API - CALENDAR EVENT CREATION (FIXED):', {
-      inputTime: ukraineTimeString,
-      naiveDate: naiveDate.toISOString(),
-      startDateTime: startDateTime.toISOString(),
-      endDateTime: endDateTime.toISOString(),
-      timezone: UKRAINE_TIMEZONE,
-      ukraineOffset: `UTC+${ukraineOffset/60}`,
-      requestBody: {
-        selectedDate: body.selectedDate,
-        selectedTime: body.selectedTime,
-        meetingType: body.meetingType
-      },
-      systemTime: new Date().toISOString(),
-      environment: 'Vercel API'
-    });
+    // Create calendar event with proper timezone handling using utilities
+    const { startDateTime, endDateTime, timezone } = createCalendarEventTimes(
+      body.selectedDate,
+      body.selectedTime,
+      body.duration
+    );
 
     // Race condition protection: Check if slot is still available right before booking
     try {
@@ -213,11 +161,11 @@ Professional meeting scheduled via online booking system.
       `.trim(),
       start: {
         dateTime: startDateTime.toISOString(),
-        timeZone: 'Europe/Kiev',
+        timeZone: timezone,
       },
       end: {
         dateTime: endDateTime.toISOString(), 
-        timeZone: 'Europe/Kiev',
+        timeZone: timezone,
       },
       // Note: Google Meet link will be manually created by you
       reminders: {

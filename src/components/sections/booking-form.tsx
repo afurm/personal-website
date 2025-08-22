@@ -5,8 +5,14 @@ import { motion } from 'framer-motion';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { format, addDays, isSameDay, isAfter, startOfDay, addHours, isBefore } from 'date-fns';
-import { formatInTimeZone, toZonedTime } from 'date-fns-tz';
+import { format, addDays, isSameDay, isAfter, startOfDay } from 'date-fns';
+import {
+  UKRAINE_TIMEZONE,
+  convertUkraineTimeToUserLocal,
+  convertToAMPM,
+  isBookingTooSoon,
+  TimezoneDetector
+} from '@/lib/timezone';
 import { useReducedMotion } from '@/hooks/use-reduced-motion';
 import { trackBusiness } from '@/lib/analytics';
 import { haptics } from '@/lib/haptics';
@@ -70,19 +76,18 @@ export default function BookingForm() {
   const [availableSlots, setAvailableSlots] = useState<TimeSlot[]>([]);
   const [isCheckingAvailability, setIsCheckingAvailability] = useState(false);
   const [userTimezone, setUserTimezone] = useState<string>('');
-  const [ukraineTimezone] = useState('Europe/Kiev');
 
   // Track booking form view and detect timezone
   useEffect(() => {
     trackBusiness.contactFormView();
-    // Detect user's timezone
-    const detectedTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    // Detect user's timezone using improved detector
+    const detectedTimezone = TimezoneDetector.detect();
     setUserTimezone(detectedTimezone);
     
     // Debug timezone information - will show in browser console
-    console.log('🕒 TIMEZONE DEBUG - Client Side:', {
+    console.log('🕒 TIMEZONE DEBUG - Client Side (FIXED):', {
       detectedUserTimezone: detectedTimezone,
-      ukraineTimezone,
+      ukraineTimezone: UKRAINE_TIMEZONE,
       browserTime: new Date().toISOString(),
       browserLocalTime: new Date().toLocaleString(),
       browserTimezoneOffset: new Date().getTimezoneOffset()
@@ -92,102 +97,11 @@ export default function BookingForm() {
     generateLocalTimeSlots(detectedTimezone);
   }, []);
 
-  // Convert Ukraine time to user's local time - CORRECTED approach
-  const convertUkraineTimeToLocal = (ukraineTimeStr: string, userTz: string, dateStr: string) => {
-    try {
-      // CORRECT approach: Use formatInTimeZone to handle the timezone conversion properly
-      // Step 1: Create a date that we'll treat as being IN Ukraine timezone
-      const ukraineTimeString = `${dateStr}T${ukraineTimeStr}:00`;
-      
-      // Step 2: Create a date object (this will be interpreted in local system timezone)
-      const naiveDate = new Date(ukraineTimeString);
-      
-      // Step 3: This approach won't work - formatInTimeZone doesn't take source timezone
-      // const userLocalTime = formatInTimeZone(naiveDate, userTz, 'h:mm a');
-      
-      // Alternative method: Use the proper timezone offset
-      // Ukraine is UTC+3 in summer (August), so we need to subtract 3 hours to get UTC
-      const ukraineOffset = 3 * 60; // 3 hours in minutes
-      const utcTime = new Date(naiveDate.getTime() - (ukraineOffset * 60 * 1000));
-      const properUserTime = formatInTimeZone(utcTime, userTz, 'h:mm a');
-      
-      // Debug logging for timezone conversion - ALWAYS log for Vercel debugging
-      console.log('🔄 TIMEZONE CONVERSION DEBUG (FIXED):', {
-        input: ukraineTimeStr,
-        dateStr,
-        ukraineTimeString,
-        naiveDate: naiveDate.toISOString(),
-        utcTime: utcTime.toISOString(),
-        properUserTime,
-        ukraineOffset: `UTC+${ukraineOffset/60}`,
-        userTz,
-        ukraineTimezone,
-        environment: process.env.NODE_ENV || 'unknown'
-      });
-      
-      // Return the properly converted time
-      return properUserTime;
-    } catch (error) {
-      console.error('Timezone conversion error:', error);
-      // Fallback to original time if conversion fails - convert to AM/PM
-      const [hours, minutes] = ukraineTimeStr.split(':');
-      const hour = parseInt(hours);
-      const ampm = hour >= 12 ? 'PM' : 'AM';
-      const displayHour = hour === 0 ? 12 : hour > 12 ? hour - 12 : hour;
-      return `${displayHour}:${minutes} ${ampm}`;
-    }
-  };
+  // Timezone conversion now handled by imported utilities
 
-  // Convert Ukraine time to AM/PM format
-  const convertToAMPM = (timeStr: string) => {
-    const [hours, minutes] = timeStr.split(':');
-    const hour = parseInt(hours);
-    const ampm = hour >= 12 ? 'PM' : 'AM';
-    const displayHour = hour === 0 ? 12 : hour > 12 ? hour - 12 : hour;
-    return `${displayHour}:${minutes} ${ampm}`;
-  };
+  // AM/PM conversion now handled by imported utilities
 
-  // Check if booking is too close to current time (minimum 2 hours advance) - CORRECTED
-  const isBookingTooSoon = (dateStr: string, timeStr: string) => {
-    try {
-      // Use same corrected logic as conversion function
-      const ukraineTimeString = `${dateStr}T${timeStr}:00`;
-      const naiveDate = new Date(ukraineTimeString);
-      
-      // Ukraine is UTC+3 in summer (August), so subtract 3 hours to get UTC
-      const ukraineOffset = 3 * 60; // 3 hours in minutes
-      const ukraineDateTime = new Date(naiveDate.getTime() - (ukraineOffset * 60 * 1000));
-      
-      // Get current time and convert to Ukraine time for comparison
-      const now = new Date();
-      const currentTimeInUkraine = formatInTimeZone(now, ukraineTimezone, "yyyy-MM-dd'T'HH:mm:ss");
-      const currentUkraineDate = new Date(currentTimeInUkraine + '+03:00'); // Parse as Ukraine time
-      const minimumAdvanceTime = addHours(currentUkraineDate, 2);
-      
-      const result = isBefore(ukraineDateTime, minimumAdvanceTime);
-      
-      // Debug logging - ALWAYS log for Vercel debugging
-      console.log('⏰ BOOKING TIME VALIDATION DEBUG (FIXED):', {
-        dateStr, timeStr,
-        ukraineTimeString,
-        naiveDate: naiveDate.toISOString(),
-        ukraineDateTime: ukraineDateTime.toISOString(),
-        currentTimeInUkraine,
-        currentUkraineDate: currentUkraineDate.toISOString(),
-        minimumAdvanceTime: minimumAdvanceTime.toISOString(),
-        result,
-        environment: process.env.NODE_ENV || 'unknown'
-      });
-      
-      return result;
-    } catch (error) {
-      console.error('Error checking booking time:', error);
-      // Fallback to simple comparison if timezone conversion fails
-      const bookingDateTime = new Date(`${dateStr}T${timeStr}:00`);
-      const minimumAdvanceTime = addHours(new Date(), 2);
-      return isBefore(bookingDateTime, minimumAdvanceTime);
-    }
-  };
+  // Booking validation now handled by imported utilities
 
   // Generate time slots converted to user's timezone with buffer time
   // IMPORTANT: Always generates slots within HOST'S comfort hours (9 AM - 9 PM Ukraine time)
@@ -211,7 +125,7 @@ export default function BookingForm() {
         if (isTooSoon) continue;
         
         // Convert Ukraine time to client's local time for display purposes only
-        const userLocalTime = convertUkraineTimeToLocal(ukraineTimeStr, userTz, targetDateStr);
+        const userLocalTime = convertUkraineTimeToUserLocal(ukraineTimeStr, userTz, targetDateStr);
         
         slots.push({
           time: ukraineTimeStr, // ALWAYS keep original Ukraine time for backend booking
@@ -273,7 +187,7 @@ export default function BookingForm() {
           .filter((slot: TimeSlot) => !isBookingTooSoon(dateString, slot.time))
           .map((slot: TimeSlot) => ({
             ...slot,
-            displayTime: userTimezone ? convertUkraineTimeToLocal(slot.time, userTimezone, dateString) : slot.time
+            displayTime: userTimezone ? convertUkraineTimeToUserLocal(slot.time, userTimezone, dateString) : slot.time
           }));
         setAvailableSlots(convertedSlots);
       } else {
@@ -514,7 +428,7 @@ export default function BookingForm() {
               </h3>
               <div className="text-xs space-y-1 text-blue-700 dark:text-blue-300">
                 <div><strong>Your Timezone:</strong> {userTimezone || 'Detecting...'}</div>
-                <div><strong>Host Timezone:</strong> {ukraineTimezone}</div>
+                <div><strong>Host Timezone:</strong> {UKRAINE_TIMEZONE}</div>
                 <div><strong>Current Time:</strong> {new Date().toLocaleString()}</div>
                 <div><strong>Current UTC:</strong> {new Date().toISOString()}</div>
                 <div><strong>Browser Offset:</strong> {new Date().getTimezoneOffset()} minutes</div>
