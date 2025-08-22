@@ -178,12 +178,16 @@ Professional meeting scheduled via online booking system.
       
       // Send notification via Telegram
       try {
+        // Format times in Ukraine timezone for accurate display
+        const ukraineDate = new Date(startDateTime.toLocaleString("en-US", {timeZone: UKRAINE_TIMEZONE}));
+        const ukraineEndDate = new Date(endDateTime.toLocaleString("en-US", {timeZone: UKRAINE_TIMEZONE}));
+        
         const telegramMessage = `
 🗓️ NEW PROFESSIONAL BOOKING
 
 📋 ${MEETING_TYPE_LABELS[body.meetingType]}
-📅 ${startDateTime.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
-🕒 ${startDateTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })} - ${endDateTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })} (${body.duration}min)
+📅 ${ukraineDate.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+🕒 ${ukraineDate.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })} - ${ukraineEndDate.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })} Ukraine Time (${body.duration}min)
 
 👤 Client: ${body.name}
 📧 Email: ${body.email}
