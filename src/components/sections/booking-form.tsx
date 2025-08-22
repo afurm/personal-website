@@ -92,43 +92,41 @@ export default function BookingForm() {
     generateLocalTimeSlots(detectedTimezone);
   }, []);
 
-  // Convert Ukraine time to user's local time using direct formatInTimeZone
+  // Convert Ukraine time to user's local time - CORRECTED approach
   const convertUkraineTimeToLocal = (ukraineTimeStr: string, userTz: string, dateStr: string) => {
     try {
-      // Create a date string that represents the Ukraine time
+      // CORRECT approach: Use formatInTimeZone to handle the timezone conversion properly
+      // Step 1: Create a date that we'll treat as being IN Ukraine timezone
       const ukraineTimeString = `${dateStr}T${ukraineTimeStr}:00`;
       
-      // The key insight: formatInTimeZone can convert FROM one timezone TO another
-      // We need to create a Date that represents Ukraine time, then format it in user's timezone
+      // Step 2: Create a date object (this will be interpreted in local system timezone)
+      const naiveDate = new Date(ukraineTimeString);
       
-      // Method: Use current time offset to create proper Ukraine time
-      const tempDate = new Date(ukraineTimeString);
+      // Step 3: This approach won't work - formatInTimeZone doesn't take source timezone
+      // const userLocalTime = formatInTimeZone(naiveDate, userTz, 'h:mm a');
       
-      // Calculate Ukraine timezone offset (in August 2025, Ukraine is UTC+3)
-      const ukraineOffsetMinutes = -180; // UTC+3 = -180 minutes
-      const ukraineTime = new Date(tempDate.getTime() - (ukraineOffsetMinutes * 60000));
-      
-      // Now format this time in the user's timezone
-      const userLocalTime = formatInTimeZone(ukraineTime, userTz, 'h:mm a');
-      
-      // Also format in Ukraine time for verification
-      const ukraineDisplayTime = formatInTimeZone(ukraineTime, ukraineTimezone, 'h:mm a');
+      // Alternative method: Use the proper timezone offset
+      // Ukraine is UTC+3 in summer (August), so we need to subtract 3 hours to get UTC
+      const ukraineOffset = 3 * 60; // 3 hours in minutes
+      const utcTime = new Date(naiveDate.getTime() - (ukraineOffset * 60 * 1000));
+      const properUserTime = formatInTimeZone(utcTime, userTz, 'h:mm a');
       
       // Debug logging for timezone conversion - ALWAYS log for Vercel debugging
-      console.log('🔄 TIMEZONE CONVERSION DEBUG:', {
+      console.log('🔄 TIMEZONE CONVERSION DEBUG (FIXED):', {
         input: ukraineTimeStr,
         dateStr,
         ukraineTimeString,
-        tempDate: tempDate.toISOString(),
-        ukraineTime: ukraineTime.toISOString(),
-        ukraineDisplayTime,
-        userLocalTime,
+        naiveDate: naiveDate.toISOString(),
+        utcTime: utcTime.toISOString(),
+        properUserTime,
+        ukraineOffset: `UTC+${ukraineOffset/60}`,
         userTz,
         ukraineTimezone,
         environment: process.env.NODE_ENV || 'unknown'
       });
       
-      return userLocalTime;
+      // Return the properly converted time
+      return properUserTime;
     } catch (error) {
       console.error('Timezone conversion error:', error);
       // Fallback to original time if conversion fails - convert to AM/PM
@@ -149,29 +147,30 @@ export default function BookingForm() {
     return `${displayHour}:${minutes} ${ampm}`;
   };
 
-  // Check if booking is too close to current time (minimum 2 hours advance)
+  // Check if booking is too close to current time (minimum 2 hours advance) - CORRECTED
   const isBookingTooSoon = (dateStr: string, timeStr: string) => {
     try {
-      // Create Ukraine datetime using same logic as conversion function
+      // Use same corrected logic as conversion function
       const ukraineTimeString = `${dateStr}T${timeStr}:00`;
-      const tempDate = new Date(ukraineTimeString);
+      const naiveDate = new Date(ukraineTimeString);
       
-      // Ukraine is UTC+3 in summer (August)
-      const ukraineOffsetMinutes = -180; // UTC+3 = -180 minutes
-      const ukraineDateTime = new Date(tempDate.getTime() - (ukraineOffsetMinutes * 60000));
+      // Ukraine is UTC+3 in summer (August), so subtract 3 hours to get UTC
+      const ukraineOffset = 3 * 60; // 3 hours in minutes
+      const ukraineDateTime = new Date(naiveDate.getTime() - (ukraineOffset * 60 * 1000));
       
-      // Get current time in Ukraine
+      // Get current time and convert to Ukraine time for comparison
       const now = new Date();
       const currentTimeInUkraine = formatInTimeZone(now, ukraineTimezone, "yyyy-MM-dd'T'HH:mm:ss");
-      const currentUkraineDate = new Date(currentTimeInUkraine);
+      const currentUkraineDate = new Date(currentTimeInUkraine + '+03:00'); // Parse as Ukraine time
       const minimumAdvanceTime = addHours(currentUkraineDate, 2);
       
       const result = isBefore(ukraineDateTime, minimumAdvanceTime);
       
       // Debug logging - ALWAYS log for Vercel debugging
-      console.log('⏰ BOOKING TIME VALIDATION DEBUG:', {
+      console.log('⏰ BOOKING TIME VALIDATION DEBUG (FIXED):', {
         dateStr, timeStr,
         ukraineTimeString,
+        naiveDate: naiveDate.toISOString(),
         ukraineDateTime: ukraineDateTime.toISOString(),
         currentTimeInUkraine,
         currentUkraineDate: currentUkraineDate.toISOString(),

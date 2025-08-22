@@ -43,24 +43,28 @@ console.log('🌍 VERCEL API TIMEZONE CONFIG:', {
 
 const isBookingTooSoon = (dateStr: string, timeStr: string): boolean => {
   try {
-    // UTC-first approach: treat input as Ukraine time, convert to UTC for comparison
+    // CORRECTED: Use proper Ukraine timezone conversion
     const ukraineTimeString = `${dateStr}T${timeStr}:00`;
+    const naiveDate = new Date(ukraineTimeString);
     
-    // Create a date assuming it's in Ukraine timezone, then get UTC equivalent
-    const tempDate = new Date(ukraineTimeString);
-    const ukraineDateTime = new Date(tempDate.getTime() - (tempDate.getTimezoneOffset() * 60000));
+    // Ukraine is UTC+3 in summer, so subtract 3 hours to get UTC
+    const ukraineOffset = 3 * 60; // 3 hours in minutes
+    const ukraineDateTime = new Date(naiveDate.getTime() - (ukraineOffset * 60 * 1000));
     
-    // Convert to proper Ukraine timezone using UTC as base
-    const ukraineTimeUTC = toZonedTime(ukraineDateTime, UKRAINE_TIMEZONE);
-    const currentTimeInUkraine = toZonedTime(new Date(), UKRAINE_TIMEZONE);
-    const minimumAdvanceTime = addHours(currentTimeInUkraine, 2);
+    // Get current time in Ukraine for comparison
+    const now = new Date();
+    const currentTimeInUkraine = formatInTimeZone(now, UKRAINE_TIMEZONE, "yyyy-MM-dd'T'HH:mm:ss");
+    const currentUkraineDate = new Date(currentTimeInUkraine + '+03:00');
+    const minimumAdvanceTime = addHours(currentUkraineDate, 2);
     
-    const result = isBefore(ukraineTimeUTC, minimumAdvanceTime);
-    console.log('⚠️ VERCEL API - BOOKING VALIDATION:', {
+    const result = isBefore(ukraineDateTime, minimumAdvanceTime);
+    console.log('⚠️ VERCEL API - BOOKING VALIDATION (FIXED):', {
       dateStr, timeStr,
       ukraineTimeString,
-      ukraineTimeUTC: ukraineTimeUTC.toISOString(),
-      currentTimeInUkraine: currentTimeInUkraine.toISOString(),
+      naiveDate: naiveDate.toISOString(),
+      ukraineDateTime: ukraineDateTime.toISOString(),
+      currentTimeInUkraine,
+      currentUkraineDate: currentUkraineDate.toISOString(),
       minimumAdvanceTime: minimumAdvanceTime.toISOString(),
       result,
       systemTime: new Date().toISOString(),
@@ -123,23 +127,22 @@ export async function POST(request: NextRequest) {
 
     const calendar = google.calendar({ version: 'v3', auth });
 
-    // Create date/time objects using UTC-first approach
-    // Treat the input time as Ukraine time, then convert properly
+    // CORRECTED: Create calendar event with proper Ukraine timezone handling
     const ukraineTimeString = `${body.selectedDate}T${body.selectedTime}:00`;
+    const naiveDate = new Date(ukraineTimeString);
     
-    // Create UTC date that represents the Ukraine time
-    const tempDate = new Date(ukraineTimeString);
-    const adjustedDate = new Date(tempDate.getTime() - (tempDate.getTimezoneOffset() * 60000));
-    
-    // Convert to proper Ukraine timezone
-    const startDateTime = toZonedTime(adjustedDate, UKRAINE_TIMEZONE);
+    // Ukraine is UTC+3 in summer, so subtract 3 hours to get proper UTC time
+    const ukraineOffset = 3 * 60; // 3 hours in minutes
+    const startDateTime = new Date(naiveDate.getTime() - (ukraineOffset * 60 * 1000));
     const endDateTime = new Date(startDateTime.getTime() + body.duration * 60000);
     
-    console.log('📅 VERCEL API - CALENDAR EVENT CREATION:', {
+    console.log('📅 VERCEL API - CALENDAR EVENT CREATION (FIXED):', {
       inputTime: ukraineTimeString,
+      naiveDate: naiveDate.toISOString(),
       startDateTime: startDateTime.toISOString(),
       endDateTime: endDateTime.toISOString(),
       timezone: UKRAINE_TIMEZONE,
+      ukraineOffset: `UTC+${ukraineOffset/60}`,
       requestBody: {
         selectedDate: body.selectedDate,
         selectedTime: body.selectedTime,
