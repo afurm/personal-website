@@ -20,6 +20,7 @@ import {
   generateAvailableDates,
   type TimeSlot
 } from '@/lib/calendar';
+import { HydratedTime } from '@/components/ui/hydrated-time';
 
 const bookingFormSchema = z.object({
   name: z.string().min(2, { message: 'Name must be at least 2 characters.' }),
@@ -427,11 +428,35 @@ export default function BookingForm() {
                 🔍 Debug: Timezone Information
               </h3>
               <div className="text-xs space-y-1 text-blue-700 dark:text-blue-300">
-                <div><strong>Your Timezone:</strong> {userTimezone || 'Detecting...'}</div>
+                <div>
+                  <strong>Your Timezone:</strong>{' '}
+                  <HydratedTime 
+                    time={userTimezone || 'Detecting...'}
+                    fallback="Detecting..."
+                  />
+                </div>
                 <div><strong>Host Timezone:</strong> {UKRAINE_TIMEZONE}</div>
-                <div><strong>Current Time:</strong> {new Date().toLocaleString()}</div>
-                <div><strong>Current UTC:</strong> {new Date().toISOString()}</div>
-                <div><strong>Browser Offset:</strong> {new Date().getTimezoneOffset()} minutes</div>
+                <div>
+                  <strong>Current Time:</strong>{' '}
+                  <HydratedTime 
+                    time={new Date().toLocaleString()}
+                    fallback="Loading..."
+                  />
+                </div>
+                <div>
+                  <strong>Current UTC:</strong>{' '}
+                  <HydratedTime 
+                    time={new Date().toISOString()}
+                    fallback={new Date().toISOString()}
+                  />
+                </div>
+                <div>
+                  <strong>Browser Offset:</strong>{' '}
+                  <HydratedTime 
+                    time={`${new Date().getTimezoneOffset()} minutes`}
+                    fallback="Calculating..."
+                  />
+                </div>
               </div>
             </div>
 
@@ -440,11 +465,11 @@ export default function BookingForm() {
               <div className="space-y-4">
                 <label className="text-sm font-medium text-gray-900 dark:text-white">
                   Select Time
-                  {userTimezone && (
-                    <span className="ml-2 text-xs text-gray-500">
-                      (Times shown in your local timezone: {userTimezone.split('/').pop()})
-                    </span>
-                  )}
+                  <HydratedTime 
+                    time={userTimezone ? ` (Times shown in your local timezone: ${userTimezone.split('/').pop()})` : ''}
+                    fallback=" (Loading timezone...)"
+                    className="ml-2 text-xs text-gray-500"
+                  />
                   {isCheckingAvailability && (
                     <span className="ml-2 text-xs text-gray-500">Checking availability...</span>
                   )}
@@ -486,10 +511,16 @@ export default function BookingForm() {
                         }`}
                       >
                         <div className="text-center">
-                          <div>{slot.displayTime || convertToAMPM(slot.time)}</div>
+                          <HydratedTime 
+                            time={slot.displayTime || convertToAMPM(slot.time)}
+                            fallback={convertToAMPM(slot.time)}
+                          />
                           {slot.displayTime && (
                             <div className="text-xs opacity-75">
-                              ({convertToAMPM(slot.time)} Ukraine)
+                              <HydratedTime 
+                                time={`(${convertToAMPM(slot.time)} Ukraine)`}
+                                fallback="(Ukraine time)"
+                              />
                             </div>
                           )}
                         </div>

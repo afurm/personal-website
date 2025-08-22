@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { google } from 'googleapis';
-import { toZonedTime } from 'date-fns-tz';
+import { fromZonedTime } from 'date-fns-tz';
 import {
   UKRAINE_TIMEZONE,
   isBookingTooSoon,
@@ -102,11 +102,12 @@ export async function POST(request: NextRequest) {
 
     // Race condition protection: Check if slot is still available right before booking
     try {
-      // UTC-first approach for day boundaries
-      const dayStart = new Date(`${body.selectedDate}T00:00:00`);
-      const dayEnd = new Date(`${body.selectedDate}T23:59:59`);
-      const startOfDay = toZonedTime(dayStart, UKRAINE_TIMEZONE);
-      const endOfDay = toZonedTime(dayEnd, UKRAINE_TIMEZONE);
+      // Create day boundaries in Ukraine timezone
+      const dayStartUkraine = `${body.selectedDate}T00:00:00`;
+      const dayEndUkraine = `${body.selectedDate}T23:59:59`;
+      // Convert Ukraine time boundaries to UTC for Google Calendar API
+      const startOfDay = fromZonedTime(dayStartUkraine, UKRAINE_TIMEZONE);
+      const endOfDay = fromZonedTime(dayEndUkraine, UKRAINE_TIMEZONE);
 
       const availabilityCheck = await calendar.events.list({
         calendarId: 'furmanets.andriy@gmail.com',
@@ -291,11 +292,12 @@ export async function GET(request: NextRequest) {
 
     const calendar = google.calendar({ version: 'v3', auth });
     
-    // UTC-first approach for availability checking
-    const dayStart = new Date(date + 'T00:00:00');
-    const dayEnd = new Date(date + 'T23:59:59');
-    const startOfDay = toZonedTime(dayStart, UKRAINE_TIMEZONE);
-    const endOfDay = toZonedTime(dayEnd, UKRAINE_TIMEZONE);
+    // Create day boundaries in Ukraine timezone
+    const dayStartUkraine = date + 'T00:00:00';
+    const dayEndUkraine = date + 'T23:59:59';
+    // Convert Ukraine time boundaries to UTC for Google Calendar API
+    const startOfDay = fromZonedTime(dayStartUkraine, UKRAINE_TIMEZONE);
+    const endOfDay = fromZonedTime(dayEndUkraine, UKRAINE_TIMEZONE);
 
     // Get existing events for the date from YOUR calendar
     const response = await calendar.events.list({
@@ -315,9 +317,9 @@ export async function GET(request: NextRequest) {
     for (let hour = 9; hour < 21; hour++) {
       for (let minute = 0; minute < 60; minute += 30) {
         const time = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
-        // UTC-first approach for time slots
-        const slotDate = new Date(date + `T${time}:00`);
-        const slotStart = toZonedTime(slotDate, UKRAINE_TIMEZONE);
+        // Create slot time in Ukraine timezone and convert to UTC
+        const slotUkraineTime = date + `T${time}:00`;
+        const slotStart = fromZonedTime(slotUkraineTime, UKRAINE_TIMEZONE);
         const slotEnd = new Date(slotStart.getTime() + 30 * 60000);
 
         // Check if this time slot conflicts with existing events

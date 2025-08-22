@@ -25,14 +25,17 @@ export const normalizeUkraineTimezone = (timezone: string): string => {
 
 // Convert client booking time to Ukraine timezone for storage
 export const convertToUkraineTime = (clientTime: string, clientTimezone: string): Date => {
+  // Convert client time (in client's timezone) to UTC
   const utcTime = fromZonedTime(clientTime, clientTimezone);
+  // Then convert UTC to Ukraine timezone
   return toZonedTime(utcTime, UKRAINE_TIMEZONE);
 };
 
 // Convert Ukraine timezone to client timezone for display
 export const convertToClientTime = (ukraineTime: Date, clientTimezone: string): string => {
-  const utcTime = fromZonedTime(ukraineTime, UKRAINE_TIMEZONE);
-  return formatInTimeZone(utcTime, clientTimezone, 'yyyy-MM-dd HH:mm:ss zzz');
+  // The ukraineTime is already a Date object, we need to treat it as being in Ukraine timezone
+  // and convert it to client timezone for display
+  return formatInTimeZone(ukraineTime, clientTimezone, 'yyyy-MM-dd HH:mm:ss zzz');
 };
 
 // Convert Ukraine time string to user's local timezone for display
@@ -42,25 +45,25 @@ export const convertUkraineTimeToUserLocal = (
   dateStr: string
 ): string => {
   try {
-    // Create proper Ukraine datetime
+    // Create Ukraine datetime string
     const ukraineTimeString = `${dateStr}T${ukraineTimeStr}:00`;
     
-    // Convert Ukraine time to UTC first
-    const ukraineTime = fromZonedTime(ukraineTimeString, UKRAINE_TIMEZONE);
+    // Convert from Ukraine timezone to UTC
+    const utcDateTime = fromZonedTime(ukraineTimeString, UKRAINE_TIMEZONE);
     
-    // Then format in user's timezone
-    const userLocalTime = formatInTimeZone(ukraineTime, userTimezone, 'h:mm a');
+    // Format the UTC time in user's timezone
+    const userLocalTime = formatInTimeZone(utcDateTime, userTimezone, 'h:mm a');
     
     // Debug logging for Vercel
     console.log('🔄 TIMEZONE CONVERSION (date-fns-tz):', {
       input: ukraineTimeStr,
       dateStr,
       ukraineTimeString,
-      ukraineTime: ukraineTime.toISOString(),
+      utcDateTime: utcDateTime.toISOString(),
       userLocalTime,
       userTimezone,
       ukraineTimezone: UKRAINE_TIMEZONE,
-      environment: process.env.NODE_ENV || 'unknown'
+      environment: typeof window !== 'undefined' ? 'client' : 'server'
     });
     
     return userLocalTime;
@@ -87,26 +90,28 @@ export const convertToAMPM = (timeStr: string): string => {
 // Check if booking is too close to current time (minimum 2 hours advance)
 export const isBookingTooSoon = (dateStr: string, timeStr: string): boolean => {
   try {
-    // Create Ukraine datetime using proper timezone handling
+    // Create Ukraine datetime string
     const ukraineTimeString = `${dateStr}T${timeStr}:00`;
-    const ukraineDateTime = fromZonedTime(ukraineTimeString, UKRAINE_TIMEZONE);
     
-    // Get current time and add 2-hour buffer
+    // Convert Ukraine time to UTC for comparison
+    const utcDateTime = fromZonedTime(ukraineTimeString, UKRAINE_TIMEZONE);
+    
+    // Get current UTC time and add 2-hour buffer
     const now = new Date();
     const minimumAdvanceTime = addHours(now, 2);
     
-    const result = isBefore(ukraineDateTime, minimumAdvanceTime);
+    const result = isBefore(utcDateTime, minimumAdvanceTime);
     
     // Debug logging for Vercel
     console.log('⏰ BOOKING TIME VALIDATION (date-fns-tz):', {
       dateStr, 
       timeStr,
       ukraineTimeString,
-      ukraineDateTime: ukraineDateTime.toISOString(),
+      utcDateTime: utcDateTime.toISOString(),
       now: now.toISOString(),
       minimumAdvanceTime: minimumAdvanceTime.toISOString(),
       result,
-      environment: process.env.NODE_ENV || 'unknown'
+      environment: typeof window !== 'undefined' ? 'client' : 'server'
     });
     
     return result;
@@ -169,6 +174,7 @@ export const formatBookingTime = (
       ? new Date(ukraineTime) 
       : ukraineTime;
     
+    // Convert from Ukraine timezone to UTC, then format in client's timezone
     const utcTime = fromZonedTime(timeToFormat, UKRAINE_TIMEZONE);
     return formatInTimeZone(utcTime, clientTimezone, 'MMM d, yyyy HH:mm zzz');
   } catch (error) {
@@ -184,8 +190,10 @@ export const createCalendarEventTimes = (
   duration: number
 ) => {
   try {
-    // Create Ukraine datetime
+    // Create Ukraine datetime string
     const ukraineTimeString = `${selectedDate}T${selectedTime}:00`;
+    
+    // Convert Ukraine time to UTC for storage in Google Calendar
     const startDateTime = fromZonedTime(ukraineTimeString, UKRAINE_TIMEZONE);
     const endDateTime = new Date(startDateTime.getTime() + duration * 60000);
     
@@ -195,7 +203,7 @@ export const createCalendarEventTimes = (
       endDateTime: endDateTime.toISOString(),
       timezone: UKRAINE_TIMEZONE,
       duration,
-      environment: process.env.NODE_ENV || 'unknown'
+      environment: typeof window !== 'undefined' ? 'client' : 'server'
     });
     
     return {
