@@ -83,14 +83,32 @@ export default function BookingForm() {
     generateLocalTimeSlots(detectedTimezone);
   }, []);
 
-  // Convert Ukraine time to user's local time with proper DST handling
+  // Convert Ukraine time to user's local time using UTC-first approach
   const convertUkraineTimeToLocal = (ukraineTimeStr: string, userTz: string, dateStr: string) => {
     try {
-      // Create Ukraine datetime with proper timezone handling
-      const ukraineDateTime = toZonedTime(`${dateStr}T${ukraineTimeStr}:00`, ukraineTimezone);
+      // UTC-first approach: treat input as Ukraine time, convert properly
+      const ukraineTimeString = `${dateStr}T${ukraineTimeStr}:00`;
       
-      // Format in user's timezone with DST awareness and AM/PM format
+      // Create a date object and adjust for timezone offset to get UTC equivalent
+      const tempDate = new Date(ukraineTimeString);
+      const adjustedDate = new Date(tempDate.getTime() - (tempDate.getTimezoneOffset() * 60000));
+      
+      // Convert to Ukraine timezone first, then to user's timezone
+      const ukraineDateTime = toZonedTime(adjustedDate, ukraineTimezone);
       const userLocalTime = formatInTimeZone(ukraineDateTime, userTz, 'h:mm a');
+      
+      // Debug logging for timezone conversion
+      if (process.env.NODE_ENV === 'development') {
+        console.log('convertUkraineTimeToLocal debug:', {
+          input: ukraineTimeStr,
+          dateStr,
+          ukraineTimeString,
+          adjustedDate: adjustedDate.toISOString(),
+          ukraineDateTime: ukraineDateTime.toISOString(),
+          userLocalTime,
+          userTz
+        });
+      }
       
       return userLocalTime;
     } catch (error) {
@@ -113,14 +131,37 @@ export default function BookingForm() {
     return `${displayHour}:${minutes} ${ampm}`;
   };
 
-  // Check if booking is too close to current time (minimum 2 hours advance)
+  // Check if booking is too close to current time (minimum 2 hours advance) using UTC-first approach
   const isBookingTooSoon = (dateStr: string, timeStr: string) => {
     try {
-      // Create proper Ukraine datetime with timezone awareness
-      const ukraineDateTime = toZonedTime(`${dateStr}T${timeStr}:00`, ukraineTimezone);
+      // UTC-first approach: treat input as Ukraine time, convert to UTC for comparison
+      const ukraineTimeString = `${dateStr}T${timeStr}:00`;
+      
+      // Create a date assuming it's in Ukraine timezone, then get UTC equivalent
+      const tempDate = new Date(ukraineTimeString);
+      const adjustedDate = new Date(tempDate.getTime() - (tempDate.getTimezoneOffset() * 60000));
+      
+      // Convert to proper Ukraine timezone using UTC as base
+      const ukraineDateTime = toZonedTime(adjustedDate, ukraineTimezone);
       const currentTimeInUkraine = toZonedTime(new Date(), ukraineTimezone);
       const minimumAdvanceTime = addHours(currentTimeInUkraine, 2);
-      return isBefore(ukraineDateTime, minimumAdvanceTime);
+      
+      const result = isBefore(ukraineDateTime, minimumAdvanceTime);
+      
+      // Debug logging
+      if (process.env.NODE_ENV === 'development') {
+        console.log('isBookingTooSoon debug:', {
+          dateStr, timeStr,
+          ukraineTimeString,
+          adjustedDate: adjustedDate.toISOString(),
+          ukraineDateTime: ukraineDateTime.toISOString(),
+          currentTimeInUkraine: currentTimeInUkraine.toISOString(),
+          minimumAdvanceTime: minimumAdvanceTime.toISOString(),
+          result
+        });
+      }
+      
+      return result;
     } catch (error) {
       console.error('Error checking booking time:', error);
       // Fallback to simple comparison if timezone conversion fails
@@ -159,6 +200,16 @@ export default function BookingForm() {
           available: true,
           displayTime: userLocalTime // Show user's local time for their convenience
         });
+        
+        // Debug logging for slot generation
+        if (process.env.NODE_ENV === 'development' && slots.length <= 3) {
+          console.log('Generated slot:', {
+            ukraineTimeStr,
+            userLocalTime,
+            targetDateStr,
+            userTz
+          });
+        }
       }
     }
     
