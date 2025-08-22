@@ -79,36 +79,54 @@ export default function BookingForm() {
     const detectedTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
     setUserTimezone(detectedTimezone);
     
+    // Debug timezone information - will show in browser console
+    console.log('🕒 TIMEZONE DEBUG - Client Side:', {
+      detectedUserTimezone: detectedTimezone,
+      ukraineTimezone,
+      browserTime: new Date().toISOString(),
+      browserLocalTime: new Date().toLocaleString(),
+      browserTimezoneOffset: new Date().getTimezoneOffset()
+    });
+    
     // Generate time slots converted to user's timezone
     generateLocalTimeSlots(detectedTimezone);
   }, []);
 
-  // Convert Ukraine time to user's local time using UTC-first approach
+  // Convert Ukraine time to user's local time using direct formatInTimeZone
   const convertUkraineTimeToLocal = (ukraineTimeStr: string, userTz: string, dateStr: string) => {
     try {
-      // UTC-first approach: treat input as Ukraine time, convert properly
+      // Create a date string that represents the Ukraine time
       const ukraineTimeString = `${dateStr}T${ukraineTimeStr}:00`;
       
-      // Create a date object and adjust for timezone offset to get UTC equivalent
+      // The key insight: formatInTimeZone can convert FROM one timezone TO another
+      // We need to create a Date that represents Ukraine time, then format it in user's timezone
+      
+      // Method: Use current time offset to create proper Ukraine time
       const tempDate = new Date(ukraineTimeString);
-      const adjustedDate = new Date(tempDate.getTime() - (tempDate.getTimezoneOffset() * 60000));
       
-      // Convert to Ukraine timezone first, then to user's timezone
-      const ukraineDateTime = toZonedTime(adjustedDate, ukraineTimezone);
-      const userLocalTime = formatInTimeZone(ukraineDateTime, userTz, 'h:mm a');
+      // Calculate Ukraine timezone offset (in August 2025, Ukraine is UTC+3)
+      const ukraineOffsetMinutes = -180; // UTC+3 = -180 minutes
+      const ukraineTime = new Date(tempDate.getTime() - (ukraineOffsetMinutes * 60000));
       
-      // Debug logging for timezone conversion
-      if (process.env.NODE_ENV === 'development') {
-        console.log('convertUkraineTimeToLocal debug:', {
-          input: ukraineTimeStr,
-          dateStr,
-          ukraineTimeString,
-          adjustedDate: adjustedDate.toISOString(),
-          ukraineDateTime: ukraineDateTime.toISOString(),
-          userLocalTime,
-          userTz
-        });
-      }
+      // Now format this time in the user's timezone
+      const userLocalTime = formatInTimeZone(ukraineTime, userTz, 'h:mm a');
+      
+      // Also format in Ukraine time for verification
+      const ukraineDisplayTime = formatInTimeZone(ukraineTime, ukraineTimezone, 'h:mm a');
+      
+      // Debug logging for timezone conversion - ALWAYS log for Vercel debugging
+      console.log('🔄 TIMEZONE CONVERSION DEBUG:', {
+        input: ukraineTimeStr,
+        dateStr,
+        ukraineTimeString,
+        tempDate: tempDate.toISOString(),
+        ukraineTime: ukraineTime.toISOString(),
+        ukraineDisplayTime,
+        userLocalTime,
+        userTz,
+        ukraineTimezone,
+        environment: process.env.NODE_ENV || 'unknown'
+      });
       
       return userLocalTime;
     } catch (error) {
@@ -131,35 +149,36 @@ export default function BookingForm() {
     return `${displayHour}:${minutes} ${ampm}`;
   };
 
-  // Check if booking is too close to current time (minimum 2 hours advance) using UTC-first approach
+  // Check if booking is too close to current time (minimum 2 hours advance)
   const isBookingTooSoon = (dateStr: string, timeStr: string) => {
     try {
-      // UTC-first approach: treat input as Ukraine time, convert to UTC for comparison
+      // Create Ukraine datetime using same logic as conversion function
       const ukraineTimeString = `${dateStr}T${timeStr}:00`;
-      
-      // Create a date assuming it's in Ukraine timezone, then get UTC equivalent
       const tempDate = new Date(ukraineTimeString);
-      const adjustedDate = new Date(tempDate.getTime() - (tempDate.getTimezoneOffset() * 60000));
       
-      // Convert to proper Ukraine timezone using UTC as base
-      const ukraineDateTime = toZonedTime(adjustedDate, ukraineTimezone);
-      const currentTimeInUkraine = toZonedTime(new Date(), ukraineTimezone);
-      const minimumAdvanceTime = addHours(currentTimeInUkraine, 2);
+      // Ukraine is UTC+3 in summer (August)
+      const ukraineOffsetMinutes = -180; // UTC+3 = -180 minutes
+      const ukraineDateTime = new Date(tempDate.getTime() - (ukraineOffsetMinutes * 60000));
+      
+      // Get current time in Ukraine
+      const now = new Date();
+      const currentTimeInUkraine = formatInTimeZone(now, ukraineTimezone, "yyyy-MM-dd'T'HH:mm:ss");
+      const currentUkraineDate = new Date(currentTimeInUkraine);
+      const minimumAdvanceTime = addHours(currentUkraineDate, 2);
       
       const result = isBefore(ukraineDateTime, minimumAdvanceTime);
       
-      // Debug logging
-      if (process.env.NODE_ENV === 'development') {
-        console.log('isBookingTooSoon debug:', {
-          dateStr, timeStr,
-          ukraineTimeString,
-          adjustedDate: adjustedDate.toISOString(),
-          ukraineDateTime: ukraineDateTime.toISOString(),
-          currentTimeInUkraine: currentTimeInUkraine.toISOString(),
-          minimumAdvanceTime: minimumAdvanceTime.toISOString(),
-          result
-        });
-      }
+      // Debug logging - ALWAYS log for Vercel debugging
+      console.log('⏰ BOOKING TIME VALIDATION DEBUG:', {
+        dateStr, timeStr,
+        ukraineTimeString,
+        ukraineDateTime: ukraineDateTime.toISOString(),
+        currentTimeInUkraine,
+        currentUkraineDate: currentUkraineDate.toISOString(),
+        minimumAdvanceTime: minimumAdvanceTime.toISOString(),
+        result,
+        environment: process.env.NODE_ENV || 'unknown'
+      });
       
       return result;
     } catch (error) {
@@ -201,13 +220,15 @@ export default function BookingForm() {
           displayTime: userLocalTime // Show user's local time for their convenience
         });
         
-        // Debug logging for slot generation
-        if (process.env.NODE_ENV === 'development' && slots.length <= 3) {
-          console.log('Generated slot:', {
+        // Debug logging for slot generation - Show first few slots always
+        if (slots.length <= 3) {
+          console.log('⚙️ SLOT GENERATION DEBUG:', {
+            slotNumber: slots.length,
             ukraineTimeStr,
             userLocalTime,
             targetDateStr,
-            userTz
+            userTz,
+            environment: process.env.NODE_ENV || 'unknown'
           });
         }
       }
@@ -485,6 +506,20 @@ export default function BookingForm() {
                   {errors.selectedDate.message}
                 </p>
               )}
+            </div>
+
+            {/* Timezone Debug Info */}
+            <div className="mb-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-xl border border-blue-200 dark:border-blue-800">
+              <h3 className="text-sm font-semibold text-blue-800 dark:text-blue-200 mb-2">
+                🔍 Debug: Timezone Information
+              </h3>
+              <div className="text-xs space-y-1 text-blue-700 dark:text-blue-300">
+                <div><strong>Your Timezone:</strong> {userTimezone || 'Detecting...'}</div>
+                <div><strong>Host Timezone:</strong> {ukraineTimezone}</div>
+                <div><strong>Current Time:</strong> {new Date().toLocaleString()}</div>
+                <div><strong>Current UTC:</strong> {new Date().toISOString()}</div>
+                <div><strong>Browser Offset:</strong> {new Date().getTimezoneOffset()} minutes</div>
+              </div>
             </div>
 
             {/* Time Selection */}

@@ -26,11 +26,19 @@ const MEETING_TYPE_LABELS = {
 const UKRAINE_TIMEZONE = process.env.HOST_TIMEZONE || 'Europe/Kiev';
 const SERVER_TIMEZONE = process.env.SERVER_TIMEZONE || 'UTC';
 
-// Log timezone configuration for debugging
-console.log('Timezone config:', {
+// Log timezone configuration for debugging - Enhanced for Vercel
+console.log('🌍 VERCEL API TIMEZONE CONFIG:', {
   UKRAINE_TIMEZONE,
   SERVER_TIMEZONE,
-  systemTimezone: Intl.DateTimeFormat().resolvedOptions().timeZone
+  systemTimezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+  processEnv: {
+    TZ: process.env.TZ,
+    SERVER_TIMEZONE: process.env.SERVER_TIMEZONE,
+    HOST_TIMEZONE: process.env.HOST_TIMEZONE,
+    NODE_ENV: process.env.NODE_ENV
+  },
+  currentTime: new Date().toISOString(),
+  currentLocalTime: new Date().toLocaleString()
 });
 
 const isBookingTooSoon = (dateStr: string, timeStr: string): boolean => {
@@ -48,13 +56,15 @@ const isBookingTooSoon = (dateStr: string, timeStr: string): boolean => {
     const minimumAdvanceTime = addHours(currentTimeInUkraine, 2);
     
     const result = isBefore(ukraineTimeUTC, minimumAdvanceTime);
-    console.log('isBookingTooSoon debug:', {
+    console.log('⚠️ VERCEL API - BOOKING VALIDATION:', {
       dateStr, timeStr,
       ukraineTimeString,
       ukraineTimeUTC: ukraineTimeUTC.toISOString(),
       currentTimeInUkraine: currentTimeInUkraine.toISOString(),
       minimumAdvanceTime: minimumAdvanceTime.toISOString(),
-      result
+      result,
+      systemTime: new Date().toISOString(),
+      environment: 'Vercel API'
     });
     return result;
   } catch (error) {
@@ -125,11 +135,18 @@ export async function POST(request: NextRequest) {
     const startDateTime = toZonedTime(adjustedDate, UKRAINE_TIMEZONE);
     const endDateTime = new Date(startDateTime.getTime() + body.duration * 60000);
     
-    console.log('Calendar event timing debug:', {
+    console.log('📅 VERCEL API - CALENDAR EVENT CREATION:', {
       inputTime: ukraineTimeString,
       startDateTime: startDateTime.toISOString(),
       endDateTime: endDateTime.toISOString(),
-      timezone: UKRAINE_TIMEZONE
+      timezone: UKRAINE_TIMEZONE,
+      requestBody: {
+        selectedDate: body.selectedDate,
+        selectedTime: body.selectedTime,
+        meetingType: body.meetingType
+      },
+      systemTime: new Date().toISOString(),
+      environment: 'Vercel API'
     });
 
     // Race condition protection: Check if slot is still available right before booking
