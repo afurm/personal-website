@@ -117,7 +117,7 @@ export function ShareButton({
         aria-label="Share"
       >
         <Share2 className="w-5 h-5" />
-        {variant === 'button' && <span>Share</span>}
+        {variant === 'button' && <span className="hidden sm:inline">Share</span>}
       </motion.button>
 
       {/* Custom share menu fallback */}
