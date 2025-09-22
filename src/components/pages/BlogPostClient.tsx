@@ -148,16 +148,6 @@ export function BlogPostClient({ post, readingTime, relatedPosts, canonicalUrl }
                     </div>
                 )}
             </article>
-
-            {/* Floating Mobile Share Button */}
-            <div className="fixed bottom-20 right-4 sm:hidden">
-                <ShareButton 
-                    title={post.title}
-                    text={post.description}
-                    url={canonicalUrl}
-                    variant="button"
-                />
-            </div>
         </div>
     );
 }
