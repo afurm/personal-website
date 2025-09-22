@@ -35,7 +35,7 @@ export function BlogPostClient({ post, readingTime, relatedPosts, canonicalUrl }
     }, [post.title]);
 
     return (
-        <div className="container mx-auto px-4 pb-12">
+        <div className="container mx-auto px-4 pb-12 mt-8">
             <article className="max-w-3xl mx-auto">
                 <header className="mb-8">
                     <div className="flex items-start justify-between gap-4 mb-4">
